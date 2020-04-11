@@ -31,8 +31,8 @@ max-plots: 2
 # Whether the popup should appear when you enter a plot
 show-popup: true
 
-# Here you find the plot configurations, how the plot world should look like later
-# To generate the world, a world name must be specified
+# Here you find the plot configurations,
+# how the plot world should look like later, when the world is generated for the first time
 default-settings:
   plotSize: 32
   roadBlock: 5
