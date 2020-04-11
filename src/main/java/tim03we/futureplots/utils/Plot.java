@@ -1,4 +1,4 @@
-package tim03we.futureplots;
+package tim03we.futureplots.utils;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".

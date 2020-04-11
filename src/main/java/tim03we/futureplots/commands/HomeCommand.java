@@ -20,11 +20,9 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.Plot;
-import tim03we.futureplots.Settings;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.provider.Provider;
-
-import static tim03we.futureplots.Settings.plotSize;
 
 public class HomeCommand extends BaseCommand {
 
@@ -41,9 +39,9 @@ public class HomeCommand extends BaseCommand {
             }
             try {
                 if(new Provider().hasHome(sender.getName(), homeNumber)) {
-                    String[] ex = new Provider().getPlotId(sender.getName(), homeNumber).split("#");
-                    Position pos = FuturePlots.getInstance().getPlotPosition(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), Settings.levelName));
-                    ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
+                    String[] ex = new Provider().getPlotId(sender.getName(), homeNumber).split(";");
+                    Position pos = FuturePlots.getInstance().getPlotPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ((Player) sender).getLevel().getName()));
+                    ((Player) sender).teleport(new Position(pos.x += Math.floor(new PlotSettings(((Player) sender).getLevel().getName()).getPlotSize() / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
                     sender.sendMessage(translate(true, "plot-tp", null));
                 } else {
                     sender.sendMessage(translate(true, "has-no-plot", null));

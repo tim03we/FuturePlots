@@ -25,13 +25,16 @@ import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.item.ItemEdible;
 import tim03we.futureplots.provider.Provider;
+import tim03we.futureplots.utils.Language;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.Settings;
 
 public class EventListener extends Language implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if(player.getLevel().getName().equals(Settings.levelName)) {
+        if(Settings.levels != null && Settings.levels.contains(player.getLevel().getName())) {
             Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getTo());
             Plot plotFrom = FuturePlots.getInstance().getPlotByPosition(event.getFrom());
             if(plot != null && plotFrom == null) {
@@ -49,7 +52,7 @@ public class EventListener extends Language implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if(player.getLevel().getName().equals(Settings.levelName)) {
+        if(Settings.levels.contains(player.getLevel().getName())) {
             if(!player.isOp()) {
                 if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
                     if(!new Provider().isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !new Provider().isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
@@ -65,7 +68,7 @@ public class EventListener extends Language implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if(player.getLevel().getName().equals(Settings.levelName)) {
+        if(Settings.levels.contains(player.getLevel().getName())) {
             if(!player.isOp()) {
                 if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
                     if(!new Provider().isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !new Provider().isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
@@ -81,7 +84,7 @@ public class EventListener extends Language implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if(player.getLevel().getName().equals(Settings.levelName)) {
+        if(Settings.levels.contains(player.getLevel().getName())) {
             if(!player.isOp()) {
                 if(event.getItem() instanceof ItemEdible) {
                     if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {

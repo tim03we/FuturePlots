@@ -19,7 +19,7 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.Plot;
+import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.provider.Provider;
 
 public class InfoCommand extends BaseCommand {

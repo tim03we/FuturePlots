@@ -29,10 +29,10 @@ public class HomesCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-                if(new Provider().getHomes(sender.getName()).size() != 0) {
+                if(new Provider().getHomes(sender.getName(), ((Player) sender).getLevel().getName()).size() != 0) {
                     sender.sendMessage(translate(true, "homes-title", null));
-                    for (String home : new Provider().getHomes(sender.getName())) {
-                        sender.sendMessage(translate(false, "homes-text", home.split("#")[0] + ";" + home.split("#")[1]));
+                    for (String home : new Provider().getHomes(sender.getName(), ((Player) sender).getLevel().getName())) {
+                        sender.sendMessage(translate(false, "homes-text", home.split(";")[0], home.split(";")[1]+ ";" + home.split(";")[2]));
                     }
                 }
         }

@@ -25,6 +25,12 @@ import tim03we.futureplots.commands.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
 import tim03we.futureplots.tasks.PlotClearTask;
+import tim03we.futureplots.utils.Language;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.Settings;
+
+import java.io.File;
 
 public class FuturePlots extends PluginBase {
 
@@ -32,6 +38,7 @@ public class FuturePlots extends PluginBase {
 
     @Override
     public void onEnable() {
+        new File(getDataFolder() + "/worlds/").mkdirs();
         instance = this;
         saveDefaultConfig();
         registerGenerator();
@@ -39,7 +46,6 @@ public class FuturePlots extends PluginBase {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         Settings.init();
         Language.init();
-        generateLevel(Settings.levelName);
     }
 
     private void registerCommands() {
@@ -50,6 +56,7 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand("home", new HomeCommand("home", "Run the command", "/plot home"), new String[]{"h"});
         commandHandler.registerCommand("homes", new HomesCommand("homes", "Run the command", "/plot homes"), new String[]{});
         commandHandler.registerCommand("help", new HelpCommand("help", "Run the command", "/plot help"), new String[]{});
+        commandHandler.registerCommand("generate", new GenerateCommand("generate", "Run the command", "/plot generate"), new String[]{"gen"});
         commandHandler.registerCommand("auto", new AutoCommand("auto", "Run the command", "/plot auto"), new String[]{"a"});
         commandHandler.registerCommand("info", new InfoCommand("info", "Run the command", "/plot info"), new String[]{"i"});
         /* ToDo */
@@ -76,6 +83,8 @@ public class FuturePlots extends PluginBase {
     }
 
     public void generateLevel(String levelName) {
+        Settings.levels.add(levelName);
+        new PlotSettings(levelName).saveDefault();
         getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"));
     }
 
@@ -112,8 +121,8 @@ public class FuturePlots extends PluginBase {
         int Z;
         double difX;
         double difZ;
-        int plotSize = Settings.plotSize;
-        int roadWidth = Settings.roadWidth;
+        int plotSize = new PlotSettings(position.getLevel().getName()).getPlotSize();
+        int roadWidth = new PlotSettings(position.getLevel().getName()).getRoadWidth();
         int totalSize = plotSize + roadWidth;
         if(x >= 0) {
             X = (int) Math.floor(x / totalSize);

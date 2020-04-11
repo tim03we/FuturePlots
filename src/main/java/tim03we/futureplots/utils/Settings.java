@@ -1,4 +1,4 @@
-package tim03we.futureplots;
+package tim03we.futureplots.utils;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -17,10 +17,15 @@ package tim03we.futureplots;
  */
 
 import cn.nukkit.utils.Config;
+import tim03we.futureplots.FuturePlots;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class Settings {
 
-    public static String levelName;
+
+    public static ArrayList<String> levels = new ArrayList<>();
     public static int wallBlock;
     public static int roadBlock;
     public static int roadWidth;
@@ -36,15 +41,18 @@ public class Settings {
 
     public static void init() {
         Config config = FuturePlots.getInstance().getConfig();
-        levelName = config.getString("world.level");
-        wallBlock = config.getInt("world.wallBlock");
-        roadBlock = config.getInt("world.roadBlock");
-        roadWidth = config.getInt("world.roadWidth");
-        groundHeight = config.getInt("world.groundHeight");
-        plotSize = config.getInt("world.plotSize");
-        bottomBlock = config.getInt("world.bottomBlock");
-        plotFloorBlock = config.getInt("world.plotFloorBlock");
-        plotFillBlock = config.getInt("world.plotFillBlock");
+        File folder = new File(FuturePlots.getInstance().getDataFolder() + "/worlds/");
+        for(File file : folder.listFiles()) {
+            levels.add(file.getName().replace(".yml", ""));
+        }
+        wallBlock = config.getInt("default-settings.wallBlock");
+        roadBlock = config.getInt("default-settings.roadBlock");
+        roadWidth = config.getInt("default-settings.roadWidth");
+        groundHeight = config.getInt("default-settings.groundHeight");
+        plotSize = config.getInt("default-settings.plotSize");
+        bottomBlock = config.getInt("default-settings.bottomBlock");
+        plotFloorBlock = config.getInt("default-settings.plotFloorBlock");
+        plotFillBlock = config.getInt("default-settings.plotFillBlock");
         provider = config.getString("provider").toLowerCase();
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");

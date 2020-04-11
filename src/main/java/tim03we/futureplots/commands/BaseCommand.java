@@ -17,7 +17,7 @@ package tim03we.futureplots.commands;
  */
 
 import cn.nukkit.command.CommandSender;
-import tim03we.futureplots.Language;
+import tim03we.futureplots.utils.Language;
 
 public class BaseCommand extends Language {
 

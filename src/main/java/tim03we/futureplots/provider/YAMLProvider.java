@@ -18,8 +18,7 @@ package tim03we.futureplots.provider;
 
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.Plot;
-import tim03we.futureplots.Settings;
+import tim03we.futureplots.utils.Plot;
 
 import java.util.ArrayList;
 
@@ -27,22 +26,22 @@ public class YAMLProvider {
 
     public void claimPlot(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        config.set(plot.getX() + "#" + plot.getZ() + ".owner", username);
-        config.set(plot.getX() + "#" + plot.getZ() + ".helpers", new ArrayList<String>());
-        config.set(plot.getX() + "#" + plot.getZ() + ".denied", new ArrayList<String>());
-        config.set(plot.getX() + "#" + plot.getZ() + ".flags", new ArrayList<String>());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
         config.save();
     }
 
     public void deletePlot(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        config.remove(plot.getX() + "#" + plot.getZ());
+        config.remove(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
         config.save();
     }
 
     public String getHelpers(Plot plot) {
         StringBuilder sb = new StringBuilder();
-        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getX() + "#" + plot.getZ() + ".helpers")) {
+        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             sb.append(list + ", ");
         }
         return sb.toString();
@@ -50,14 +49,14 @@ public class YAMLProvider {
 
     public String getDenied(Plot plot) {
         StringBuilder sb = new StringBuilder();
-        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getX() + "#" + plot.getZ() + ".denied")) {
+        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             sb.append(list + ", ");
         }
         return sb.toString();    }
 
     public boolean isHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        for (String list : config.getStringList(plot.getX() + "#" + plot.getZ() + ".helpers")) {
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             if(list.toLowerCase().equals(username.toLowerCase())) {
                 return true;
             }
@@ -68,28 +67,28 @@ public class YAMLProvider {
     public void addHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
-        for (String list : config.getStringList(plot.getX() + "#" + plot.getZ() + ".helpers")) {
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             helpers.add(list);
         }
         helpers.add(username.toLowerCase());
-        config.set(plot.getX() + "#" + plot.getZ() + ".helpers", helpers);
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
         config.save();
     }
 
     public void removeHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
-        for (String list : config.getStringList(plot.getX() + "#" + plot.getZ() + ".helpers")) {
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             helpers.add(list);
         }
         helpers.remove(username.toLowerCase());
-        config.set(plot.getX() + "#" + plot.getZ() + ".helpers", helpers);
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
         config.save();
     }
 
     public boolean isDenied(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        for (String list : config.getStringList(plot.getX() + "#" + plot.getZ() + ".denied")) {
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             if(list.toLowerCase().equals(username.toLowerCase())) {
                 return true;
             }
@@ -100,33 +99,33 @@ public class YAMLProvider {
     public void addDenied(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> denied = new ArrayList<>();
-        for (String list : config.getStringList(plot.getX() + "#" + plot.getZ() + ".denied")) {
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             denied.add(list);
         }
         denied.add(username.toLowerCase());
-        config.set(plot.getX() + "#" + plot.getZ() + ".denied", denied);
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
         config.save();
     }
 
     public void removeDenied(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> denied = new ArrayList<>();
-        for (String list : config.getStringList(plot.getX() + "#" + plot.getZ() + ".denied")) {
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             denied.add(list);
         }
         denied.remove(username.toLowerCase());
-        config.set(plot.getX() + "#" + plot.getZ() + ".denied", denied);
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
         config.save();
     }
 
     public boolean isOwner(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        return config.getString(plot.getX() + "#" + plot.getZ() + ".owner").equals(username);
+        return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner").equals(username);
     }
 
     public boolean hasOwner(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        return config.exists(plot.getX() + "#" + plot.getZ());
+        return config.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
     }
 
     public boolean hasHome(String username, int homeNumber) {
@@ -157,7 +156,7 @@ public class YAMLProvider {
         return null;
     }
 
-    public ArrayList<String> getHomes(String username) {
+    public ArrayList<String> getHomes(String username, String world) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
         for (String list : config.getAll().keySet()) {
@@ -170,87 +169,40 @@ public class YAMLProvider {
 
     public String getPlotName(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        return config.getString(plot.getX() + "#" + plot.getZ() + ".owner");
+        return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
     }
 
-    public Plot getNextFreePlot(int limitXZ) {
+    public Plot getNextFreePlot(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        int limitXZ = 0;
         for(int i = 0; limitXZ <= 0 || i < limitXZ; i++) {
             ArrayList<String> existing = new ArrayList<>();
             for (String list : config.getAll().keySet()) {
-                String[] ex = list.split("#");
-                if(Math.abs(Integer.parseInt(ex[0])) == i && Math.abs(Integer.parseInt(ex[1])) <= i) {
+                String[] ex = list.split(";");
+                if(Math.abs(Integer.parseInt(ex[1])) == i && Math.abs(Integer.parseInt(ex[2])) <= i) {
                     existing.add(list);
-                } else if(Math.abs(Integer.parseInt(ex[1])) == i && Math.abs(Integer.parseInt(ex[0])) <= i) {
+                } else if(Math.abs(Integer.parseInt(ex[2])) == i && Math.abs(Integer.parseInt(ex[1])) <= i) {
                     existing.add(list);
                 }
             }
             if(existing.size() == Math.max(1, 8 * i)) {
                 continue;
             }
-
             if(new Provider().findEmptyPlotSquared(0, i, existing) != null) {
-                String[] ex = new Provider().findEmptyPlotSquared(0, i, existing).split("#");
-                Plot plot = new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), Settings.levelName);
-                return plot;
+                String[] ex = new Provider().findEmptyPlotSquared(0, i, existing).split(";");
+                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
             }
             for (int a = 1; a < i; a++) {
                 if(new Provider().findEmptyPlotSquared(a, i, existing) != null) {
-                    String[] ex = new Provider().findEmptyPlotSquared(a, i, existing).split("#");
-                    Plot plot = new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), Settings.levelName);
-                    return plot;
+                    String[] ex = new Provider().findEmptyPlotSquared(a, i, existing).split(";");
+                    return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
                 }
             }
             if(new Provider().findEmptyPlotSquared(i, i, existing) != null) {
-                String[] ex = new Provider().findEmptyPlotSquared(i, i, existing).split("#");
-                Plot plot = new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), Settings.levelName);
-                return plot;
+                String[] ex = new Provider().findEmptyPlotSquared(i, i, existing).split(";");
+                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
             }
         }
         return null;
     }
-
-    /*public function getNextFreePlot(string $levelName, int $limitXZ = 0) : ?plot {
-        $plotsArr = $this->yaml->get("plots", []);
-        for($i = 0; $limitXZ <= 0 or $i < $limitXZ; $i++) {
-            $existing = [];
-            foreach($plotsArr as $id => $data) {
-                if($data["level"] === $levelName) {
-                    if(abs($data["x"]) === $i and abs($data["z"]) <= $i) {
-                        $existing[] = [$data["x"], $data["z"]];
-                    }elseif(abs($data["z"]) === $i and abs($data["x"]) <= $i) {
-                        $existing[] = [$data["x"], $data["z"]];
-                    }
-                }
-            }
-            $plots = [];
-            foreach($existing as $arr) {
-                $plots[$arr[0]][$arr[1]] = true;
-            }
-            if(count($plots) === max(1, 8 * $i)) {
-                continue;
-            }
-            if($ret = self::findEmptyPlotSquared(0, $i, $plots)) {
-                list($X, $Z) = $ret;
-                $plot = new Plot($levelName, $X, $Z);
-                $this->cachePlot($plot);
-                return $plot;
-            }
-            for($a = 1; $a < $i; $a++) {
-                if($ret = self::findEmptyPlotSquared($a, $i, $plots)) {
-                    list($X, $Z) = $ret;
-                    $plot = new Plot($levelName, $X, $Z);
-                    $this->cachePlot($plot);
-                    return $plot;
-                }
-            }
-            if($ret = self::findEmptyPlotSquared($i, $i, $plots)) {
-                list($X, $Z) = $ret;
-                $plot = new Plot($levelName, $X, $Z);
-                $this->cachePlot($plot);
-                return $plot;
-            }
-        }
-        return null;
-    }*/
 }

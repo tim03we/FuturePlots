@@ -16,20 +16,22 @@ package tim03we.futureplots.tasks;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.Task;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.Plot;
-import tim03we.futureplots.Settings;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotSettings;
 
 public class PlotClearTask extends Task {
 
     private Plot plot;
     private Level level;
     private int height;
+    private int plotSize;
     private Block bottomBlock;
     private Block plotFillBlock;
     private Block plotFloorBlock;
@@ -38,19 +40,18 @@ public class PlotClearTask extends Task {
     private int zMax;
     private Vector3 pos;
 
-    public PlotClearTask(Plot $plot) {
-        plot = plot;
-        plotBeginPos = FuturePlots.getInstance().getPlotPosition($plot);
-        level = plotBeginPos.getLevel();
-        //$plotLevel = $plugin->getLevelSettings($plot->levelName);
-        int plotSize = Settings.plotSize;
-        xMax = (int) (plotBeginPos.x + plotSize);
-        zMax = (int) (plotBeginPos.z + plotSize);
-        height = Settings.groundHeight;
-        bottomBlock = Block.get(Settings.bottomBlock);
-        plotFillBlock = Block.get(Settings.plotFillBlock);
-        plotFloorBlock = Block.get(Settings.plotFloorBlock);
-        pos = new Vector3(plotBeginPos.x, 0, plotBeginPos.z);
+    public PlotClearTask(Plot plot) {
+        this.plot = plot;
+        this.plotBeginPos = FuturePlots.getInstance().getPlotPosition(plot);
+        this.level = plotBeginPos.getLevel();
+        this.plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
+        this.xMax = (int) (plotBeginPos.x + plotSize);
+        this.zMax = (int) (plotBeginPos.z + plotSize);
+        this.height = new PlotSettings(plot.getLevelName()).getGroundHeight();
+        this.bottomBlock = Block.get(new PlotSettings(plot.getLevelName()).getBottomBlock());
+        this.plotFillBlock = Block.get(new PlotSettings(plot.getLevelName()).getPlotFillBlock());
+        this.plotFloorBlock = Block.get(new PlotSettings(plot.getLevelName()).getPlotFloorBlock());
+        this.pos = new Position(plotBeginPos.x, 0, plotBeginPos.z, Server.getInstance().getLevelByName(plot.getLevelName()));
     }
 
     @Override

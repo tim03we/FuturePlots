@@ -16,8 +16,8 @@ package tim03we.futureplots.provider;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import tim03we.futureplots.Plot;
-import tim03we.futureplots.Settings;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.Settings;
 
 import java.util.ArrayList;
 
@@ -108,9 +108,9 @@ public class Provider {
         return false;
     }
 
-    public ArrayList<String> getHomes(String username) {
+    public ArrayList<String> getHomes(String username, String world) {
         if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getHomes(username);
+            return new YAMLProvider().getHomes(username, world);
         }
         return null;
     }
@@ -129,27 +129,27 @@ public class Provider {
         return null;
     }
 
-    public Plot getNextFreePlot(int limitXZ) {
+    public Plot getNextFreePlot(Plot plot) {
         if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getNextFreePlot(0);
+            return new YAMLProvider().getNextFreePlot(plot);
         }
         return null;
     }
 
     public String findEmptyPlotSquared(int a, int b, ArrayList<String> plots) {
-        if (!plots.contains(a + "#" + b)) return a + "#" + b;
-        if(!plots.contains(b + "#" + a)) return b + "#" + a;
+        if (!plots.contains(a + ";" + b)) return a + ";" + b;
+        if(!plots.contains(b + ";" + a)) return b + ";" + a;
         if(a != 0) {
-            if(!plots.contains(-a + "#" + b)) return -a + "#" + b;
-            if(!plots.contains(b + "#" + -a)) return b + "#" + -a;
+            if(!plots.contains(-a + ";" + b)) return -a + ";" + b;
+            if(!plots.contains(b + ";" + -a)) return b + ";" + -a;
         }
         if(b != 0) {
-            if(!plots.contains(-b + "#" + a)) return -b + "#" + a;
-            if(!plots.contains(a + "#" + -b)) return a + "#" + -b;
+            if(!plots.contains(-b + ";" + a)) return -b + ";" + a;
+            if(!plots.contains(a + ";" + -b)) return a + ";" + -b;
         }
         if(a == 0 | b == 0) {
-            if(!plots.contains(-a + "#" + -b)) return -a + "#" + -b;
-            if(!plots.contains(-b + "#" + -a)) return -b + "#" + -a;
+            if(!plots.contains(-a + ";" + -b)) return -a + ";" + -b;
+            if(!plots.contains(-b + ";" + -a)) return -b + ";" + -a;
         }
         return null;
     }

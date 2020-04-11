@@ -25,14 +25,14 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-import tim03we.futureplots.Settings;
+import tim03we.futureplots.utils.PlotSettings;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlotGenerator extends Generator {
 
-    private String[] settings;
+    private Map<String, Object> options;
     protected Level level;
     protected Block roadBlock;
     protected Block bottomBlock;
@@ -50,16 +50,17 @@ public class PlotGenerator extends Generator {
     private ChunkManager chunkManager;
 
 
-    public PlotGenerator(Map options) {
-        level = Server.getInstance().getLevelByName(Settings.levelName);
-        roadBlock = Block.get(Settings.roadBlock);
-        wallBlock = Block.get(Settings.wallBlock);
-        plotFloorBlock = Block.get(Settings.plotFloorBlock);
-        plotFillBlock = Block.get(Settings.plotFillBlock);
-        bottomBlock = Block.get(Settings.bottomBlock);
-        roadWidth = Settings.roadWidth;
-        plotSize = Settings.plotSize;
-        groundHeight = Settings.groundHeight;
+    public PlotGenerator(Map<String, Object> options) {
+        this.options = options;
+        level = Server.getInstance().getLevelByName((String) options.get("preset"));
+        roadBlock = Block.get(new PlotSettings((String) options.get("preset")).getRoadBlock());
+        wallBlock = Block.get(new PlotSettings((String) options.get("preset")).getWallBlock());
+        plotFloorBlock = Block.get(new PlotSettings((String) options.get("preset")).getPlotFloorBlock());
+        plotFillBlock = Block.get(new PlotSettings((String) options.get("preset")).getPlotFillBlock());
+        bottomBlock = Block.get(new PlotSettings((String) options.get("preset")).getBottomBlock());
+        roadWidth = new PlotSettings((String) options.get("preset")).getRoadWidth();
+        plotSize = new PlotSettings((String) options.get("preset")).getPlotSize();
+        groundHeight = new PlotSettings((String) options.get("preset")).getGroundHeight();
     }
 
     @Override
@@ -118,7 +119,7 @@ public class PlotGenerator extends Generator {
 
     @Override
     public Map<String, Object> getSettings() {
-        return null;
+        return this.options;
     }
 
     @Override

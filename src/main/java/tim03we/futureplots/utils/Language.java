@@ -1,4 +1,4 @@
-package tim03we.futureplots;
+package tim03we.futureplots.utils;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -17,6 +17,7 @@ package tim03we.futureplots;
  */
 
 import cn.nukkit.utils.Config;
+import tim03we.futureplots.FuturePlots;
 
 import java.io.File;
 import java.util.HashMap;
