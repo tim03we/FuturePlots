@@ -21,7 +21,6 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.Plot;
-import tim03we.futureplots.Settings;
 import tim03we.futureplots.provider.Provider;
 
 import static tim03we.futureplots.Settings.plotSize;

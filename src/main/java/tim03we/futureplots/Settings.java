@@ -16,7 +16,6 @@ package tim03we.futureplots;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import cn.nukkit.block.Block;
 import cn.nukkit.utils.Config;
 
 public class Settings {

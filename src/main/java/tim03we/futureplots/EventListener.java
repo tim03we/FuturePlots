@@ -21,12 +21,9 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
-import cn.nukkit.event.inventory.InventoryOpenEvent;
-import cn.nukkit.event.player.PlayerEatFoodEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.item.ItemEdible;
-import cn.nukkit.item.food.Food;
 import tim03we.futureplots.provider.Provider;
 
 public class EventListener extends Language implements Listener {

@@ -20,7 +20,6 @@ import tim03we.futureplots.Plot;
 import tim03we.futureplots.Settings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Provider {
 
