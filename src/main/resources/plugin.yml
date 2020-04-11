@@ -1,0 +1,6 @@
+name: FuturePlots
+main: tim03we.futureplots.FuturePlots
+api: 1.0.9
+author: tim03we
+version: 1.0.0
+description: A NukkitX Plugin

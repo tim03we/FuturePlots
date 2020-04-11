@@ -1,0 +1,28 @@
+---
+prefix: ""
+
+not-in-plot: "You're not on a plot."
+not-a-owner: "This action can only be performed as owner of the plot."
+
+plot-already-claimed: "This plot has already been claimed."
+plot-claimed: "You just claimed the plot."
+already-helper: "This player is already helper of the plot."
+no-helper: "This player is already banned from the plot."
+helper-added: "The helper %1 was added to the plot."
+removed-added: "The helper %1 was removed to the plot."
+max-plots: "You have already reached the maximum number of plots."
+plot-cleared: "The plot has been cleared."
+plot-deleted: "The plot has been deleted."
+help-title: "FuturePlots Commands:"
+help-cmd: "- %1"
+homes-title: "Your plots:"
+homes-text: "- %1"
+plot-tp: "You were teleported to your plot."
+has-no-plot: "You have no plot."
+has-no-plot-num: "You do not own a plot with the number %1."
+popup-free-plot: "%1\nFree plot"
+popup-owned-plot: "%1\n%2"
+
+info-title: "- Plot Info -"
+info-text: "Owner: %1\nID: %2\nHelper: %3\nDenied: %4"
+...

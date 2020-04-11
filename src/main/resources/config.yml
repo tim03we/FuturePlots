@@ -1,0 +1,26 @@
+---
+# Available languages: eng
+lang: "eng"
+
+# Available providers: yaml
+provider: "yaml"
+
+# How many plots a player can own
+max-plots: 2
+
+# Whether the popup should appear when you enter a plot
+show-popup: true
+
+# Here you find the plot configurations, how the plot world should look like later
+# To generate the world, a world name must be specified
+world:
+  level: ""
+  plotSize: 32
+  roadBlock: 5
+  wallBlock:  44
+  bottomBlock: 7
+  plotFloorBlock: 2
+  plotFillBlock: 3
+  roadWidth: 7
+  groundHeight: 64
+...
