@@ -33,8 +33,7 @@ show-popup: true
 
 # Here you find the plot configurations, how the plot world should look like later
 # To generate the world, a world name must be specified
-world:
-  level: ""
+default-settings:
   plotSize: 32
   roadBlock: 5
   wallBlock:  44
