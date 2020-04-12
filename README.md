@@ -36,7 +36,7 @@ show-popup: true
 default-settings:
   plotSize: 32
   roadBlock: 5
-  wallBlock:  44
+  wallBlock: 44
   bottomBlock: 7
   plotFloorBlock: 2
   plotFillBlock: 3
