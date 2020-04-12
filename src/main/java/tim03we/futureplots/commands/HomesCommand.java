@@ -18,7 +18,7 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import tim03we.futureplots.provider.Provider;
+import tim03we.futureplots.FuturePlots;
 
 public class HomesCommand extends BaseCommand {
 
@@ -29,9 +29,9 @@ public class HomesCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-                if(new Provider().getHomes(sender.getName(), ((Player) sender).getLevel().getName()).size() != 0) {
+                if(FuturePlots.provider.getHomes(sender.getName(), ((Player) sender).getLevel().getName()).size() != 0) {
                     sender.sendMessage(translate(true, "homes-title", null));
-                    for (String home : new Provider().getHomes(sender.getName(), ((Player) sender).getLevel().getName())) {
+                    for (String home : FuturePlots.provider.getHomes(sender.getName(), ((Player) sender).getLevel().getName())) {
                         sender.sendMessage(translate(false, "homes-text", home.split(";")[0], home.split(";")[1]+ ";" + home.split(";")[2]));
                     }
                 }

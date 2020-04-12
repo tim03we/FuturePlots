@@ -23,6 +23,8 @@ import cn.nukkit.plugin.PluginBase;
 import tim03we.futureplots.commands.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
+import tim03we.futureplots.provider.Provider;
+import tim03we.futureplots.provider.YamlProvider;
 import tim03we.futureplots.tasks.PlotClearTask;
 import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
@@ -30,22 +32,42 @@ import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FuturePlots extends PluginBase {
 
+    private HashMap<String, Class<?>> providerClass = new HashMap<>();
+
     private static FuturePlots instance;
+    public static Provider provider;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+        saveDefaultConfig();
+        providerClass.put("yaml", YamlProvider.class);
+    }
 
     @Override
     public void onEnable() {
         new File(getDataFolder() + "/worlds/").mkdirs();
-        instance = this;
-        saveDefaultConfig();
         registerGenerator();
         registerCommands();
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         Settings.init();
         Language.init();
         loadWorlds();
+        initProvider();
+    }
+
+    private void initProvider() {
+        Class<?> providerClass = this.providerClass.get((this.getConfig().get(Settings.provider, "yaml")).toLowerCase());
+        if (providerClass == null) { this.getLogger().critical("The specified provider could not be found."); }
+        try { this.provider = (Provider) providerClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
+            getServer().getPluginManager().disablePlugin(getServer().getPluginManager().getPlugin("FuturePlots"));
+        }
     }
 
     private void registerCommands() {
@@ -139,5 +161,23 @@ public class FuturePlots extends PluginBase {
             return null;
         }
         return new Plot(X, Z, position.getLevel().getName());
+    }
+
+    public String findEmptyPlotSquared(int a, int b, ArrayList<String> plots) {
+        if (!plots.contains(a + ";" + b)) return a + ";" + b;
+        if(!plots.contains(b + ";" + a)) return b + ";" + a;
+        if(a != 0) {
+            if(!plots.contains(-a + ";" + b)) return -a + ";" + b;
+            if(!plots.contains(b + ";" + -a)) return b + ";" + -a;
+        }
+        if(b != 0) {
+            if(!plots.contains(-b + ";" + a)) return -b + ";" + a;
+            if(!plots.contains(a + ";" + -b)) return a + ";" + -b;
+        }
+        if(a == 0 | b == 0) {
+            if(!plots.contains(-a + ";" + -b)) return -a + ";" + -b;
+            if(!plots.contains(-b + ";" + -a)) return -b + ";" + -a;
+        }
+        return null;
     }
 }

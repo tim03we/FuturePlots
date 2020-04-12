@@ -17,12 +17,10 @@ package tim03we.futureplots.commands;
  */
 
 import cn.nukkit.Player;
-import cn.nukkit.block.Block;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.provider.Provider;
 import tim03we.futureplots.utils.PlotPlayer;
 
 import static tim03we.futureplots.utils.Settings.plotSize;
@@ -38,8 +36,8 @@ public class DeleteCommand extends BaseCommand {
         if(sender instanceof Player) {
             Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
             if(new PlotPlayer((Player) sender).onPlot()) {
-                if(new Provider().isOwner(sender.getName(), plot)) {
-                    new Provider().deletePlot(plot);
+                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                    FuturePlots.provider.deletePlot(plot);
                     FuturePlots.getInstance().clearPlot(plot);
                     Position pos = FuturePlots.getInstance().getPlotPosition(plot);
                     ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));

@@ -33,11 +33,6 @@ public class MainCommand extends Command {
             return false;
         }
         if(args.length > 0) {
-            /*StringBuilder sb = new StringBuilder();
-            for(int i = 1; i < args.length; i++) {
-                if (i > 1) sb.append(" ");
-                sb.append(args[i]);
-            }*/
             if(CommandHandler.commmands.get(args[0]) != null ) {
                 CommandHandler.commmands.get(args[0]).execute(sender, args[0], args);
             } else if (CommandHandler.aliases.get(args[0]) != null){

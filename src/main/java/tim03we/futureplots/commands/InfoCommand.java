@@ -20,7 +20,6 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.provider.Provider;
 import tim03we.futureplots.utils.PlotPlayer;
 
 public class InfoCommand extends BaseCommand {
@@ -35,8 +34,8 @@ public class InfoCommand extends BaseCommand {
             if(new PlotPlayer((Player) sender).onPlot()) {
                 Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
                 sender.sendMessage(translate(true, "info-title"));
-                if(new Provider().hasOwner(plot)) {
-                    sender.sendMessage(translate(true, "info-text", new Provider().getPlotName(plot), plot.getX() + ";" + plot.getZ(), new Provider().getHelpers(plot), new Provider().getDenied(plot)));
+                if(FuturePlots.provider.hasOwner(plot)) {
+                    sender.sendMessage(translate(true, "info-text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot)));
                 } else {
                     sender.sendMessage(translate(true, "info-text", " ", " ", " ", " "));
 

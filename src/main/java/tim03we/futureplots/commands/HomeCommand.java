@@ -22,7 +22,6 @@ import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.provider.Provider;
 
 public class HomeCommand extends BaseCommand {
 
@@ -38,8 +37,8 @@ public class HomeCommand extends BaseCommand {
                 homeNumber = Integer.parseInt(args[1]);
             }
             try {
-                if(new Provider().hasHome(sender.getName(), homeNumber)) {
-                    String[] ex = new Provider().getPlotId(sender.getName(), homeNumber).split(";");
+                if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
+                    String[] ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
                     Position pos = FuturePlots.getInstance().getPlotPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ((Player) sender).getLevel().getName()));
                     ((Player) sender).teleport(new Position(pos.x += Math.floor(new PlotSettings(((Player) sender).getLevel().getName()).getPlotSize() / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
                     sender.sendMessage(translate(true, "plot-tp", null));

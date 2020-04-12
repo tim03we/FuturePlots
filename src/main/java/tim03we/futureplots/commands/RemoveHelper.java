@@ -20,7 +20,6 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.provider.Provider;
 import tim03we.futureplots.utils.PlotPlayer;
 
 public class RemoveHelper extends BaseCommand {
@@ -34,10 +33,10 @@ public class RemoveHelper extends BaseCommand {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
                 Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                if(new Provider().isOwner(sender.getName(), plot)) {
+                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
                     if (args.length > 1) {
-                        if (new Provider().isHelper(args[1], plot)) {
-                            new Provider().removeHelper(args[1], plot);
+                        if (FuturePlots.provider.isHelper(args[1], plot)) {
+                            FuturePlots.provider.removeHelper(args[1], plot);
                             sender.sendMessage(translate(true, "helper-removed", args[1]));
                         } else {
                             sender.sendMessage(translate(true, "no-helper", null));

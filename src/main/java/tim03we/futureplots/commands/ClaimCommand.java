@@ -17,10 +17,8 @@ package tim03we.futureplots.commands;
  */
 
 import cn.nukkit.Player;
-import cn.nukkit.block.Block;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.provider.Provider;
 import tim03we.futureplots.utils.PlotPlayer;
 
 public class ClaimCommand extends BaseCommand {
@@ -33,9 +31,9 @@ public class ClaimCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
-                if (!new Provider().hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
-                    if (!new Provider().isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
-                        new Provider().claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                    if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                        FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
                         sender.sendMessage(translate(true, "plot-claimed", null));
                     } else {
                         sender.sendMessage(translate(true, "plot-already-claimed", null));

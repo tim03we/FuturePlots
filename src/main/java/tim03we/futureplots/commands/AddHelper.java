@@ -20,7 +20,6 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.provider.Provider;
 import tim03we.futureplots.utils.PlotPlayer;
 
 public class AddHelper extends BaseCommand {
@@ -34,10 +33,10 @@ public class AddHelper extends BaseCommand {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
                 Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                if(new Provider().isOwner(sender.getName(), plot)) {
+                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
                     if (args.length > 1) {
-                        if (!new Provider().isHelper(args[1], plot)) {
-                            new Provider().addHelper(args[1], plot);
+                        if (!FuturePlots.provider.isHelper(args[1], plot)) {
+                            FuturePlots.provider.addHelper(args[1], plot);
                             sender.sendMessage(translate(true, "helper-added", args[1].toLowerCase()));
                         } else {
                             sender.sendMessage(translate(true, "already-helper", null));

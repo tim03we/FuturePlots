@@ -17,140 +17,42 @@ package tim03we.futureplots.provider;
  */
 
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.Settings;
 
 import java.util.ArrayList;
 
-public class Provider {
+public interface Provider {
 
-    public void claimPlot(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            new YAMLProvider().claimPlot(username, plot);
-        }
-    }
+    void claimPlot(String username, Plot plot);
 
-    public void deletePlot(Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            new YAMLProvider().deletePlot(plot);
-        }
-    }
+    void deletePlot(Plot plot);
 
-    public boolean isHelper(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().isHelper(username, plot);
-        }
-        return false;
-    }
+    boolean isHelper(String username, Plot plot);
 
-    public void addHelper(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            new YAMLProvider().addHelper(username, plot);
-        }
-    }
+    void addHelper(String username, Plot plot);
 
-    public void removeHelper(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            new YAMLProvider().removeHelper(username, plot);
-        }
-    }
+    void removeHelper(String username, Plot plot);
 
-    public String getHelpers(Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getHelpers(plot);
-        }
-        return null;
-    }
+    String getHelpers(Plot plot);
 
-    public String getDenied(Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getDenied(plot);
-        }
-        return null;
-    }
+    String getDenied(Plot plot);
 
-    public boolean isDenied(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().isHelper(username, plot);
-        }
-        return false;
-    }
+    boolean isDenied(String username, Plot plot);
 
-    public void addDenied(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            new YAMLProvider().addHelper(username, plot);
-        }
-    }
+    void addDenied(String username, Plot plot);
 
-    public void removeDenied(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            new YAMLProvider().removeHelper(username, plot);
-        }
-    }
+    void removeDenied(String username, Plot plot);
 
-    public boolean isOwner(String username, Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().isOwner(username, plot);
-        }
-        return false;
-    }
+    boolean isOwner(String username, Plot plot);
 
-    public boolean hasOwner(Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().hasOwner(plot);
-        }
-        return false;
-    }
+    boolean hasOwner(Plot plot);
 
-    public boolean hasHome(String username, int homenNumber) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().hasHome(username, homenNumber);
-        }
-        return false;
-    }
+    boolean hasHome(String username, int homenNumber);
 
-    public ArrayList<String> getHomes(String username, String world) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getHomes(username, world);
-        }
-        return null;
-    }
+    ArrayList<String> getHomes(String username, String world);
 
-    public String getPlotId(String username, int homeNumber) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getPlotId(username, homeNumber);
-        }
-        return null;
-    }
+    String getPlotId(String username, int homeNumber);
 
-    public String getPlotName(Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getPlotName(plot);
-        }
-        return null;
-    }
+    String getPlotName(Plot plot);
 
-    public Plot getNextFreePlot(Plot plot) {
-        if ("yaml".equals(Settings.provider)) {
-            return new YAMLProvider().getNextFreePlot(plot);
-        }
-        return null;
-    }
-
-    public String findEmptyPlotSquared(int a, int b, ArrayList<String> plots) {
-        if (!plots.contains(a + ";" + b)) return a + ";" + b;
-        if(!plots.contains(b + ";" + a)) return b + ";" + a;
-        if(a != 0) {
-            if(!plots.contains(-a + ";" + b)) return -a + ";" + b;
-            if(!plots.contains(b + ";" + -a)) return b + ";" + -a;
-        }
-        if(b != 0) {
-            if(!plots.contains(-b + ";" + a)) return -b + ";" + a;
-            if(!plots.contains(a + ";" + -b)) return a + ";" + -b;
-        }
-        if(a == 0 | b == 0) {
-            if(!plots.contains(-a + ";" + -b)) return -a + ";" + -b;
-            if(!plots.contains(-b + ";" + -a)) return -b + ";" + -a;
-        }
-        return null;
-    }
+    Plot getNextFreePlot(Plot plot);
 }

@@ -22,8 +22,9 @@ import tim03we.futureplots.utils.Plot;
 
 import java.util.ArrayList;
 
-public class YAMLProvider {
+public class YamlProvider implements Provider {
 
+    @Override
     public void claimPlot(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
@@ -33,12 +34,14 @@ public class YAMLProvider {
         config.save();
     }
 
+    @Override
     public void deletePlot(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         config.remove(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
         config.save();
     }
 
+    @Override
     public String getHelpers(Plot plot) {
         StringBuilder sb = new StringBuilder();
         for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
@@ -47,6 +50,7 @@ public class YAMLProvider {
         return sb.toString();
     }
 
+    @Override
     public String getDenied(Plot plot) {
         StringBuilder sb = new StringBuilder();
         for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
@@ -54,6 +58,7 @@ public class YAMLProvider {
         }
         return sb.toString();    }
 
+    @Override
     public boolean isHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
@@ -64,6 +69,7 @@ public class YAMLProvider {
         return false;
     }
 
+    @Override
     public void addHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
@@ -75,6 +81,7 @@ public class YAMLProvider {
         config.save();
     }
 
+    @Override
     public void removeHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
@@ -86,6 +93,7 @@ public class YAMLProvider {
         config.save();
     }
 
+    @Override
     public boolean isDenied(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
@@ -96,6 +104,7 @@ public class YAMLProvider {
         return false;
     }
 
+    @Override
     public void addDenied(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> denied = new ArrayList<>();
@@ -107,6 +116,7 @@ public class YAMLProvider {
         config.save();
     }
 
+    @Override
     public void removeDenied(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> denied = new ArrayList<>();
@@ -118,16 +128,19 @@ public class YAMLProvider {
         config.save();
     }
 
+    @Override
     public boolean isOwner(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner").equals(username);
     }
 
+    @Override
     public boolean hasOwner(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         return config.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
     }
 
+    @Override
     public boolean hasHome(String username, int homeNumber) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
@@ -142,6 +155,7 @@ public class YAMLProvider {
         return false;
     }
 
+    @Override
     public String getPlotId(String username, int homeNumber) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
@@ -156,6 +170,7 @@ public class YAMLProvider {
         return null;
     }
 
+    @Override
     public ArrayList<String> getHomes(String username, String world) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
@@ -167,11 +182,13 @@ public class YAMLProvider {
         return homes;
     }
 
+    @Override
     public String getPlotName(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
     }
 
+    @Override
     public Plot getNextFreePlot(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         int limitXZ = 0;
@@ -188,18 +205,18 @@ public class YAMLProvider {
             if(existing.size() == Math.max(1, 8 * i)) {
                 continue;
             }
-            if(new Provider().findEmptyPlotSquared(0, i, existing) != null) {
-                String[] ex = new Provider().findEmptyPlotSquared(0, i, existing).split(";");
+            if(FuturePlots.getInstance().findEmptyPlotSquared(0, i, existing) != null) {
+                String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(0, i, existing).split(";");
                 return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
             }
             for (int a = 1; a < i; a++) {
-                if(new Provider().findEmptyPlotSquared(a, i, existing) != null) {
-                    String[] ex = new Provider().findEmptyPlotSquared(a, i, existing).split(";");
+                if(FuturePlots.getInstance().findEmptyPlotSquared(a, i, existing) != null) {
+                    String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(a, i, existing).split(";");
                     return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
                 }
             }
-            if(new Provider().findEmptyPlotSquared(i, i, existing) != null) {
-                String[] ex = new Provider().findEmptyPlotSquared(i, i, existing).split(";");
+            if(FuturePlots.getInstance().findEmptyPlotSquared(i, i, existing) != null) {
+                String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(i, i, existing).split(";");
                 return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
             }
         }
