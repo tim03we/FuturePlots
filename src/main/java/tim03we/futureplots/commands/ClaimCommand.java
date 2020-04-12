@@ -17,9 +17,11 @@ package tim03we.futureplots.commands;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.provider.Provider;
+import tim03we.futureplots.utils.PlotPlayer;
 
 public class ClaimCommand extends BaseCommand {
 
@@ -30,7 +32,7 @@ public class ClaimCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(FuturePlots.getInstance().isInPlot((Player) sender)) {
+            if(new PlotPlayer((Player) sender).onPlot()) {
                 if (!new Provider().hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                     if (!new Provider().isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                         new Provider().claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));

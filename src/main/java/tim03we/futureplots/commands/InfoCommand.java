@@ -21,6 +21,7 @@ import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.provider.Provider;
+import tim03we.futureplots.utils.PlotPlayer;
 
 public class InfoCommand extends BaseCommand {
 
@@ -31,7 +32,7 @@ public class InfoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(FuturePlots.getInstance().isInPlot((Player) sender)) {
+            if(new PlotPlayer((Player) sender).onPlot()) {
                 Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
                 sender.sendMessage(translate(true, "info-title"));
                 if(new Provider().hasOwner(plot)) {

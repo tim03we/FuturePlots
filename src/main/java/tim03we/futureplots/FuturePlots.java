@@ -16,7 +16,6 @@ package tim03we.futureplots;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
@@ -46,6 +45,7 @@ public class FuturePlots extends PluginBase {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         Settings.init();
         Language.init();
+        loadWorlds();
     }
 
     private void registerCommands() {
@@ -64,8 +64,6 @@ public class FuturePlots extends PluginBase {
         //commandHandler.registerCommand("addmember", new AddMember("addmember", "", "/plot addmember <name>"), new String[]{});
         //commandHandler.registerCommand("removemember", new RemoveMember("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
         //commandHandler.registerCommand("SetHome", new SetHomeCommand("sethome", "", "/plot sethome"), new String[]{});
-        //commandHandler.registerCommand("rand", new RandCommand("rand", "", "/plot rand"), new String[]{"border"});
-        //commandHandler.registerCommand("wall", new WallCommand("wall", "", "/plot wall"), new String[]{});
         //commandHandler.registerCommand("deny", new DenyCommand("deny", "", "/plot deny"), new String[]{});
         //commandHandler.registerCommand("undeny", new UnDenyCommand("undeny", "", "/plot undeny"), new String[]{});
         /* ToDo */
@@ -82,14 +80,16 @@ public class FuturePlots extends PluginBase {
         Generator.addGenerator(PlotGenerator.class, "futureplots", Generator.TYPE_INFINITE);
     }
 
+    private void loadWorlds() {
+        for (String world : Settings.levels) {
+            getServer().loadLevel(world);
+        }
+    }
+
     public void generateLevel(String levelName) {
         Settings.levels.add(levelName);
         new PlotSettings(levelName).saveDefault();
         getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"));
-    }
-
-    public boolean isInPlot(Player player) {
-        return getPlotByPosition(player.getPosition()) != null;
     }
 
     public boolean isPlot(Position position) {
@@ -101,9 +101,6 @@ public class FuturePlots extends PluginBase {
     }
 
     public Position getPlotPosition(Plot plot) {
-        //$plotLevel = $this->getLevelSettings($plot->levelName);
-        //if($plotLevel === null)
-        //    return null;
         int plotSize = Settings.plotSize;
         int roadWidth = Settings.roadWidth;
         int totalSize = plotSize + roadWidth;
