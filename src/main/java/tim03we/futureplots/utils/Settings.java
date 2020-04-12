@@ -38,6 +38,7 @@ public class Settings {
     public static String provider;
     public static String language;
     public static int max_plots;
+    public static boolean popup;
 
     public static void init() {
         Config config = FuturePlots.getInstance().getConfig();
@@ -56,6 +57,7 @@ public class Settings {
         provider = config.getString("provider").toLowerCase();
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");
+        popup = config.getBoolean("show-popup");
     }
 
 }
