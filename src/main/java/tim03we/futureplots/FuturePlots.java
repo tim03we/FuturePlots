@@ -49,12 +49,12 @@ public class FuturePlots extends PluginBase {
         instance = this;
         saveDefaultConfig();
         providerClass.put("yaml", YamlProvider.class);
+        registerGenerator();
     }
 
     @Override
     public void onEnable() {
         new File(getDataFolder() + "/worlds/").mkdirs();
-        registerGenerator();
         registerCommands();
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         Settings.init();
