@@ -16,16 +16,9 @@ package tim03we.futureplots.commands;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.level.generator.Generator;
-import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.utils.Settings;
-
-import java.util.HashMap;
-import java.util.Map;
+import tim03we.futureplots.utils.World;
 
 public class GenerateCommand extends BaseCommand {
 
@@ -36,21 +29,13 @@ public class GenerateCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(args.length > 1) {
-            Config worldConfig = new PlotSettings(args[1]).getConfig();
-            worldConfig.set("settings.wallBlock", Settings.wallBlock);
-            worldConfig.set("settings.roadBlock", Settings.roadBlock);
-            worldConfig.set("settings.roadWidth", Settings.roadWidth);
-            worldConfig.set("settings.groundHeight", Settings.groundHeight);
-            worldConfig.set("settings.plotSize", Settings.plotSize);
-            worldConfig.set("settings.bottomBlock", Settings.bottomBlock);
-            worldConfig.set("settings.plotFloorBlock", Settings.plotFloorBlock);
-            worldConfig.set("settings.plotFillBlock", Settings.plotFillBlock);
-            worldConfig.save();
-            Settings.levels.add(args[1]);
-            Map<String, Object> options = new HashMap<>();
-            options.put("preset", args[1]);
-            FuturePlots.getInstance().generateLevel(args[1]);
-            Server.getInstance().generateLevel(args[1], 0, Generator.getGenerator("futureplots"), options);
+            if(!new World(args[1]).exists()) {
+                FuturePlots.getInstance().generateLevel(args[1]);
+            } else {
+                sender.sendMessage(translate(true, "world-already-exists", null));
+            }
+        } else {
+            sender.sendMessage(translate(true, "worldName-required", null));
         }
     }
 }

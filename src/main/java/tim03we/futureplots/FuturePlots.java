@@ -16,6 +16,7 @@ package tim03we.futureplots;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
@@ -34,6 +35,7 @@ import tim03we.futureplots.utils.Settings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FuturePlots extends PluginBase {
 
@@ -111,7 +113,9 @@ public class FuturePlots extends PluginBase {
     public void generateLevel(String levelName) {
         Settings.levels.add(levelName);
         new PlotSettings(levelName).saveDefault();
-        getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"));
+        Map<String, Object> options = new HashMap<>();
+        options.put("preset", levelName);
+        getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"), options);
     }
 
     public boolean isPlot(Position position) {
@@ -123,13 +127,23 @@ public class FuturePlots extends PluginBase {
     }
 
     public Position getPlotPosition(Plot plot) {
-        int plotSize = Settings.plotSize;
-        int roadWidth = Settings.roadWidth;
+        int plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
+        int roadWidth = new PlotSettings(plot.getLevelName()).getRoadWidth();
         int totalSize = plotSize + roadWidth;
         int x = totalSize * plot.getX();
         int z = totalSize * plot.getZ();
         Level level = getServer().getLevelByName(plot.getLevelName());
         return new Position(x, Settings.groundHeight, z, level);
+    }
+
+    public Position getPlotBorderPosition(Plot plot) {
+        int plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
+        int roadWidth = new PlotSettings(plot.getLevelName()).getRoadWidth();
+        int totalSize = plotSize + roadWidth;
+        int x = totalSize * plot.getX();
+        int z = totalSize * plot.getZ();
+        Level level = getServer().getLevelByName(plot.getLevelName());
+        return new Position(x += Math.floor(new PlotSettings(plot.getLevelName()).getPlotSize() / 2), Settings.groundHeight += 1.5, z -= 1, level);
     }
 
 

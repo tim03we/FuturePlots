@@ -31,6 +31,7 @@ public class YamlProvider implements Provider {
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", new ArrayList<String>());
         config.save();
     }
 
@@ -156,12 +157,48 @@ public class YamlProvider implements Provider {
     }
 
     @Override
+    public boolean hasHomeInLevel(String username, int homeNumber, String levelName) {
+        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        ArrayList<String> homes = new ArrayList<>();
+        for (String list : config.getAll().keySet()) {
+            String[] ex = list.split(";");
+            if(ex[0].equals(levelName)) {
+                if(config.getString(list + ".owner").equals(username)) {
+                    homes.add(list);
+                }
+            }
+        }
+        if (homes.get(homeNumber - 1) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String getPlotId(String username, int homeNumber) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
         for (String list : config.getAll().keySet()) {
             if(config.getString(list + ".owner").equals(username)) {
                 homes.add(list);
+            }
+        }
+        if(homes.size() > 0) {
+            return homes.get(homeNumber - 1);
+        }
+        return null;
+    }
+
+    @Override
+    public String getPlotId(String username, int homeNumber, String levelName) {
+        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        ArrayList<String> homes = new ArrayList<>();
+        for (String list : config.getAll().keySet()) {
+            String[] ex = list.split(";");
+            if(ex[0].equals(levelName)) {
+                if(config.getString(list + ".owner").equals(username)) {
+                    homes.add(list);
+                }
             }
         }
         if(homes.size() > 0) {

@@ -21,7 +21,8 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.World;
 
 public class HomeCommand extends BaseCommand {
 
@@ -34,18 +35,42 @@ public class HomeCommand extends BaseCommand {
         if(sender instanceof Player) {
             int homeNumber = 1;
             if(args.length > 1) {
-                homeNumber = Integer.parseInt(args[1]);
+                try { homeNumber = Integer.parseInt(args[1]);
+                } catch (NumberFormatException numberFormatException) { sender.sendMessage(translate(true, "has-no-plot-num", args[1])); return; }
             }
-            try {
-                if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
-                    String[] ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
-                    Position pos = FuturePlots.getInstance().getPlotPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ((Player) sender).getLevel().getName()));
-                    ((Player) sender).teleport(new Position(pos.x += Math.floor(new PlotSettings(((Player) sender).getLevel().getName()).getPlotSize() / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
-                    sender.sendMessage(translate(true, "plot-tp", null));
+            String[] ex;
+            if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
+                ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
+            } else {
+                sender.sendMessage(translate(true, "has-no-plot", null));
+                return;
+            }
+            Position plotPos;
+            if(Settings.levels.size() > 1) {
+                if(args.length > 2) {
+                    if(!new World(args[2]).exists()) {
+                        sender.sendMessage(translate(true, "world-not-exists", null));
+                        return;
+                    } else {
+                        try {
+                            if(FuturePlots.provider.hasHomeInLevel(sender.getName(), homeNumber, args[2])) {
+                                ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber, args[2]).split(";");
+                                plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), args[2]));
+                            } else {
+                                sender.sendMessage(translate(true, "has-no-plot-inWorld", null));
+                                return;
+                            }
+                        } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has-no-plot-inWorld", null)); return; }
+                    }
                 } else {
-                    sender.sendMessage(translate(true, "has-no-plot", null));
+                    sender.sendMessage(translate(true, "worldName-required", null));
+                    return;
                 }
-            } catch (IndexOutOfBoundsException ex) {
+            } else plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
+            try {
+                ((Player) sender).teleport(plotPos);
+                sender.sendMessage(translate(true, "plot-tp", null));
+            } catch (IndexOutOfBoundsException exception) {
                 sender.sendMessage(translate(true, "has-no-plot-num", args[1]));
             }
         }

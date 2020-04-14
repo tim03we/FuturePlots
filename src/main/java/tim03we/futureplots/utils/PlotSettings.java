@@ -20,7 +20,6 @@ import cn.nukkit.Server;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.utils.Settings;
 
 public class PlotSettings {
 

@@ -48,9 +48,13 @@ public interface Provider {
 
     boolean hasHome(String username, int homenNumber);
 
+    boolean hasHomeInLevel(String username, int homenNumber, String levelName);
+
     ArrayList<String> getHomes(String username, String world);
 
     String getPlotId(String username, int homeNumber);
+
+    String getPlotId(String username, int homeNumber, String levelName);
 
     String getPlotName(Plot plot);
 

@@ -39,4 +39,8 @@ public class PlotPlayer {
     public Plot getPlot() {
         return FuturePlots.getInstance().getPlotByPosition(player.getPosition());
     }
+
+    public boolean isOwner() {
+        return FuturePlots.provider.isOwner(player.getName(), getPlot());
+    }
 }
