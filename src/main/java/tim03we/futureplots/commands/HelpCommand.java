@@ -27,7 +27,7 @@ public class HelpCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
-        sender.sendMessage(translate(true, "help-title", null));
+        sender.sendMessage(translate(true, "help-title"));
         for (String cmd : CommandHandler.commmands.keySet()) {
             sender.sendMessage(translate(false, "help-cmd", cmd));
         }

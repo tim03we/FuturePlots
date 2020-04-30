@@ -32,10 +32,10 @@ public class GenerateCommand extends BaseCommand {
             if(!new World(args[1]).exists()) {
                 FuturePlots.getInstance().generateLevel(args[1]);
             } else {
-                sender.sendMessage(translate(true, "world-already-exists", null));
+                sender.sendMessage(translate(true, "world-already-exists"));
             }
         } else {
-            sender.sendMessage(translate(true, "worldName-required", null));
+            sender.sendMessage(translate(true, "worldName-required"));
         }
     }
 }

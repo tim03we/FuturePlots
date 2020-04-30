@@ -32,7 +32,7 @@ public class ClearCommand extends BaseCommand {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
                 FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                sender.sendMessage(translate(true, "plot-cleared", null));
+                sender.sendMessage(translate(true, "plot-cleared"));
             }
         }
     }

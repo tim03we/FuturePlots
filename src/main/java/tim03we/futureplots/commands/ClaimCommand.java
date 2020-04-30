@@ -34,12 +34,12 @@ public class ClaimCommand extends BaseCommand {
                 if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                     if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                         FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                        sender.sendMessage(translate(true, "plot-claimed", null));
+                        sender.sendMessage(translate(true, "plot-claimed"));
                     } else {
-                        sender.sendMessage(translate(true, "plot-already-claimed", null));
+                        sender.sendMessage(translate(true, "plot-already-claimed"));
                     }
                 } else {
-                    sender.sendMessage(translate(true, "plot-already-claimed", null));
+                    sender.sendMessage(translate(true, "plot-already-claimed"));
                 }
             } else {
                 sender.sendMessage(translate(true, "not-in-plot", null));

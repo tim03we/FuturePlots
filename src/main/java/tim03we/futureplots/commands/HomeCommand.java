@@ -42,14 +42,14 @@ public class HomeCommand extends BaseCommand {
             if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
                 ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
             } else {
-                sender.sendMessage(translate(true, "has-no-plot", null));
+                sender.sendMessage(translate(true, "has-no-plot"));
                 return;
             }
             Position plotPos;
             if(Settings.levels.size() > 1) {
                 if(args.length > 2) {
                     if(!new World(args[2]).exists()) {
-                        sender.sendMessage(translate(true, "world-not-exists", null));
+                        sender.sendMessage(translate(true, "world-not-exists"));
                         return;
                     } else {
                         try {
@@ -57,19 +57,19 @@ public class HomeCommand extends BaseCommand {
                                 ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber, args[2]).split(";");
                                 plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), args[2]));
                             } else {
-                                sender.sendMessage(translate(true, "has-no-plot-inWorld", null));
+                                sender.sendMessage(translate(true, "has-no-plot-inWorld"));
                                 return;
                             }
-                        } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has-no-plot-inWorld", null)); return; }
+                        } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has-no-plot-inWorld")); return; }
                     }
                 } else {
-                    sender.sendMessage(translate(true, "worldName-required", null));
+                    sender.sendMessage(translate(true, "worldName-required"));
                     return;
                 }
             } else plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
             try {
                 ((Player) sender).teleport(plotPos);
-                sender.sendMessage(translate(true, "plot-tp", null));
+                sender.sendMessage(translate(true, "plot-tp"));
             } catch (IndexOutOfBoundsException exception) {
                 sender.sendMessage(translate(true, "has-no-plot-num", args[1]));
             }

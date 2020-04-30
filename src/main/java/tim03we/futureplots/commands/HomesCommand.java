@@ -30,7 +30,7 @@ public class HomesCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
                 if(FuturePlots.provider.getHomes(sender.getName(), ((Player) sender).getLevel().getName()).size() != 0) {
-                    sender.sendMessage(translate(true, "homes-title", null));
+                    sender.sendMessage(translate(true, "homes-title"));
                     for (String home : FuturePlots.provider.getHomes(sender.getName(), ((Player) sender).getLevel().getName())) {
                         sender.sendMessage(translate(false, "homes-text", home.split(";")[0], home.split(";")[1]+ ";" + home.split(";")[2]));
                     }

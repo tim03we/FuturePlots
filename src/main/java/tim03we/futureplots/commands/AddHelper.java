@@ -39,7 +39,7 @@ public class AddHelper extends BaseCommand {
                             FuturePlots.provider.addHelper(args[1], plot);
                             sender.sendMessage(translate(true, "helper-added", args[1].toLowerCase()));
                         } else {
-                            sender.sendMessage(translate(true, "already-helper", null));
+                            sender.sendMessage(translate(true, "already-helper"));
                         }
                     } else {
                         sender.sendMessage(getUsage());
