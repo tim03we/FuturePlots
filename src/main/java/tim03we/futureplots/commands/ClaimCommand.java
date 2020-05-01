@@ -18,11 +18,13 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.PlotPlayer;
 import tim03we.futureplots.utils.Settings;
 
 import static tim03we.futureplots.utils.Settings.max_plots;
+import static tim03we.futureplots.utils.Settings.plotSize;
 
 public class ClaimCommand extends BaseCommand {
 
@@ -39,6 +41,10 @@ public class ClaimCommand extends BaseCommand {
                         if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                             if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                                 FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                                if(Settings.claim_tp) {
+                                    Position pos = FuturePlots.getInstance().getPlotPosition(new PlotPlayer((Player) sender).getPlot());
+                                    ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
+                                }
                                 sender.sendMessage(translate(true, "plot-claimed"));
                             } else {
                                 sender.sendMessage(translate(true, "plot-already-claimed"));

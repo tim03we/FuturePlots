@@ -33,11 +33,11 @@ public class InfoCommand extends BaseCommand {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
                 Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                sender.sendMessage(translate(true, "info-title"));
+                sender.sendMessage(translate(false, "info-title"));
                 if(FuturePlots.provider.hasOwner(plot)) {
-                    sender.sendMessage(translate(true, "info-text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot)));
+                    sender.sendMessage(translate(false, "info-text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot)));
                 } else {
-                    sender.sendMessage(translate(true, "info-text", " ", " ", " ", " "));
+                    sender.sendMessage(translate(false, "info-text", " ", " ", " ", " "));
 
                 }
             }

@@ -8,6 +8,9 @@ provider: "yaml"
 # How many plots a player can own
 max-plots: 2
 
+# Determine if you should be teleported to the plot border when the plot is claimed
+teleport-on-claim: true
+
 # Whether the popup should appear when you enter a plot
 show-popup: true
 

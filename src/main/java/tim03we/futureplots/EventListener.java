@@ -39,9 +39,9 @@ public class EventListener extends Language implements Listener {
             if(plot != null && plotFrom == null) {
                 if(Settings.popup) {
                     if(FuturePlots.provider.hasOwner(plot)) {
-                        player.sendPopup(translate(true, "popup-owned-plot", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getPlotName(plot)));
+                        player.sendPopup(translate(false, "popup-owned-plot", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getPlotName(plot)));
                     } else {
-                        player.sendPopup(translate(true, "popup-free-plot", plot.getX() + ";" + plot.getZ()));
+                        player.sendPopup(translate(false, "popup-free-plot", plot.getX() + ";" + plot.getZ()));
                     }
                 }
             } else if(plotFrom != null && plot == null) {
