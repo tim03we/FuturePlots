@@ -19,7 +19,7 @@ Command | Sub-Command | Permission | Alias
 # Config
 ```yaml
 ---
-# Available languages: eng
+# Available languages: eng, deu
 lang: "eng"
 
 # Available providers: yaml
