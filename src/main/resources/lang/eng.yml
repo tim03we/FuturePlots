@@ -1,5 +1,5 @@
 ---
-prefix: ""
+prefix: "FuturePlots > "
 
 not-in-plot: "You're not on a plot."
 not-a-owner: "This action can only be performed as owner of the plot."
@@ -7,7 +7,7 @@ not-a-owner: "This action can only be performed as owner of the plot."
 plot-already-claimed: "This plot has already been claimed."
 plot-claimed: "You just claimed the plot."
 already-helper: "This player is already helper of the plot."
-no-helper: "This player is already banned from the plot."
+no-helper: "This player is no helper on your plot."
 helper-added: "The helper %1 was added to the plot."
 removed-added: "The helper %1 was removed to the plot."
 max-plots: "You have already reached the maximum number of plots."
