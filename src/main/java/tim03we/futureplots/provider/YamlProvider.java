@@ -29,6 +29,7 @@ public class YamlProvider implements Provider {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", new ArrayList<String>());
@@ -46,6 +47,15 @@ public class YamlProvider implements Provider {
     public String getHelpers(Plot plot) {
         StringBuilder sb = new StringBuilder();
         for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
+            sb.append(list + ", ");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getMembers(Plot plot) {
+        StringBuilder sb = new StringBuilder();
+        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
             sb.append(list + ", ");
         }
         return sb.toString();
@@ -71,6 +81,17 @@ public class YamlProvider implements Provider {
     }
 
     @Override
+    public boolean isMember(String username, Plot plot) {
+        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+            if(list.toLowerCase().equals(username.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void addHelper(String username, Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
@@ -79,6 +100,30 @@ public class YamlProvider implements Provider {
         }
         helpers.add(username.toLowerCase());
         config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
+        config.save();
+    }
+
+    @Override
+    public void addMember(String username, Plot plot) {
+        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        ArrayList<String> helpers = new ArrayList<>();
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+            helpers.add(list);
+        }
+        helpers.add(username.toLowerCase());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
+        config.save();
+    }
+
+    @Override
+    public void removeMember(String username, Plot plot) {
+        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        ArrayList<String> helpers = new ArrayList<>();
+        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+            helpers.add(list);
+        }
+        helpers.remove(username.toLowerCase());
+        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
         config.save();
     }
 

@@ -34,6 +34,14 @@ public interface Provider {
 
     String getHelpers(Plot plot);
 
+    boolean isMember(String username, Plot plot);
+
+    void addMember(String username, Plot plot);
+
+    void removeMember(String username, Plot plot);
+
+    String getMembers(Plot plot);
+
     String getDenied(Plot plot);
 
     boolean isDenied(String username, Plot plot);
