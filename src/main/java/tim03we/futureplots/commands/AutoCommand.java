@@ -23,6 +23,7 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
 
+import static tim03we.futureplots.utils.Settings.max_plots;
 import static tim03we.futureplots.utils.Settings.plotSize;
 
 public class AutoCommand extends BaseCommand {
@@ -34,12 +35,16 @@ public class AutoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(FuturePlots.provider.getHomes(sender.getName(), ((Player) sender).getLevel().getName()).size() != Settings.max_plots) {
-                Plot plot = FuturePlots.provider.getNextFreePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                FuturePlots.provider.claimPlot(sender.getName(), plot);
-                Position pos = FuturePlots.getInstance().getPlotPosition(plot);
-                ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
-                sender.sendMessage(translate(true, "plot-claimed"));
+            if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
+                if(FuturePlots.provider.getHomes(sender.getName()).size() != Settings.max_plots) {
+                    Plot plot = FuturePlots.provider.getNextFreePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                    FuturePlots.provider.claimPlot(sender.getName(), plot);
+                    Position pos = FuturePlots.getInstance().getPlotPosition(plot);
+                    ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
+                    sender.sendMessage(translate(true, "plot-claimed"));
+                } else {
+                    sender.sendMessage(translate(true, "max-plots"));
+                }
             } else {
                 sender.sendMessage(translate(true, "max-plots"));
             }

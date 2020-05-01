@@ -20,6 +20,9 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.Settings;
+
+import static tim03we.futureplots.utils.Settings.max_plots;
 
 public class ClaimCommand extends BaseCommand {
 
@@ -31,15 +34,23 @@ public class ClaimCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
-                if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
-                    if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
-                        FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                        sender.sendMessage(translate(true, "plot-claimed"));
+                if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
+                    if (FuturePlots.provider.getHomes(sender.getName()).size() != Settings.max_plots) {
+                        if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                            if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                                FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                                sender.sendMessage(translate(true, "plot-claimed"));
+                            } else {
+                                sender.sendMessage(translate(true, "plot-already-claimed"));
+                            }
+                        } else {
+                            sender.sendMessage(translate(true, "plot-already-claimed"));
+                        }
                     } else {
-                        sender.sendMessage(translate(true, "plot-already-claimed"));
+                        sender.sendMessage(translate(true, "max-plots"));
                     }
                 } else {
-                    sender.sendMessage(translate(true, "plot-already-claimed"));
+                    sender.sendMessage(translate(true, "max-plots"));
                 }
             } else {
                 sender.sendMessage(translate(true, "not-in-plot", null));

@@ -60,6 +60,8 @@ public interface Provider {
 
     ArrayList<String> getHomes(String username, String world);
 
+    ArrayList<String> getHomes(String username);
+
     String getPlotId(String username, int homeNumber);
 
     String getPlotId(String username, int homeNumber, String levelName);

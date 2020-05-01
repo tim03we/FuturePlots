@@ -16,6 +16,7 @@ package tim03we.futureplots;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
@@ -123,6 +124,28 @@ public class FuturePlots extends PluginBase {
 
     public void clearPlot(Plot plot) {
         getServer().getScheduler().scheduleDelayedTask(this, new PlotClearTask(plot), 1, true);
+    }
+
+    public int claimAvailable(Player player) {
+        if (player.isOp()) return -1;
+        int max_plots = Settings.max_plots;
+        for (Map.Entry<String, Boolean> perm : player.addAttachment(instance).getPermissions().entrySet()) {
+            if (perm.getValue()) {
+                if (perm.getKey().contains("futureplots.plot.")) {
+                    String max = perm.getKey().replace("futureplots.plot.", "");
+                    if (max.equalsIgnoreCase("unlimited")) {
+                        return -1;
+                    } else {
+                        try {
+                            int num = Integer.parseInt(max);
+                            if (num > max_plots) max_plots = num;
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
+                }
+            }
+        }
+        return max_plots;
     }
 
     public Position getPlotPosition(Plot plot) {

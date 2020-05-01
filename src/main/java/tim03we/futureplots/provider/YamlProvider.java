@@ -265,6 +265,16 @@ public class YamlProvider implements Provider {
     }
 
     @Override
+    public ArrayList<String> getHomes(String username) {
+        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+        ArrayList<String> homes = new ArrayList<>();
+        for (String list : config.getAll().keySet()) {
+            homes.add(list);
+        }
+        return homes;
+    }
+
+    @Override
     public String getPlotName(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
