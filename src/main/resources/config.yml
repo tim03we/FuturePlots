@@ -20,6 +20,7 @@ default-settings:
   plotSize: 32
   roadBlock: 5
   wallBlock: 44
+  wallBlock.claim: "44:1"
   bottomBlock: 7
   plotFloorBlock: 2
   plotFillBlock: 3
