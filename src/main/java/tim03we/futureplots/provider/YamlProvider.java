@@ -43,8 +43,7 @@ public class YamlProvider implements Provider {
 
     @Override
     public void deletePlot(Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        config.remove(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
+        yaml.remove(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
     }
 
     @Override
