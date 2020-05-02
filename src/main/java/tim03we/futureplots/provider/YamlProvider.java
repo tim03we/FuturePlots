@@ -24,29 +24,28 @@ import java.util.ArrayList;
 
 public class YamlProvider implements Provider {
 
+    private Config yaml = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+
     @Override
     public void claimPlot(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", new ArrayList<String>());
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", new ArrayList<String>());
     }
 
     @Override
     public void deletePlot(Plot plot) {
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         config.remove(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
-        config.save();
     }
 
     @Override
     public String getHelpers(Plot plot) {
         StringBuilder sb = new StringBuilder();
-        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             sb.append(list + ", ");
         }
         return sb.toString();
@@ -55,7 +54,7 @@ public class YamlProvider implements Provider {
     @Override
     public String getMembers(Plot plot) {
         StringBuilder sb = new StringBuilder();
-        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
             sb.append(list + ", ");
         }
         return sb.toString();
@@ -64,15 +63,14 @@ public class YamlProvider implements Provider {
     @Override
     public String getDenied(Plot plot) {
         StringBuilder sb = new StringBuilder();
-        for (String list : new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML).getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             sb.append(list + ", ");
         }
         return sb.toString();    }
 
     @Override
     public boolean isHelper(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             if(list.toLowerCase().equals(username.toLowerCase())) {
                 return true;
             }
@@ -82,8 +80,7 @@ public class YamlProvider implements Provider {
 
     @Override
     public boolean isMember(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
             if(list.toLowerCase().equals(username.toLowerCase())) {
                 return true;
             }
@@ -93,56 +90,47 @@ public class YamlProvider implements Provider {
 
     @Override
     public void addHelper(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             helpers.add(list);
         }
         helpers.add(username.toLowerCase());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
     }
 
     @Override
     public void addMember(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
             helpers.add(list);
         }
         helpers.add(username.toLowerCase());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
     }
 
     @Override
     public void removeMember(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
             helpers.add(list);
         }
         helpers.remove(username.toLowerCase());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
     }
 
     @Override
     public void removeHelper(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> helpers = new ArrayList<>();
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
             helpers.add(list);
         }
         helpers.remove(username.toLowerCase());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
     }
 
     @Override
     public boolean isDenied(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             if(list.toLowerCase().equals(username.toLowerCase())) {
                 return true;
             }
@@ -152,46 +140,39 @@ public class YamlProvider implements Provider {
 
     @Override
     public void addDenied(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> denied = new ArrayList<>();
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             denied.add(list);
         }
         denied.add(username.toLowerCase());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
     }
 
     @Override
     public void removeDenied(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> denied = new ArrayList<>();
-        for (String list : config.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
+        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
             denied.add(list);
         }
         denied.remove(username.toLowerCase());
-        config.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
-        config.save();
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
     }
 
     @Override
     public boolean isOwner(String username, Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner").equals(username);
+        return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner").equals(username);
     }
 
     @Override
     public boolean hasOwner(Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        return config.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
+        return yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
     }
 
     @Override
     public boolean hasHome(String username, int homeNumber) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
-        for (String list : config.getAll().keySet()) {
-            if(config.getString(list + ".owner").equals(username)) {
+        for (String list : yaml.getAll().keySet()) {
+            if(yaml.getString(list + ".owner").equals(username)) {
                 homes.add(list);
             }
         }
@@ -203,12 +184,11 @@ public class YamlProvider implements Provider {
 
     @Override
     public boolean hasHomeInLevel(String username, int homeNumber, String levelName) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
-        for (String list : config.getAll().keySet()) {
+        for (String list : yaml.getAll().keySet()) {
             String[] ex = list.split(";");
             if(ex[0].equals(levelName)) {
-                if(config.getString(list + ".owner").equals(username)) {
+                if(yaml.getString(list + ".owner").equals(username)) {
                     homes.add(list);
                 }
             }
@@ -221,10 +201,9 @@ public class YamlProvider implements Provider {
 
     @Override
     public String getPlotId(String username, int homeNumber) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
-        for (String list : config.getAll().keySet()) {
-            if(config.getString(list + ".owner").equals(username)) {
+        for (String list : yaml.getAll().keySet()) {
+            if(yaml.getString(list + ".owner").equals(username)) {
                 homes.add(list);
             }
         }
@@ -236,12 +215,11 @@ public class YamlProvider implements Provider {
 
     @Override
     public String getPlotId(String username, int homeNumber, String levelName) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
-        for (String list : config.getAll().keySet()) {
+        for (String list : yaml.getAll().keySet()) {
             String[] ex = list.split(";");
             if(ex[0].equals(levelName)) {
-                if(config.getString(list + ".owner").equals(username)) {
+                if(yaml.getString(list + ".owner").equals(username)) {
                     homes.add(list);
                 }
             }
@@ -254,10 +232,9 @@ public class YamlProvider implements Provider {
 
     @Override
     public ArrayList<String> getHomes(String username, String world) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
-        for (String list : config.getAll().keySet()) {
-            if(config.getString(list + ".owner").equals(username)) {
+        for (String list : yaml.getAll().keySet()) {
+            if(yaml.getString(list + ".owner").equals(username)) {
                 homes.add(list);
             }
         }
@@ -266,9 +243,8 @@ public class YamlProvider implements Provider {
 
     @Override
     public ArrayList<String> getHomes(String username) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         ArrayList<String> homes = new ArrayList<>();
-        for (String list : config.getAll().keySet()) {
+        for (String list : yaml.getAll().keySet()) {
             homes.add(list);
         }
         return homes;
@@ -276,17 +252,15 @@ public class YamlProvider implements Provider {
 
     @Override
     public String getPlotName(Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
-        return config.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
+        return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
     }
 
     @Override
     public Plot getNextFreePlot(Plot plot) {
-        Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
         int limitXZ = 0;
         for(int i = 0; limitXZ <= 0 || i < limitXZ; i++) {
             ArrayList<String> existing = new ArrayList<>();
-            for (String list : config.getAll().keySet()) {
+            for (String list : yaml.getAll().keySet()) {
                 String[] ex = list.split(";");
                 if(Math.abs(Integer.parseInt(ex[1])) == i && Math.abs(Integer.parseInt(ex[2])) <= i) {
                     existing.add(list);
