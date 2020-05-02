@@ -6,6 +6,7 @@ FuturePlots is a plot plugin that will be further developed in the future. This 
 Command | Sub-Command | Permission | Alias
 ------- | ----------- | ---------- | ------
 /plot | - | - | plots, p
+~ | generate | - | gen
 ~ | addhelper | - | trust
 ~ | removehelper | - | rmhelper
 ~ | auto | - | -
@@ -21,7 +22,7 @@ Command | Sub-Command | Permission | Alias
 - ✅ Yaml Provider<br>
 - ❌ MongoDB Provider<br>
 - ❌ MySQL Provider<br>
-- ❌ Rand System<br>
+- ❌ Border System<br>
 
 ----------------
 

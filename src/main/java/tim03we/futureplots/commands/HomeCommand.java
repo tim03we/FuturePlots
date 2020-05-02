@@ -39,12 +39,14 @@ public class HomeCommand extends BaseCommand {
                 } catch (NumberFormatException numberFormatException) { sender.sendMessage(translate(true, "has-no-plot-num", args[1])); return; }
             }
             String[] ex;
-            if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
-                ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
-            } else {
-                sender.sendMessage(translate(true, "has-no-plot"));
-                return;
-            }
+            try {
+                if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
+                    ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
+                } else {
+                    sender.sendMessage(translate(true, "has-no-plot"));
+                    return;
+                }
+            } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has.no.plot.number", args[1])); return; }
             Position plotPos;
             if(Settings.levels.size() > 1) {
                 if(args.length > 2) {
