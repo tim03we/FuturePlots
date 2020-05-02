@@ -22,6 +22,8 @@ import java.util.ArrayList;
 
 public interface Provider {
 
+    void saveAll();
+
     void claimPlot(String username, Plot plot);
 
     void deletePlot(Plot plot);

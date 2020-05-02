@@ -63,6 +63,11 @@ public class FuturePlots extends PluginBase {
         initProvider();
     }
 
+    @Override
+    public void onDisable() {
+        provider.saveAll();
+    }
+
     private void initProvider() {
         Class<?> providerClass = this.providerClass.get((this.getConfig().get(Settings.provider, "yaml")).toLowerCase());
         if (providerClass == null) { this.getLogger().critical("The specified provider could not be found."); }

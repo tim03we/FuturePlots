@@ -27,6 +27,11 @@ public class YamlProvider implements Provider {
     private Config yaml = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
 
     @Override
+    public void saveAll() {
+        yaml.save();
+    }
+
+    @Override
     public void claimPlot(String username, Plot plot) {
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
