@@ -21,6 +21,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
 import static tim03we.futureplots.utils.Settings.max_plots;
@@ -37,6 +38,14 @@ public class AutoCommand extends BaseCommand {
         if(sender instanceof Player) {
             if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
                 if(FuturePlots.provider.getHomes(sender.getName()).size() != Settings.max_plots) {
+                    if(Settings.economy) {
+                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
+                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                        } else {
+                            sender.sendMessage(translate(true, "economy.no.money"));
+                            return;
+                        }
+                    }
                     Plot plot = FuturePlots.provider.getNextFreePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
                     FuturePlots.provider.claimPlot(sender.getName(), plot);
                     Position pos = FuturePlots.getInstance().getPlotPosition(plot);

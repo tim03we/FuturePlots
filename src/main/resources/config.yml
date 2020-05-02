@@ -1,4 +1,7 @@
 ---
+# Do not change the version, this can lead to deletion of the file
+version: "1.0.0"
+
 # Available languages: eng, deu
 lang: "eng"
 
@@ -14,6 +17,9 @@ teleport-on-claim: true
 # Whether the popup should appear when you enter a plot
 show-popup: true
 
+# Decide here whether Economy should be used for claiming, emptying and deleting plots
+economy: false
+
 # Here you find the plot configurations,
 # how the plot world should look like later, when the world is generated for the first time
 default-settings:
@@ -26,4 +32,8 @@ default-settings:
   plotFillBlock: 3
   roadWidth: 7
   groundHeight: 64
+  price:
+    claim: 500
+    clear: 300
+    delete: 200
 ...

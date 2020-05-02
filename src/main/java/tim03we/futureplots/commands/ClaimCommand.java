@@ -21,6 +21,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
 import static tim03we.futureplots.utils.Settings.max_plots;
@@ -39,6 +40,14 @@ public class ClaimCommand extends BaseCommand {
                 if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getHomes(sender.getName()).size() <= Settings.max_plots) {
                     if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
                         if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                            if(Settings.economy) {
+                                if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
+                                    FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                                } else {
+                                    sender.sendMessage(translate(true, "economy.no.money"));
+                                    return;
+                                }
+                            }
                             FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
                             if(Settings.claim_tp) {
                                 Position pos = FuturePlots.getInstance().getPlotPosition(new PlotPlayer((Player) sender).getPlot());

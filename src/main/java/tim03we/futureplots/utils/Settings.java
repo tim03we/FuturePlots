@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 public class Settings {
 
-
     public static ArrayList<String> levels = new ArrayList<>();
     public static int wallBlock;
     public static int roadBlock;
@@ -34,11 +33,15 @@ public class Settings {
     public static int bottomBlock;
     public static int plotFloorBlock;
     public static int plotFillBlock;
+    public static int delete_price;
+    public static int clear_price;
+    public static int claim_price;
 
     public static String provider;
     public static String language;
     public static int max_plots;
     public static boolean popup;
+    public static boolean economy;
     public static boolean claim_tp;
 
     public static void init() {
@@ -60,6 +63,10 @@ public class Settings {
         max_plots = config.getInt("max-plots");
         popup = config.getBoolean("show-popup");
         claim_tp = config.getBoolean("teleport-on-claim");
+        economy = config.getBoolean("economy");
+        claim_price = config.getInt("default-settings.price.claim");
+        clear_price = config.getInt("default-settings.price.clear");
+        delete_price = config.getInt("default-settings.price.delete");
     }
 
 }

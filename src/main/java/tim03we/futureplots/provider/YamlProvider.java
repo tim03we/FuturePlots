@@ -22,7 +22,7 @@ import tim03we.futureplots.utils.Plot;
 
 import java.util.ArrayList;
 
-public class YamlProvider implements Provider {
+public class YamlProvider implements DataProvider {
 
     private Config yaml = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
 

@@ -22,6 +22,8 @@ import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.Settings;
 
 import static tim03we.futureplots.utils.Settings.plotSize;
 
@@ -37,6 +39,14 @@ public class DeleteCommand extends BaseCommand {
             Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
             if(new PlotPlayer((Player) sender).onPlot()) {
                 if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                    if(Settings.economy) {
+                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice()) >= 0) {
+                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice());
+                        } else {
+                            sender.sendMessage(translate(true, "economy.no.money"));
+                            return;
+                        }
+                    }
                     FuturePlots.provider.deletePlot(plot);
                     FuturePlots.getInstance().clearPlot(plot);
                     Position pos = FuturePlots.getInstance().getPlotPosition(plot);

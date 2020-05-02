@@ -20,7 +20,7 @@ import tim03we.futureplots.utils.Plot;
 
 import java.util.ArrayList;
 
-public interface Provider {
+public interface DataProvider {
 
     void saveAll();
 

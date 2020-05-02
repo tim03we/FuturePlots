@@ -1,4 +1,6 @@
 ---
+version: "1.0.0"
+
 prefix: "FuturePlots > "
 
 not.in.plot: "Du befindest dich nicht auf deinem Plot."
@@ -34,4 +36,6 @@ generate.world.success: "World %1 is being generated..."
 has.no.plot: "Du besitzt keine Plots."
 has.no.plot.world: "Du besitzt kein Plot in dieser Welt."
 has.no.plot.number: "Du besitzt kein Plot mit der Nummer %1."
+
+economy.no.money: "Du besitzt nicht genügend Geld für diese Aktion."
 ...

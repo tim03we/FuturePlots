@@ -69,16 +69,31 @@ public class PlotSettings {
         return getConfig().getInt("settings.plotFillBlock");
     }
 
-    public void saveDefault() {
+    public int getClaimPrice() {
+        return getConfig().getInt("settings.price.claim");
+    }
+
+    public int getClearPrice() {
+        return getConfig().getInt("settings.price.clear");
+    }
+
+    public int getDeletePrice() {
+        return getConfig().getInt("settings.price.delete");
+    }
+
+    public void initWorld() {
         Config worldConfig = getConfig();
-        worldConfig.set("settings.wallBlock", Settings.wallBlock);
-        worldConfig.set("settings.roadBlock", Settings.roadBlock);
-        worldConfig.set("settings.roadWidth", Settings.roadWidth);
-        worldConfig.set("settings.groundHeight", Settings.groundHeight);
-        worldConfig.set("settings.plotSize", Settings.plotSize);
-        worldConfig.set("settings.bottomBlock", Settings.bottomBlock);
-        worldConfig.set("settings.plotFloorBlock", Settings.plotFloorBlock);
-        worldConfig.set("settings.plotFillBlock", Settings.plotFillBlock);
+        if(!worldConfig.exists("settings.wallBlock")) worldConfig.set("settings.wallBlock", Settings.wallBlock);
+        if(!worldConfig.exists("settings.roadBlock")) worldConfig.set("settings.roadBlock", Settings.roadBlock);
+        if(!worldConfig.exists("settings.roadWidth")) worldConfig.set("settings.roadWidth", Settings.roadWidth);
+        if(!worldConfig.exists("settings.groundHeight")) worldConfig.set("settings.groundHeight", Settings.groundHeight);
+        if(!worldConfig.exists("settings.plotSize")) worldConfig.set("settings.plotSize", Settings.plotSize);
+        if(!worldConfig.exists("settings.bottomBlock")) worldConfig.set("settings.bottomBlock", Settings.bottomBlock);
+        if(!worldConfig.exists("settings.plotFloorBlock")) worldConfig.set("settings.plotFloorBlock", Settings.plotFloorBlock);
+        if(!worldConfig.exists("settings.plotFillBlock")) worldConfig.set("settings.plotFillBlock", Settings.plotFillBlock);
+        if(!worldConfig.exists("settings.price.claim")) worldConfig.set("settings.price.claim", Settings.claim_price);
+        if(!worldConfig.exists("settings.price.clear")) worldConfig.set("settings.price.clear", Settings.clear_price);
+        if(!worldConfig.exists("settings.price.delete")) worldConfig.set("settings.price.delete", Settings.delete_price);
         worldConfig.save();
     }
 }

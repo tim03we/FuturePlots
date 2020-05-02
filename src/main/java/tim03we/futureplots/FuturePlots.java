@@ -24,7 +24,9 @@ import cn.nukkit.plugin.PluginBase;
 import tim03we.futureplots.commands.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
-import tim03we.futureplots.provider.Provider;
+import tim03we.futureplots.provider.DataProvider;
+import tim03we.futureplots.provider.EconomyProvider;
+import tim03we.futureplots.provider.EconomySProvider;
 import tim03we.futureplots.provider.YamlProvider;
 import tim03we.futureplots.tasks.PlotClearTask;
 import tim03we.futureplots.utils.Language;
@@ -40,9 +42,12 @@ import java.util.Map;
 public class FuturePlots extends PluginBase {
 
     private HashMap<String, Class<?>> providerClass = new HashMap<>();
+    private Class<?> economyClass;
+
 
     private static FuturePlots instance;
-    public static Provider provider;
+    public static EconomyProvider economyProvider;
+    public static DataProvider provider;
 
     @Override
     public void onLoad() {
@@ -71,9 +76,27 @@ public class FuturePlots extends PluginBase {
     private void initProvider() {
         Class<?> providerClass = this.providerClass.get((this.getConfig().get(Settings.provider, "yaml")).toLowerCase());
         if (providerClass == null) { this.getLogger().critical("The specified provider could not be found."); }
-        try { this.provider = (Provider) providerClass.newInstance();
+        try { this.provider = (DataProvider) providerClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
             getServer().getPluginManager().disablePlugin(getServer().getPluginManager().getPlugin("FuturePlots"));
+            return;
+        }
+        if(Settings.economy) {
+            try {
+                if(getServer().getPluginManager().getPlugin("EconomyAPI") != null) {
+                    economyClass = EconomySProvider.class;
+                    economyProvider = (EconomyProvider) economyClass.newInstance();
+                    getLogger().warning("Economy provider was set to EconomyS.");
+                } else {
+                    Settings.economy = false;
+                    getLogger().critical("A Economy provider could not be found.");
+                    getLogger().critical("The Economy function has been deactivated.");
+                }
+            } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
+                Settings.economy = false;
+                getLogger().critical("A Economy provider could not be found.");
+                getLogger().critical("The Economy function has been deactivated.");
+            }
         }
     }
 
@@ -111,13 +134,14 @@ public class FuturePlots extends PluginBase {
 
     private void loadWorlds() {
         for (String world : Settings.levels) {
+            new PlotSettings(world).initWorld();
             getServer().loadLevel(world);
         }
     }
 
     public void generateLevel(String levelName) {
         Settings.levels.add(levelName);
-        new PlotSettings(levelName).saveDefault();
+        new PlotSettings(levelName).initWorld();
         Map<String, Object> options = new HashMap<>();
         options.put("preset", levelName);
         getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"), options);
