@@ -36,30 +36,26 @@ public class ClaimCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
-                if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
-                    if (FuturePlots.provider.getHomes(sender.getName()).size() != Settings.max_plots) {
-                        if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
-                            if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
-                                FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                                if(Settings.claim_tp) {
-                                    Position pos = FuturePlots.getInstance().getPlotPosition(new PlotPlayer((Player) sender).getPlot());
-                                    ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
-                                }
-                                sender.sendMessage(translate(true, "plot-claimed"));
-                            } else {
-                                sender.sendMessage(translate(true, "plot-already-claimed"));
+                if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getHomes(sender.getName()).size() <= Settings.max_plots) {
+                    if (!FuturePlots.provider.hasOwner(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                        if (!FuturePlots.provider.isOwner(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()))) {
+                            FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                            if(Settings.claim_tp) {
+                                Position pos = FuturePlots.getInstance().getPlotPosition(new PlotPlayer((Player) sender).getPlot());
+                                ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
                             }
+                            sender.sendMessage(translate(true, "plot.claim"));
                         } else {
-                            sender.sendMessage(translate(true, "plot-already-claimed"));
+                            sender.sendMessage(translate(true, "plot.claim.already"));
                         }
                     } else {
-                        sender.sendMessage(translate(true, "max-plots"));
+                        sender.sendMessage(translate(true, "plot.claim.already"));
                     }
                 } else {
-                    sender.sendMessage(translate(true, "max-plots"));
+                    sender.sendMessage(translate(true, "plot.max"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not-in-plot", null));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

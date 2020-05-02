@@ -37,18 +37,18 @@ public class RemoveHelper extends BaseCommand {
                     if (args.length > 1) {
                         if (FuturePlots.provider.isHelper(args[1], plot)) {
                             FuturePlots.provider.removeHelper(args[1], plot);
-                            sender.sendMessage(translate(true, "helper-removed", args[1]));
+                            sender.sendMessage(translate(true, "helper.removed", args[1]));
                         } else {
-                            sender.sendMessage(translate(true, "no-helper"));
+                            sender.sendMessage(translate(true, "helper.not.exists"));
                         }
                     } else {
                         sender.sendMessage(getUsage());
                     }
                 } else {
-                    sender.sendMessage(translate(true, "not-a-owner"));
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not-in-plot"));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

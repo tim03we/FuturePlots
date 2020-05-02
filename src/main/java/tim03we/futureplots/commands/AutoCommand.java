@@ -41,12 +41,12 @@ public class AutoCommand extends BaseCommand {
                     FuturePlots.provider.claimPlot(sender.getName(), plot);
                     Position pos = FuturePlots.getInstance().getPlotPosition(plot);
                     ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
-                    sender.sendMessage(translate(true, "plot-claimed"));
+                    sender.sendMessage(translate(true, "plot.claim"));
                 } else {
-                    sender.sendMessage(translate(true, "max-plots"));
+                    sender.sendMessage(translate(true, "plot.max"));
                 }
             } else {
-                sender.sendMessage(translate(true, "max-plots"));
+                sender.sendMessage(translate(true, "plot.max"));
             }
         }
     }

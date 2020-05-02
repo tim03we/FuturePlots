@@ -38,7 +38,7 @@ public class MainCommand extends Command {
             } else if (CommandHandler.aliases.get(args[0]) != null){
                 CommandHandler.aliases.get(args[0]).execute(sender, args[0], args);
             } else {
-                sender.sendMessage("Befehl existiert nicht.");
+                sender.sendMessage(getUsage());
             }
         } else {
             sender.sendMessage(getUsage());

@@ -41,12 +41,12 @@ public class DeleteCommand extends BaseCommand {
                     FuturePlots.getInstance().clearPlot(plot);
                     Position pos = FuturePlots.getInstance().getPlotPosition(plot);
                     ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
-                    sender.sendMessage(translate(true, "plot-deleted"));
+                    sender.sendMessage(translate(true, "plot.delete"));
                 } else {
-                    sender.sendMessage(translate(true, "not-a-owner"));
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not-in-plot", null));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

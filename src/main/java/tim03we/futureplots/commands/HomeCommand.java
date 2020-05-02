@@ -57,21 +57,21 @@ public class HomeCommand extends BaseCommand {
                                 ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber, args[2]).split(";");
                                 plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), args[2]));
                             } else {
-                                sender.sendMessage(translate(true, "has-no-plot-inWorld"));
+                                sender.sendMessage(translate(true, "has.no.plot.world"));
                                 return;
                             }
-                        } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has-no-plot-inWorld")); return; }
+                        } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has.no.plot.world")); return; }
                     }
                 } else {
-                    sender.sendMessage(translate(true, "worldName-required"));
+                    sender.sendMessage(translate(true, "plot.world.required"));
                     return;
                 }
             } else plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
             try {
                 ((Player) sender).teleport(plotPos);
-                sender.sendMessage(translate(true, "plot-tp"));
+                sender.sendMessage(translate(true, "plot.teleport"));
             } catch (IndexOutOfBoundsException exception) {
-                sender.sendMessage(translate(true, "has-no-plot-num", args[1]));
+                sender.sendMessage(translate(true, "has.no.plot.number", args[1]));
             }
         }
     }

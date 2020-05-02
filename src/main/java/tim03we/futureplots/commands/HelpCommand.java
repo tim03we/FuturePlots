@@ -27,9 +27,9 @@ public class HelpCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
-        sender.sendMessage(translate(true, "help-title"));
+        sender.sendMessage(translate(false, "plot.help.title"));
         for (String cmd : CommandHandler.commmands.keySet()) {
-            sender.sendMessage(translate(false, "help-cmd", cmd));
+            sender.sendMessage(translate(false, "plot.help.text", cmd));
         }
     }
 }

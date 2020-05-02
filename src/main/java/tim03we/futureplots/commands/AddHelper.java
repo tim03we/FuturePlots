@@ -37,18 +37,18 @@ public class AddHelper extends BaseCommand {
                     if (args.length > 1) {
                         if (!FuturePlots.provider.isHelper(args[1], plot)) {
                             FuturePlots.provider.addHelper(args[1], plot);
-                            sender.sendMessage(translate(true, "helper-added", args[1].toLowerCase()));
+                            sender.sendMessage(translate(true, "helper.added", args[1].toLowerCase()));
                         } else {
-                            sender.sendMessage(translate(true, "already-helper"));
+                            sender.sendMessage(translate(true, "helper.exists"));
                         }
                     } else {
                         sender.sendMessage(getUsage());
                     }
                 } else {
-                    sender.sendMessage(translate(true, "not-a-owner", null));
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not-in-plot", null));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }
