@@ -5,8 +5,9 @@ FuturePlots is a plot plugin that will be further developed in the future. This 
 # Commands
 Command | Sub-Command | Permission | Alias
 ------- | ----------- | ---------- | ------
-/p | addhelper | - | trust
-/p | removehelper | - | rmhelper
+/plot | - | - | plots, p
+~ | addhelper | - | trust
+~ | removehelper | - | rmhelper
 ~ | auto | - | -
 ~ | claim | - | c
 ~ | clear | - | reset
