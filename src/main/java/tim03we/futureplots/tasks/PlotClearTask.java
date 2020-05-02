@@ -26,6 +26,8 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotSettings;
 
+import java.util.concurrent.CompletableFuture;
+
 public class PlotClearTask extends Task {
 
     private Plot plot;
@@ -56,31 +58,33 @@ public class PlotClearTask extends Task {
 
     @Override
     public void onRun(int i) {
-        try {
-            Block block;
-            while (pos.x < xMax) {
-                while (pos.z < zMax) {
-                    while (pos.y < 256) {
-                        if (pos.y == 0) {
-                            block = bottomBlock;
-                        } else if (pos.y < height) {
-                            block = plotFillBlock;
-                        } else if (pos.y == height) {
-                            block = plotFloorBlock;
-                        } else {
-                            block = Block.get(0);
+        CompletableFuture.runAsync(() -> {
+            try {
+                Block block;
+                while (pos.x < xMax) {
+                    while (pos.z < zMax) {
+                        while (pos.y < 256) {
+                            if (pos.y == 0) {
+                                block = bottomBlock;
+                            } else if (pos.y < height) {
+                                block = plotFillBlock;
+                            } else if (pos.y == height) {
+                                block = plotFloorBlock;
+                            } else {
+                                block = Block.get(0);
+                            }
+                            level.setBlock(pos, block);
+                            pos.y++;
                         }
-                        level.setBlock(pos, block);
-                        pos.y++;
+                        pos.y = 0;
+                        pos.z++;
                     }
-                    pos.y = 0;
-                    pos.z++;
+                    pos.z = plotBeginPos.z;
+                    pos.x++;
                 }
-                pos.z = plotBeginPos.z;
-                pos.x++;
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        });
     }
 }
