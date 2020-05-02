@@ -16,34 +16,12 @@ Command | Sub-Command | Permission | Alias
 ~ | homes | - | -
 ~ | info | - | i
 
-# Config
-```yaml
----
-# Available languages: eng, deu
-lang: "eng"
+# ToDo
+- ✅ Yaml Provider<br>
+- ❌ MongoDB Provider<br>
+- ❌ MySQL Provider<br>
+- ❌ Rand System<br>
 
-# Available providers: yaml
-provider: "yaml"
-
-# How many plots a player can own
-max-plots: 2
-
-# Whether the popup should appear when you enter a plot
-show-popup: true
-
-# Here you find the plot configurations,
-# how the plot world should look like later, when the world is generated for the first time
-default-settings:
-  plotSize: 32
-  roadBlock: 5
-  wallBlock: 44
-  bottomBlock: 7
-  plotFloorBlock: 2
-  plotFillBlock: 3
-  roadWidth: 7
-  groundHeight: 64
-...
-```
 ----------------
 
 If problems arise, create an issue or write us on Discord.
