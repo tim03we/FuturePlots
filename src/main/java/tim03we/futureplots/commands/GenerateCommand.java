@@ -28,15 +28,19 @@ public class GenerateCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
-        if(args.length > 1) {
-            if(!new World(args[1]).exists()) {
-                FuturePlots.getInstance().generateLevel(args[1]);
-                sender.sendMessage(translate(true, "generate.world.success", args[1]));
+        if(sender.hasPermission("futureplots.command.generate")) {
+            if(args.length > 1) {
+                if(!new World(args[1]).exists()) {
+                    FuturePlots.getInstance().generateLevel(args[1]);
+                    sender.sendMessage(translate(true, "generate.world.success", args[1]));
+                } else {
+                    sender.sendMessage(translate(true, "generate.world.exists"));
+                }
             } else {
-                sender.sendMessage(translate(true, "generate.world.exists"));
+                sender.sendMessage(translate(true, "generate.world.required"));
             }
         } else {
-            sender.sendMessage(translate(true, "generate.world.required"));
+            sender.sendMessage("null");
         }
     }
 }
