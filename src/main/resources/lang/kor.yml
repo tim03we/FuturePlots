@@ -1,0 +1,42 @@
+---
+# Korean Translation - good777LUCKY
+version: "1.0.0"
+
+prefix: "FuturePlots > "
+
+not.in.plot: "당신은 plot에 있지 않습니다."
+not.a.owner: "이 행동은 오직 plot의 소유자만 할 수 있습니다."
+
+plot.teleport: "당신의 plot으로 순간이동되었습니다."
+plot.claim.already: "이 plot은 이미 점유되었습니다."
+plot.claim: "방금 plot을 점유하였습니다."
+plot.clear: "plot이 초기화되었습니다."
+plot.delete: "plot이 삭제되었습니다."
+plot.max: "이미 가질 수 있는 최대 plot의 개수를 넘으셨습니다."
+plot.enter.owned: "%1\n%2"
+plot.enter.free: "%1\n개방된 plot"
+plot.help.title: "FuturePlots 명령어:"
+plot.help.text: "- %1"
+plot.info.title: "- plot 정보 -"
+plot.info.text: "소유자: %1\nID: %2\n도우미: %3\n금지된 플레이어: %4"
+plot.homes.title: "당신의 plot:"
+plot.homes.text: "- %2 (%1)"
+plot.world.required: "당신의 plot에 가려면 월드 이름과 plot 번호를 입력하세요."
+plot.world.not.exists: "이 월드는 존재하지 않습니다."
+plot.world.exists: "이 월드는 이미 존재합니다."
+
+helper.added: "도우미 %1(이)가 plot에 추가되었습니다."
+helper.removed: "도우미 %1(이)가 plot에서 제거되었습니다."
+helper.exists: "이 플레이어는 이미 plot의 도우미입니다."
+helper.not.exists: "이 플레이어는 plot의 도우미가 아닙니다."
+
+generate.world.required: "월드 이름을 입력하세요."
+generate.world.exists: "이 월드는 이미 존재합니다."
+generate.world.success: "월드 %1(이)가 생성되고 있습니다..."
+
+has.no.plot: "당신은 plot이 없습니다."
+has.no.plot.world: "이 월드에는 당신의 plot이 없습니다."
+has.no.plot.number: "당신은 %1번 plot을 소유하고 있지 않습니다."
+
+economy.no.money: "이 행동을 할 충분한 돈이 없습니다."
+...

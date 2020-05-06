@@ -2,7 +2,7 @@
 # Do not change the version, this can lead to deletion of the file
 version: "1.0.0"
 
-# Available languages: eng, deu
+# Available languages: eng, deu, kor
 lang: "eng"
 
 # Available providers: yaml
