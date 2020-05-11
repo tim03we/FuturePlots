@@ -16,6 +16,7 @@ package tim03we.futureplots.generator;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
@@ -25,8 +26,11 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.plugin.Plugin;
+import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.PlotSettings;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,15 +56,20 @@ public class PlotGenerator extends Generator {
 
     public PlotGenerator(Map<String, Object> options) {
         this.options = options;
-        level = Server.getInstance().getLevelByName((String) options.get("preset"));
-        roadBlock = Block.get(new PlotSettings((String) options.get("preset")).getRoadBlock());
-        wallBlock = Block.get(new PlotSettings((String) options.get("preset")).getWallBlock());
-        plotFloorBlock = Block.get(new PlotSettings((String) options.get("preset")).getPlotFloorBlock());
-        plotFillBlock = Block.get(new PlotSettings((String) options.get("preset")).getPlotFillBlock());
-        bottomBlock = Block.get(new PlotSettings((String) options.get("preset")).getBottomBlock());
-        roadWidth = new PlotSettings((String) options.get("preset")).getRoadWidth();
-        plotSize = new PlotSettings((String) options.get("preset")).getPlotSize();
-        groundHeight = new PlotSettings((String) options.get("preset")).getGroundHeight();
+        try {
+            level = Server.getInstance().getLevelByName((String) options.get("preset"));
+            roadBlock = new PlotSettings((String) options.get("preset")).getRoadBlock();
+            wallBlock = new PlotSettings((String) options.get("preset")).getWallBlockUnClaimed();
+            plotFloorBlock = new PlotSettings((String) options.get("preset")).getPlotFloorBlock();
+            plotFillBlock = new PlotSettings((String) options.get("preset")).getPlotFillBlock();
+            bottomBlock = new PlotSettings((String) options.get("preset")).getBottomBlock();
+            roadWidth = new PlotSettings((String) options.get("preset")).getRoadWidth();
+            plotSize = new PlotSettings((String) options.get("preset")).getPlotSize();
+            groundHeight = new PlotSettings((String) options.get("preset")).getGroundHeight();
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
+            Server.getInstance().getLogger().critical("Your world configuration " + options.get("preset") + ".yml is incorrect, check it or the server will not start properly. An example of the config, if it does not match your previous one, can be found at \"https://github.com/tim03we/FuturePlots/wiki/World-Config-Example\".");
+            Server.getInstance().shutdown();
+        }
     }
 
     @Override
