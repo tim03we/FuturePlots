@@ -17,6 +17,7 @@ package tim03we.futureplots.utils;
  */
 
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
@@ -37,12 +38,19 @@ public class PlotSettings {
         return Server.getInstance().getLevelByName(levelName);
     }
 
-    public int getWallBlock() {
-        return getConfig().getInt("settings.wallBlock");
+    public Block getWallBlockClaimed() {
+        String[] ex = getConfig().getString("settings.wall.claimed").split(":");
+        return Block.get(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]));
     }
 
-    public int getRoadBlock() {
-        return getConfig().getInt("settings.roadBlock");
+    public Block getWallBlockUnClaimed() {
+        String[] ex = getConfig().getString("settings.wall.unclaimed").split(":");
+        return Block.get(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]));
+    }
+
+    public Block getRoadBlock() {
+        String[] ex = getConfig().getString("settings.roadBlock").split(":");
+        return Block.get(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]));
     }
 
     public int getRoadWidth() {
@@ -57,16 +65,19 @@ public class PlotSettings {
         return getConfig().getInt("settings.plotSize");
     }
 
-    public int getBottomBlock() {
-        return getConfig().getInt("settings.bottomBlock");
+    public Block getBottomBlock() {
+        String[] ex = getConfig().getString("settings.bottomBlock").split(":");
+        return Block.get(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]));
     }
 
-    public int getPlotFloorBlock() {
-        return getConfig().getInt("settings.plotFloorBlock");
+    public Block getPlotFloorBlock() {
+        String[] ex = getConfig().getString("settings.plotFloorBlock").split(":");
+        return Block.get(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]));
     }
 
-    public int getPlotFillBlock() {
-        return getConfig().getInt("settings.plotFillBlock");
+    public Block getPlotFillBlock() {
+        String[] ex = getConfig().getString("settings.plotFillBlock").split(":");
+        return Block.get(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]));
     }
 
     public int getClaimPrice() {
@@ -83,7 +94,8 @@ public class PlotSettings {
 
     public void initWorld() {
         Config worldConfig = getConfig();
-        if(!worldConfig.exists("settings.wallBlock")) worldConfig.set("settings.wallBlock", Settings.wallBlock);
+        if(!worldConfig.exists("settings.wall.unclaimed")) worldConfig.set("settings.wall.unclaimed", Settings.wallBlockUnClaimed);
+        if(!worldConfig.exists("settings.wall.claimed")) worldConfig.set("settings.wall.claimed", Settings.wallBlockClaimed);
         if(!worldConfig.exists("settings.roadBlock")) worldConfig.set("settings.roadBlock", Settings.roadBlock);
         if(!worldConfig.exists("settings.roadWidth")) worldConfig.set("settings.roadWidth", Settings.roadWidth);
         if(!worldConfig.exists("settings.groundHeight")) worldConfig.set("settings.groundHeight", Settings.groundHeight);

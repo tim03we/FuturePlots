@@ -16,6 +16,11 @@ package tim03we.futureplots.utils;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Server;
+import cn.nukkit.block.Block;
+import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.tasks.PlotSetBorderTask;
+
 public class Plot {
 
     private int x;
@@ -28,6 +33,10 @@ public class Plot {
         this.levelName = levelName;
     }
 
+    private Plot getPlot(int x, int z, String levelname) {
+        return new Plot(x, z, levelName);
+    }
+
     public int getX() {
         return this.x;
     }
@@ -38,5 +47,9 @@ public class Plot {
 
     public String getLevelName() {
         return this.levelName;
+    }
+
+    public void changeBorder(Block block) {
+        Server.getInstance().getScheduler().scheduleDelayedTask(FuturePlots.getInstance(), new PlotSetBorderTask(getPlot(x, z, levelName), block), 1, true);
     }
 }

@@ -25,14 +25,15 @@ import java.util.ArrayList;
 public class Settings {
 
     public static ArrayList<String> levels = new ArrayList<>();
-    public static int wallBlock;
-    public static int roadBlock;
+    public static String wallBlockClaimed;
+    public static String wallBlockUnClaimed;
+    public static String roadBlock;
     public static int roadWidth;
     public static int groundHeight;
     public static int plotSize;
-    public static int bottomBlock;
-    public static int plotFloorBlock;
-    public static int plotFillBlock;
+    public static String bottomBlock;
+    public static String plotFloorBlock;
+    public static String plotFillBlock;
     public static int delete_price;
     public static int clear_price;
     public static int claim_price;
@@ -50,14 +51,15 @@ public class Settings {
         for(File file : folder.listFiles()) {
             levels.add(file.getName().replace(".yml", ""));
         }
-        wallBlock = config.getInt("default-settings.wallBlock");
-        roadBlock = config.getInt("default-settings.roadBlock");
+        wallBlockClaimed = config.getString("default-settings.wall.claimed");
+        wallBlockUnClaimed = config.getString("default-settings.wall.unclaimed");
+        roadBlock = config.getString("default-settings.roadBlock");
         roadWidth = config.getInt("default-settings.roadWidth");
         groundHeight = config.getInt("default-settings.groundHeight");
         plotSize = config.getInt("default-settings.plotSize");
-        bottomBlock = config.getInt("default-settings.bottomBlock");
-        plotFloorBlock = config.getInt("default-settings.plotFloorBlock");
-        plotFillBlock = config.getInt("default-settings.plotFillBlock");
+        bottomBlock = config.getString("default-settings.bottomBlock");
+        plotFloorBlock = config.getString("default-settings.plotFloorBlock");
+        plotFillBlock = config.getString("default-settings.plotFillBlock");
         provider = config.getString("provider").toLowerCase();
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");

@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlotClearTask extends Task {
 
-    private Plot plot;
     private Level level;
     private int height;
     private int plotSize;
@@ -43,16 +42,15 @@ public class PlotClearTask extends Task {
     private Vector3 pos;
 
     public PlotClearTask(Plot plot) {
-        this.plot = plot;
         this.plotBeginPos = FuturePlots.getInstance().getPlotPosition(plot);
         this.level = plotBeginPos.getLevel();
         this.plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
         this.xMax = (int) (plotBeginPos.x + plotSize);
         this.zMax = (int) (plotBeginPos.z + plotSize);
         this.height = new PlotSettings(plot.getLevelName()).getGroundHeight();
-        this.bottomBlock = Block.get(new PlotSettings(plot.getLevelName()).getBottomBlock());
-        this.plotFillBlock = Block.get(new PlotSettings(plot.getLevelName()).getPlotFillBlock());
-        this.plotFloorBlock = Block.get(new PlotSettings(plot.getLevelName()).getPlotFloorBlock());
+        this.bottomBlock = new PlotSettings(plot.getLevelName()).getBottomBlock();
+        this.plotFillBlock = new PlotSettings(plot.getLevelName()).getPlotFillBlock();
+        this.plotFloorBlock = new PlotSettings(plot.getLevelName()).getPlotFloorBlock();
         this.pos = new Position(plotBeginPos.x, 0, plotBeginPos.z, Server.getInstance().getLevelByName(plot.getLevelName()));
     }
 

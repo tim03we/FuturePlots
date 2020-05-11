@@ -1,6 +1,6 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.0.0"
+version: "1.1.0"
 
 prefix: "FuturePlots > "
 
@@ -29,6 +29,11 @@ helper.added: "도우미 %1(이)가 plot에 추가되었습니다."
 helper.removed: "도우미 %1(이)가 plot에서 제거되었습니다."
 helper.exists: "이 플레이어는 이미 plot의 도우미입니다."
 helper.not.exists: "이 플레이어는 plot의 도우미가 아닙니다."
+
+deny.added: "플레이어 %1이 플롯에서 금지되었습니다."
+deny.removed: "플레이어 %1이 플롯에 다시 들어갈 수 있습니다."
+deny.exists: "플레이어는 이미 플롯에서 금지되어 있습니다."
+deny.not.exists: "이 플레이어는 플롯에서 금지되지 않았습니다."
 
 generate.world.required: "월드 이름을 입력하세요."
 generate.world.exists: "이 월드는 이미 존재합니다."

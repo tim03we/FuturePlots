@@ -1,5 +1,21 @@
 package tim03we.futureplots.tasks;
 
+/*
+ * This software is distributed under "GNU General Public License v3.0".
+ * This license allows you to use it and/or modify it but you are not at
+ * all allowed to sell this plugin at any cost. If found doing so the
+ * necessary action required would be taken.
+ *
+ * GunGame is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License v3.0 for more details.
+ *
+ * You should have received a copy of the GNU General Public License v3.0
+ * along with this program. If not, see
+ * <https://opensource.org/licenses/GPL-3.0>.
+ */
+
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
@@ -11,7 +27,7 @@ import tim03we.futureplots.utils.PlotSettings;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PlotSetBoarderTask extends Task {
+public class PlotSetBorderTask extends Task {
 
     private Level level;
     private int height;
@@ -19,7 +35,7 @@ public class PlotSetBoarderTask extends Task {
     private Position plotBeginPos;
     private double xMax, zMax;
 
-    public PlotSetBoarderTask (Plot plot, Block $block) {
+    public PlotSetBorderTask(Plot plot, Block block) {
         this.plotBeginPos = FuturePlots.getInstance().getPlotPosition(plot);
         this.level = plotBeginPos.getLevel();
         this.plotBeginPos = plotBeginPos.subtract(1,0,1);
@@ -27,7 +43,7 @@ public class PlotSetBoarderTask extends Task {
         this.xMax = plotBeginPos.x + plotSize + 1;
         this.zMax = plotBeginPos.z + plotSize + 1;
         this.height = new PlotSettings(level.getName()).getGroundHeight();
-        this.plotWallBlock = $block;
+        this.plotWallBlock = block;
     }
 
     @Override

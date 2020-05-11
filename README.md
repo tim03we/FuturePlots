@@ -9,6 +9,8 @@ Command | Sub-Command | Permission | Alias
 ~ | generate | futureplots.command.generate | gen
 ~ | addhelper | - | trust
 ~ | removehelper | - | rmhelper
+~ | deny | - | -
+~ | undeny | - | -
 ~ | auto | - | -
 ~ | claim | - | c
 ~ | clear | - | reset
@@ -22,7 +24,7 @@ Command | Sub-Command | Permission | Alias
 - ✅ Yaml Provider<br>
 - ❌ MongoDB Provider<br>
 - ❌ MySQL Provider<br>
-- ❌ Border System<br>
+- ✅ Border System<br>
 
 ----------------
 

@@ -37,11 +37,15 @@ public class EventListener extends Language implements Listener {
             Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getTo());
             Plot plotFrom = FuturePlots.getInstance().getPlotByPosition(event.getFrom());
             if(plot != null && plotFrom == null) {
-                if(Settings.popup) {
-                    if(FuturePlots.provider.hasOwner(plot)) {
-                        player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getPlotName(plot)));
-                    } else {
-                        player.sendPopup(translate(false, "plot.enter.free", plot.getX() + ";" + plot.getZ()));
+                if(FuturePlots.provider.isDenied(player.getName(), plot) && !FuturePlots.provider.isOwner(player.getName(), plot) && !FuturePlots.provider.isHelper(player.getName(), plot)) {
+                    event.setCancelled(true);
+                } else {
+                    if(Settings.popup) {
+                        if(FuturePlots.provider.hasOwner(plot)) {
+                            player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getPlotName(plot)));
+                        } else {
+                            player.sendPopup(translate(false, "plot.enter.free", plot.getX() + ";" + plot.getZ()));
+                        }
                     }
                 }
             } else if(plotFrom != null && plot == null) {

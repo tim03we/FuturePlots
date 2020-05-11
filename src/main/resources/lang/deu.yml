@@ -1,5 +1,5 @@
 ---
-version: "1.0.0"
+version: "1.1.0"
 
 prefix: "FuturePlots > "
 
@@ -28,6 +28,11 @@ helper.added: "Der Spieler %1 wurde als Helfer hinzugefügt."
 helper.removed: "Der Spieler %1 wurde als Helfer entfernt."
 helper.exists: "Der Spieler ist bereits ein Helfer des Plots."
 helper.not.exists: "Dieser Spieler ist kein Helfer auf deinem Plot."
+
+deny.added: "Der Spieler %1 wurde vom Plot verbannt."
+deny.removed: "Der Spieler %1 kann das Plot nun wieder betreten."
+deny.exists: "Der Spieler ist bereits vom Plot verbannt."
+deny.not.exists: "Dieser Spieler wurde nicht vom Plot verbannt."
 
 generate.world.required: "Enter a world name."
 generate.world.exists: "This world already exists."

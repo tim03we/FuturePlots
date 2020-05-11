@@ -48,6 +48,7 @@ public class ClaimCommand extends BaseCommand {
                                     return;
                                 }
                             }
+                            new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockClaimed());
                             FuturePlots.provider.claimPlot(sender.getName(), FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
                             if(Settings.claim_tp) {
                                 Position pos = FuturePlots.getInstance().getPlotPosition(new PlotPlayer((Player) sender).getPlot());

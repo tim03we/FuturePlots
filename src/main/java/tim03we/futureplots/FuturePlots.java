@@ -41,9 +41,7 @@ import java.util.Map;
 
 public class FuturePlots extends PluginBase {
 
-    private HashMap<String, Class<?>> providerClass = new HashMap<>();
-    private Class<?> economyClass;
-
+    private final HashMap<String, Class<?>> providerClass = new HashMap<>();
 
     private static FuturePlots instance;
     public static EconomyProvider economyProvider;
@@ -66,6 +64,24 @@ public class FuturePlots extends PluginBase {
         Language.init();
         loadWorlds();
         initProvider();
+        checkVersion();
+    }
+
+    private void checkVersion() {
+        if(!Language.getNoPrefix("version").equals("1.1.0")) {
+            new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
+            if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
+                getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
+                Language.init();
+            }
+        }
+        if(!getConfig().getString("version").equals("1.1.0")) {
+            new File(getDataFolder() + "/config_old.yml").delete();
+            if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
+                getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
+                saveDefaultConfig();
+            }
+        }
     }
 
     @Override
@@ -84,15 +100,14 @@ public class FuturePlots extends PluginBase {
         if(Settings.economy) {
             try {
                 if(getServer().getPluginManager().getPlugin("EconomyAPI") != null) {
-                    economyClass = EconomySProvider.class;
-                    economyProvider = (EconomyProvider) economyClass.newInstance();
+                    economyProvider = EconomySProvider.class.newInstance();
                     getLogger().warning("Economy provider was set to EconomyS.");
                 } else {
                     Settings.economy = false;
                     getLogger().critical("A Economy provider could not be found.");
                     getLogger().critical("The Economy function has been deactivated.");
                 }
-            } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
+            } catch (InstantiationException | IllegalAccessException e) {
                 Settings.economy = false;
                 getLogger().critical("A Economy provider could not be found.");
                 getLogger().critical("The Economy function has been deactivated.");
@@ -111,16 +126,15 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand("generate", new GenerateCommand("generate", "Run the command", "/plot generate"), new String[]{"gen"});
         commandHandler.registerCommand("auto", new AutoCommand("auto", "Run the command", "/plot auto"), new String[]{"a"});
         commandHandler.registerCommand("info", new InfoCommand("info", "Run the command", "/plot info"), new String[]{"i"});
+        commandHandler.registerCommand("deny", new DenyCommand("deny", "", "/plot deny <name>"), new String[]{});
+        commandHandler.registerCommand("undeny", new UnDenyCommand("undeny", "", "/plot undeny <name>"), new String[]{});
+        commandHandler.registerCommand("addhelper", new AddHelper("addhelper", "Run the command", "/plot addhelper <name>"), new String[]{"trust"});
+        commandHandler.registerCommand("removehelper", new RemoveHelper("removehelper", "Run the command", "/plot removehelper <name>"), new String[]{"rmhelper", "untrust"});
         /* ToDo */
         //commandHandler.registerCommand("flag", new FlagCommand("flag", " , "/plot flag <flag> [value]"), new String[]{});
         //commandHandler.registerCommand("addmember", new AddMember("addmember", "", "/plot addmember <name>"), new String[]{});
         //commandHandler.registerCommand("removemember", new RemoveMember("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
-        //commandHandler.registerCommand("SetHome", new SetHomeCommand("sethome", "", "/plot sethome"), new String[]{});
-        //commandHandler.registerCommand("deny", new DenyCommand("deny", "", "/plot deny"), new String[]{});
-        //commandHandler.registerCommand("undeny", new UnDenyCommand("undeny", "", "/plot undeny"), new String[]{});
         /* ToDo */
-        commandHandler.registerCommand("addhelper", new AddHelper("addhelper", "Run the command", "/plot addhelper <name>"), new String[]{"trust"});
-        commandHandler.registerCommand("removehelper", new RemoveHelper("removehelper", "Run the command", "/plot removehelper <name>"), new String[]{"rmhelper", "untrust"});
     }
 
     public static FuturePlots getInstance() {

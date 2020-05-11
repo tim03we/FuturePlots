@@ -47,6 +47,7 @@ public class DeleteCommand extends BaseCommand {
                             return;
                         }
                     }
+                    new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
                     FuturePlots.provider.deletePlot(plot);
                     FuturePlots.getInstance().clearPlot(plot);
                     Position pos = FuturePlots.getInstance().getPlotPosition(plot);
