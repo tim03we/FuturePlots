@@ -16,9 +16,40 @@ package tim03we.futureplots.commands;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
+import cn.nukkit.command.CommandSender;
+import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotPlayer;
+
 public class DenyCommand extends BaseCommand {
 
     public DenyCommand(String name, String description, String usage) {
         super(name, description, usage);
+    }
+
+    @Override
+    public void execute(CommandSender sender, String command, String[] args) {
+        if(sender instanceof Player) {
+            if(new PlotPlayer((Player) sender).onPlot()) {
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
+                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                    if (args.length > 1) {
+                        if (!FuturePlots.provider.isDenied(args[1], plot)) {
+                            FuturePlots.provider.addDenied(args[1], plot);
+                            sender.sendMessage(translate(true, "deny.added", args[1].toLowerCase()));
+                        } else {
+                            sender.sendMessage(translate(true, "deny.exists"));
+                        }
+                    } else {
+                        sender.sendMessage(getUsage());
+                    }
+                } else {
+                    sender.sendMessage(translate(true, "not.a.owner"));
+                }
+            } else {
+                sender.sendMessage(translate(true, "not.in.plot"));
+            }
+        }
     }
 }
