@@ -1,5 +1,5 @@
 ---
-version: "1.1.0"
+version: "1.2.0"
 
 prefix: "FuturePlots > "
 
@@ -17,7 +17,7 @@ plot.enter.free: "%1\nFree plot"
 plot.help.title: "FuturePlots Commands:"
 plot.help.text: "- %1"
 plot.info.title: "- Plot Info -"
-plot.info.text: "Owner: %1\nID: %2\nHelper: %3\nDenied: %4"
+plot.info.text: "Owner: %1\nID: %2\nHelper: %3\nDenied: %4\nMembers: %5"
 plot.homes.title: "Your plots:"
 plot.homes.text: "- %2 (%1)"
 plot.world.required: "Enter a world name and the plot number to get to your plot."
@@ -33,6 +33,11 @@ deny.added: "The player %1 was banned from the plot."
 deny.removed: "The player %1 can now enter the plot again."
 deny.exists: "The player is already banned from the plot."
 deny.not.exists: "This player was not banned from the plot."
+
+member.added: "The member %1 was added to the plot."
+member.removed: "The member %1 was removed to the plot."
+member.exists: "This player is already member of the plot."
+member.not.exists: "This player is no member on your plot."
 
 generate.world.required: "Enter a world name."
 generate.world.exists: "This world already exists."

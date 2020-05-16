@@ -1,5 +1,5 @@
 ---
-version: "1.1.0"
+version: "1.2.0"
 
 prefix: "FuturePlots > "
 
@@ -17,7 +17,7 @@ plot.enter.free: "%1\nFreies Plot"
 plot.help.title: "FuturePlots Befehle:"
 plot.help.text: "- %1"
 plot.info.title: "- Plot Info -"
-plot.info.text: "Owner: %1\nID: %2\nHelfer: %3\nVerboten: %4"
+plot.info.text: "Owner: %1\nID: %2\nHelfer: %3\nVerboten: %4\nMitglieder: %5"
 plot.homes.title: "Deine Plots:"
 plot.homes.text: "- %2 (%1)"
 plot.world.required: "Gebe den Welten Namen und die Plot Nummer an."
@@ -33,6 +33,11 @@ deny.added: "Der Spieler %1 wurde vom Plot verbannt."
 deny.removed: "Der Spieler %1 kann das Plot nun wieder betreten."
 deny.exists: "Der Spieler ist bereits vom Plot verbannt."
 deny.not.exists: "Dieser Spieler wurde nicht vom Plot verbannt."
+
+member.added: "Der Spieler %1 wurde als Mitglied hinzugefügt."
+member.removed: "Der Spieler %1 wurde als Mitglied entfernt."
+member.exists: "Der Spieler ist bereits ein Mitglied des Plots."
+member.not.exists: "Dieser Spieler ist kein Mitglied auf deinem Plot."
 
 generate.world.required: "Enter a world name."
 generate.world.exists: "This world already exists."

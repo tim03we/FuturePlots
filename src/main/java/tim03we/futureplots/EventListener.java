@@ -17,6 +17,7 @@ package tim03we.futureplots;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
@@ -62,6 +63,13 @@ public class EventListener extends Language implements Listener {
                 if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
                     if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
                         event.setCancelled(true);
+                    } else {
+                        if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
+                            Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
+                            if(plotOwner == null) {
+                                event.setCancelled(true);
+                            }
+                        }
                     }
                 } else {
                     event.setCancelled(true);
@@ -78,6 +86,13 @@ public class EventListener extends Language implements Listener {
                 if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
                     if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
                         event.setCancelled(true);
+                    } else {
+                        if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
+                            Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
+                            if(plotOwner == null) {
+                                event.setCancelled(true);
+                            }
+                        }
                     }
                 } else {
                     event.setCancelled(true);
@@ -97,6 +112,13 @@ public class EventListener extends Language implements Listener {
                             if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
                                 event.setCancelled(true);
                                 return;
+                            } else {
+                                if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
+                                    Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
+                                    if(plotOwner == null) {
+                                        event.setCancelled(true);
+                                    }
+                                }
                             }
                         } else {
                             event.setCancelled(true);
@@ -107,6 +129,13 @@ public class EventListener extends Language implements Listener {
                 if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
                     if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
                         event.setCancelled(true);
+                    } else {
+                        if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
+                            Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
+                            if(plotOwner == null) {
+                                event.setCancelled(true);
+                            }
+                        }
                     }
                 } else {
                     event.setCancelled(true);

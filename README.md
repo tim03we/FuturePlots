@@ -9,6 +9,8 @@ Command | Sub-Command | Permission | Alias
 ~ | generate | futureplots.command.generate | gen
 ~ | addhelper | - | trust
 ~ | removehelper | - | rmhelper
+~ | addmember | - | -
+~ | removemember | - | rmmember
 ~ | deny | - | -
 ~ | undeny | - | -
 ~ | auto | - | -
