@@ -32,17 +32,21 @@ public class ClearCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(new PlotPlayer((Player) sender).onPlot()) {
-                if(Settings.economy) {
-                    if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice()) >= 0) {
-                        FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice());
-                    } else {
-                        sender.sendMessage(translate(true, "economy.no.money"));
-                        return;
+            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
+                if(new PlotPlayer((Player) sender).onPlot()) {
+                    if(Settings.economy) {
+                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice()) >= 0) {
+                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice());
+                        } else {
+                            sender.sendMessage(translate(true, "economy.no.money"));
+                            return;
+                        }
                     }
+                    FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                    sender.sendMessage(translate(true, "plot.clear"));
                 }
-                FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                sender.sendMessage(translate(true, "plot.clear"));
+            } else {
+                sender.sendMessage(translate(true, "not.in.world"));
             }
         }
     }

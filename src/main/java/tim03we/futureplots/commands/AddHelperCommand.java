@@ -21,39 +21,34 @@ import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.Settings;
 
-public class UnDenyCommand extends BaseCommand {
+public class AddHelperCommand extends BaseCommand {
 
-    public UnDenyCommand(String name, String description, String usage) {
+    public AddHelperCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
-                if(new PlotPlayer((Player) sender).onPlot()) {
-                    Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                    if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
-                        if (args.length > 1) {
-                            if (FuturePlots.provider.isDenied(args[1], plot)) {
-                                FuturePlots.provider.removeDenied(args[1], plot);
-                                sender.sendMessage(translate(true, "deny.removed", args[1]));
-                            } else {
-                                sender.sendMessage(translate(true, "deny.not.exists"));
-                            }
+            if(new PlotPlayer((Player) sender).onPlot()) {
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
+                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                    if (args.length > 1) {
+                        if (!FuturePlots.provider.isHelper(args[1], plot)) {
+                            FuturePlots.provider.addHelper(args[1], plot);
+                            sender.sendMessage(translate(true, "helper.added", args[1].toLowerCase()));
                         } else {
-                            sender.sendMessage(getUsage());
+                            sender.sendMessage(translate(true, "helper.exists"));
                         }
                     } else {
-                        sender.sendMessage(translate(true, "not.a.owner"));
+                        sender.sendMessage(getUsage());
                     }
                 } else {
-                    sender.sendMessage(translate(true, "not.in.plot"));
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not.in.world"));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

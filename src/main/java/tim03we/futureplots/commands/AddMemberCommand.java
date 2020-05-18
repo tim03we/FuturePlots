@@ -22,9 +22,9 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 
-public class RemoveMember extends BaseCommand {
+public class AddMemberCommand extends BaseCommand {
 
-    public RemoveMember(String name, String description, String usage) {
+    public AddMemberCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -35,11 +35,11 @@ public class RemoveMember extends BaseCommand {
                 Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
                 if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
                     if (args.length > 1) {
-                        if (FuturePlots.provider.isMember(args[1], plot)) {
-                            FuturePlots.provider.removeMember(args[1], plot);
-                            sender.sendMessage(translate(true, "member.removed", args[1]));
+                        if (!FuturePlots.provider.isMember(args[1], plot)) {
+                            FuturePlots.provider.addMember(args[1], plot);
+                            sender.sendMessage(translate(true, "member.added", args[1].toLowerCase()));
                         } else {
-                            sender.sendMessage(translate(true, "member.not.exists"));
+                            sender.sendMessage(translate(true, "member.exists"));
                         }
                     } else {
                         sender.sendMessage(getUsage());

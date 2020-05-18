@@ -19,36 +19,34 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.Settings;
 
-public class RemoveHelper extends BaseCommand {
+public class DisposeCommand extends BaseCommand {
 
-    public RemoveHelper(String name, String description, String usage) {
+    public DisposeCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(new PlotPlayer((Player) sender).onPlot()) {
-                Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
-                    if (args.length > 1) {
-                        if (FuturePlots.provider.isHelper(args[1], plot)) {
-                            FuturePlots.provider.removeHelper(args[1], plot);
-                            sender.sendMessage(translate(true, "helper.removed", args[1]));
+            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
+                if(new PlotPlayer((Player) sender).onPlot()) {
+                    if(Settings.economy) {
+                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
+                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
                         } else {
-                            sender.sendMessage(translate(true, "helper.not.exists"));
+                            sender.sendMessage(translate(true, "economy.no.money"));
+                            return;
                         }
-                    } else {
-                        sender.sendMessage(getUsage());
                     }
-                } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
+                    FuturePlots.provider.deletePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                    sender.sendMessage(translate(true, "plot.dispose"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+                sender.sendMessage(translate(true, "not.in.world"));
             }
         }
     }

@@ -36,28 +36,32 @@ public class DeleteCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-            if(new PlotPlayer((Player) sender).onPlot()) {
-                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
-                    if(Settings.economy) {
-                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice()) >= 0) {
-                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice());
-                        } else {
-                            sender.sendMessage(translate(true, "economy.no.money"));
-                            return;
+            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
+                if(new PlotPlayer((Player) sender).onPlot()) {
+                    if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                        if(Settings.economy) {
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice()) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice());
+                            } else {
+                                sender.sendMessage(translate(true, "economy.no.money"));
+                                return;
+                            }
                         }
+                        new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
+                        FuturePlots.provider.deletePlot(plot);
+                        FuturePlots.getInstance().clearPlot(plot);
+                        Position pos = FuturePlots.getInstance().getPlotPosition(plot);
+                        ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
+                        sender.sendMessage(translate(true, "plot.delete"));
+                    } else {
+                        sender.sendMessage(translate(true, "not.a.owner"));
                     }
-                    new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
-                    FuturePlots.provider.deletePlot(plot);
-                    FuturePlots.getInstance().clearPlot(plot);
-                    Position pos = FuturePlots.getInstance().getPlotPosition(plot);
-                    ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
-                    sender.sendMessage(translate(true, "plot.delete"));
                 } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
+                    sender.sendMessage(translate(true, "not.in.plot"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+                sender.sendMessage(translate(true, "not.in.world"));
             }
         }
     }
