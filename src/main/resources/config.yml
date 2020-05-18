@@ -37,4 +37,5 @@ default-settings:
     claim: 500
     clear: 300
     delete: 200
+    dispose: 500
 ...

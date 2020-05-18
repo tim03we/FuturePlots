@@ -1,9 +1,9 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.2.0"
+version: "1.2.1"
 
 prefix: "FuturePlots > "
-
+not.in.world: "당신은 어떤 음모 세계에 있지 않습니다."
 not.in.plot: "당신은 plot에 있지 않습니다."
 not.a.owner: "이 행동은 오직 plot의 소유자만 할 수 있습니다."
 

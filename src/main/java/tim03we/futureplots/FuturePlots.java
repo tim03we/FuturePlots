@@ -68,7 +68,7 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.0")) {
+        if(!Language.getNoPrefix("version").equals("1.2.1")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
@@ -128,10 +128,11 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand("info", new InfoCommand("info", "Run the command", "/plot info"), new String[]{"i"});
         commandHandler.registerCommand("deny", new DenyCommand("deny", "", "/plot deny <name>"), new String[]{});
         commandHandler.registerCommand("undeny", new UnDenyCommand("undeny", "", "/plot undeny <name>"), new String[]{});
-        commandHandler.registerCommand("addhelper", new AddHelper("addhelper", "Run the command", "/plot addhelper <name>"), new String[]{"trust"});
-        commandHandler.registerCommand("removehelper", new RemoveHelper("removehelper", "Run the command", "/plot removehelper <name>"), new String[]{"rmhelper", "untrust"});
-        commandHandler.registerCommand("addmember", new AddMember("addmember", "", "/plot addmember <name>"), new String[]{});
-        commandHandler.registerCommand("removemember", new RemoveMember("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
+        commandHandler.registerCommand("addhelper", new AddHelperCommand("addhelper", "Run the command", "/plot addhelper <name>"), new String[]{"trust"});
+        commandHandler.registerCommand("removehelper", new RemoveHelperCommand("removehelper", "Run the command", "/plot removehelper <name>"), new String[]{"rmhelper", "untrust"});
+        commandHandler.registerCommand("addmember", new AddMemberCommand("addmember", "", "/plot addmember <name>"), new String[]{});
+        commandHandler.registerCommand("removemember", new RemoveMemberCommand("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
+        commandHandler.registerCommand("dispose", new DisposeCommand("dispose", "", "/plot dispose"), new String[]{});
         /* ToDo */
         //commandHandler.registerCommand("flag", new FlagCommand("flag", " , "/plot flag <flag> [value]"), new String[]{});
         /* ToDo */

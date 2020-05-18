@@ -1,8 +1,9 @@
 ---
-version: "1.2.0"
+version: "1.2.1"
 
 prefix: "FuturePlots > "
 
+not.in.world: "Du befindest dich in keiner Plotwelt."
 not.in.plot: "Du befindest dich nicht auf deinem Plot."
 not.a.owner: "Diese Aktion kann nur der Plot Besitzer ausführen."
 

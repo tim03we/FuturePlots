@@ -37,6 +37,7 @@ public class Settings {
     public static int delete_price;
     public static int clear_price;
     public static int claim_price;
+    public static int dispose_price;
 
     public static String provider;
     public static String language;
