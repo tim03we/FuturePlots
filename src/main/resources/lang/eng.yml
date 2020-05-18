@@ -24,6 +24,7 @@ plot.homes.text: "- %2 (%1)"
 plot.world.required: "Enter a world name and the plot number to get to your plot."
 plot.world.not.exists: "This world does not exist."
 plot.world.exists: "This world already exists."
+plot.dispose: "The plot has been unlocked."
 
 helper.added: "The helper %1 was added to the plot."
 helper.removed: "The helper %1 was removed to the plot."

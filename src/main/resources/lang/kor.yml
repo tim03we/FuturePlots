@@ -24,6 +24,7 @@ plot.homes.text: "- %2 (%1)"
 plot.world.required: "당신의 plot에 가려면 월드 이름과 plot 번호를 입력하세요."
 plot.world.not.exists: "이 월드는 존재하지 않습니다."
 plot.world.exists: "이 월드는 이미 존재합니다."
+plot.dispose: "플롯이 릴리스되었습니다."
 
 helper.added: "플레이어 %1(이)가 plot의 도우미로 추가되었습니다."
 helper.removed: "플레이어 %1(이)가 plot의 도우미에서 삭제되었습니다."

@@ -42,6 +42,7 @@ public class DisposeCommand extends BaseCommand {
                             return;
                         }
                     }
+                    new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
                     FuturePlots.provider.deletePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
                     sender.sendMessage(translate(true, "plot.dispose"));
                 }
