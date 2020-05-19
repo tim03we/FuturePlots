@@ -18,6 +18,7 @@ package tim03we.futureplots.utils;
 
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.tasks.PlotSetBorderTask;
 
@@ -47,6 +48,10 @@ public class Plot {
 
     public String getLevelName() {
         return this.levelName;
+    }
+
+    public Position getPosition() {
+        return FuturePlots.getInstance().getPlotPosition(getPlot(x, z, levelName));
     }
 
     public void changeBorder(Block block) {

@@ -22,14 +22,9 @@ import tim03we.futureplots.FuturePlots;
 public class PlotPlayer {
 
     private Player player;
-    private String username;
 
     public PlotPlayer(Player player) {
         this.player = player;
-    }
-
-    public PlotPlayer(String username) {
-        this.username = username;
     }
 
     public boolean onPlot() {
@@ -42,5 +37,9 @@ public class PlotPlayer {
 
     public boolean isOwner() {
         return FuturePlots.provider.isOwner(player.getName(), getPlot());
+    }
+
+    public boolean canByPass() {
+        return isOwner() || player.isOp() || player.hasPermission("futureplots.bypass");
     }
 }
