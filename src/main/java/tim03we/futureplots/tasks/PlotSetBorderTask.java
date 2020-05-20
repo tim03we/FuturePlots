@@ -36,13 +36,14 @@ public class PlotSetBorderTask extends Task {
     private double xMax, zMax;
 
     public PlotSetBorderTask(Plot plot, Block block) {
+        PlotSettings plotSettings = new PlotSettings(plot.getLevelName());
         this.plotBeginPos = FuturePlots.getInstance().getPlotPosition(plot);
         this.level = plotBeginPos.getLevel();
         this.plotBeginPos = plotBeginPos.subtract(1,0,1);
-        int plotSize = new PlotSettings(level.getName()).getPlotSize();
+        int plotSize = plotSettings.getPlotSize();
         this.xMax = plotBeginPos.x + plotSize + 1;
         this.zMax = plotBeginPos.z + plotSize + 1;
-        this.height = new PlotSettings(level.getName()).getGroundHeight();
+        this.height = plotSettings.getGroundHeight();
         this.plotWallBlock = block;
     }
 

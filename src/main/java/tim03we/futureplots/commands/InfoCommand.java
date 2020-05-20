@@ -39,7 +39,7 @@ public class InfoCommand extends BaseCommand {
                     if(FuturePlots.provider.hasOwner(plot)) {
                         sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot), FuturePlots.provider.getMembers(plot)));
                     } else {
-                        sender.sendMessage(translate(false, "plot.info.text", " ", " ", " ", " "));
+                        sender.sendMessage(translate(false, "plot.info.text", " ", " ", " ", " ", " "));
 
                     }
                 }

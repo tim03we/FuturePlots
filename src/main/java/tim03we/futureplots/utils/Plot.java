@@ -16,6 +16,7 @@ package tim03we.futureplots.utils;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Position;
@@ -35,6 +36,10 @@ public class Plot {
     }
 
     private Plot getPlot(int x, int z, String levelname) {
+        return new Plot(x, z, levelname);
+    }
+
+    private Plot getPlot() {
         return new Plot(x, z, levelName);
     }
 
@@ -56,5 +61,23 @@ public class Plot {
 
     public void changeBorder(Block block) {
         Server.getInstance().getScheduler().scheduleDelayedTask(FuturePlots.getInstance(), new PlotSetBorderTask(getPlot(x, z, levelName), block), 1, true);
+    }
+
+    public boolean canByPass(Player player) {
+        return new PlotPlayer(player).canByPass();
+    }
+
+    public boolean canInteract(Player player) {
+        if(FuturePlots.provider.isOwner(player.getName(), getPlot())) {
+            return true;
+        } else if(FuturePlots.provider.isHelper(player.getName(), getPlot())) {
+            return true;
+        } else {
+            if(FuturePlots.provider.isMember(player.getName(), getPlot())) {
+                Player target = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(getPlot()));
+                return target != null;
+            }
+        }
+        return false;
     }
 }

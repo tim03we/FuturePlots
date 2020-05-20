@@ -19,6 +19,7 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
@@ -34,7 +35,8 @@ public class DisposeCommand extends BaseCommand {
         if(sender instanceof Player) {
             if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
                 if(new PlotPlayer((Player) sender).onPlot()) {
-                    if(FuturePlots.provider.isOwner(sender.getName(), new PlotPlayer((Player) sender).getPlot())) {
+                    Plot plot = new PlotPlayer((Player) sender).getPlot();
+                    if(plot.canByPass((Player) sender)) {
                         if(Settings.economy) {
                             if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
                                 FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
@@ -43,8 +45,8 @@ public class DisposeCommand extends BaseCommand {
                                 return;
                             }
                         }
-                        new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
-                        FuturePlots.provider.deletePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                        plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
+                        FuturePlots.provider.deletePlot(plot);
                         sender.sendMessage(translate(true, "plot.dispose"));
                     }
                 }

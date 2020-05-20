@@ -17,16 +17,18 @@ package tim03we.futureplots;
  */
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
+import cn.nukkit.event.entity.EntityShootBowEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.item.ItemEdible;
 import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotPlayer;
 import tim03we.futureplots.utils.Settings;
 
 public class EventListener extends Language implements Listener {
@@ -60,16 +62,10 @@ public class EventListener extends Language implements Listener {
         Player player = event.getPlayer();
         if(Settings.levels.contains(player.getLevel().getName())) {
             if(!player.isOp()) {
-                if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
-                    if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+                if(plot != null) {
+                    if(!plot.canInteract(player)) {
                         event.setCancelled(true);
-                    } else {
-                        if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
-                            Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
-                            if(plotOwner == null) {
-                                event.setCancelled(true);
-                            }
-                        }
                     }
                 } else {
                     event.setCancelled(true);
@@ -83,16 +79,10 @@ public class EventListener extends Language implements Listener {
         Player player = event.getPlayer();
         if(Settings.levels.contains(player.getLevel().getName())) {
             if(!player.isOp()) {
-                if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
-                    if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+                if(plot != null) {
+                    if(!plot.canInteract(player)) {
                         event.setCancelled(true);
-                    } else {
-                        if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
-                            Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
-                            if(plotOwner == null) {
-                                event.setCancelled(true);
-                            }
-                        }
                     }
                 } else {
                     event.setCancelled(true);
@@ -106,39 +96,38 @@ public class EventListener extends Language implements Listener {
         Player player = event.getPlayer();
         if(Settings.levels.contains(player.getLevel().getName())) {
             if(!player.isOp()) {
-                if(event.getItem() instanceof ItemEdible) {
-                    if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-                        if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
-                            if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
-                                event.setCancelled(true);
-                                return;
-                            } else {
-                                if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
-                                    Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
-                                    if(plotOwner == null) {
-                                        event.setCancelled(true);
-                                    }
-                                }
-                            }
-                        } else {
-                            event.setCancelled(true);
-                            return;
-                        }
-                    }
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+                if(event.getItem() instanceof ItemEdible && event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
+                    return;
                 }
-                if(FuturePlots.getInstance().isPlot(event.getBlock().getLocation())) {
-                    if(!FuturePlots.provider.isOwner(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())) && !FuturePlots.provider.isHelper(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
-                        event.setCancelled(true);
-                    } else {
-                        if(FuturePlots.provider.isMember(player.getName(), FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation()))) {
-                            Player plotOwner = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation())));
-                            if(plotOwner == null) {
+                if(plot != null) {
+                    if(!plot.canInteract(player)) {
+                        if(event.getItem().canBeActivated() || event.getBlock().canBeActivated()) {
+                            event.setCancelled(true);
+                        } else {
+                            plot = new PlotPlayer(player).getPlot();
+                            if(plot == null || !plot.canInteract(player)) {
                                 event.setCancelled(true);
                             }
                         }
                     }
                 } else {
                     event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onShoot(EntityShootBowEvent event) {
+        Entity entity = event.getEntity();
+        if(entity instanceof Player) {
+            if(Settings.levels.contains(entity.getLevel().getName())) {
+                if(!((Player) entity).isOp()) {
+                    Plot plot = new PlotPlayer((Player) entity).getPlot();
+                    if(plot == null || !plot.canInteract((Player) entity)) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

@@ -162,10 +162,6 @@ public class FuturePlots extends PluginBase {
         getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"), options);
     }
 
-    public boolean isPlot(Position position) {
-        return getPlotByPosition(position) != null;
-    }
-
     public void clearPlot(Plot plot) {
         getServer().getScheduler().scheduleDelayedTask(this, new PlotClearTask(plot), 1, true);
     }

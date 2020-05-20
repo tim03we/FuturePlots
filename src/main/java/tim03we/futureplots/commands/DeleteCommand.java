@@ -37,9 +37,9 @@ public class DeleteCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
-                Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
                 if(new PlotPlayer((Player) sender).onPlot()) {
-                    if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                    Plot plot = new PlotPlayer((Player) sender).getPlot();
+                    if(plot.canByPass((Player) sender)) {
                         if(Settings.economy) {
                             if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice()) >= 0) {
                                 FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice());
@@ -48,11 +48,10 @@ public class DeleteCommand extends BaseCommand {
                                 return;
                             }
                         }
-                        new PlotPlayer((Player) sender).getPlot().changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
+                        plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
                         FuturePlots.provider.deletePlot(plot);
                         FuturePlots.getInstance().clearPlot(plot);
-                        Position pos = FuturePlots.getInstance().getPlotPosition(plot);
-                        ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
+                        ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
                         sender.sendMessage(translate(true, "plot.delete"));
                     } else {
                         sender.sendMessage(translate(true, "not.a.owner"));

@@ -16,7 +16,6 @@ package tim03we.futureplots.generator;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
@@ -26,11 +25,8 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.plugin.Plugin;
-import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.PlotSettings;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 

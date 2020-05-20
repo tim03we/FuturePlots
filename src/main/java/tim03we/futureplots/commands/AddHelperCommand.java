@@ -32,8 +32,8 @@ public class AddHelperCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             if(new PlotPlayer((Player) sender).onPlot()) {
-                Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                Plot plot = new PlotPlayer((Player) sender).getPlot();
+                if(plot.canByPass((Player) sender)) {
                     if (args.length > 1) {
                         if (!FuturePlots.provider.isHelper(args[1], plot)) {
                             FuturePlots.provider.addHelper(args[1], plot);

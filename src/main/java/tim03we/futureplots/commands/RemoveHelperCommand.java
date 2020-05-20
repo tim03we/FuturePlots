@@ -34,8 +34,8 @@ public class RemoveHelperCommand extends BaseCommand {
         if(sender instanceof Player) {
             if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
                 if(new PlotPlayer((Player) sender).onPlot()) {
-                    Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                    if(FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                    Plot plot = new PlotPlayer((Player) sender).getPlot();
+                    if(plot.canByPass((Player) sender)) {
                         if (args.length > 1) {
                             if (FuturePlots.provider.isHelper(args[1], plot)) {
                                 FuturePlots.provider.removeHelper(args[1], plot);
