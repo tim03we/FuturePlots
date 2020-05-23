@@ -59,6 +59,10 @@ public class Plot {
         return FuturePlots.getInstance().getPlotPosition(getPlot(x, z, levelName));
     }
 
+    public Position getBorderPosition() {
+        return FuturePlots.getInstance().getPlotBorderPosition(getPlot(x, z, levelName));
+    }
+
     public void changeBorder(Block block) {
         Server.getInstance().getScheduler().scheduleDelayedTask(FuturePlots.getInstance(), new PlotSetBorderTask(getPlot(x, z, levelName), block), 1, true);
     }

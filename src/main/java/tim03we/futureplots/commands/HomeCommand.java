@@ -18,11 +18,10 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
-import tim03we.futureplots.utils.World;
 
 public class HomeCommand extends BaseCommand {
 
@@ -33,48 +32,71 @@ public class HomeCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            DataProvider provider = FuturePlots.provider;
             int homeNumber = 1;
-            if(args.length > 1) {
-                try { homeNumber = Integer.parseInt(args[1]);
-                } catch (NumberFormatException numberFormatException) { sender.sendMessage(translate(true, "has-no-plot-num", args[1])); return; }
+            if(provider.getHomes(sender.getName()).size() == 0) {
+                sender.sendMessage(translate(true, "has.no.plot"));
+                return;
             }
-            String[] ex;
-            try {
-                if(FuturePlots.provider.hasHome(sender.getName(), homeNumber)) {
-                    ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber).split(";");
-                } else {
-                    sender.sendMessage(translate(true, "has-no-plot"));
-                    return;
-                }
-            } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has.no.plot.number", args[1])); return; }
-            Position plotPos;
             if(Settings.levels.size() > 1) {
                 if(args.length > 2) {
-                    if(!new World(args[2]).exists()) {
-                        sender.sendMessage(translate(true, "world-not-exists"));
-                        return;
-                    } else {
-                        try {
-                            if(FuturePlots.provider.hasHomeInLevel(sender.getName(), homeNumber, args[2])) {
-                                ex = FuturePlots.provider.getPlotId(sender.getName(), homeNumber, args[2]).split(";");
-                                plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), args[2]));
+                    if(isInteger(args[1])) {
+                        if(Settings.levels.contains(args[2])) {
+                            if(provider.getHomes(sender.getName(), args[2]).size() > 0) {
+                                Plot plot = provider.getPlotFromNumber(sender.getName(), Integer.parseInt(args[1]), args[2]);
+                                if(plot != null) {
+                                    ((Player) sender).teleport(plot.getBorderPosition());
+                                    sender.sendMessage(translate(true, "plot.teleport"));
+                                } else {
+                                    sender.sendMessage(translate(true, "has.no.plot.world"));
+                                    return;
+                                }
                             } else {
                                 sender.sendMessage(translate(true, "has.no.plot.world"));
                                 return;
                             }
-                        } catch (IndexOutOfBoundsException e) { sender.sendMessage(translate(true, "has.no.plot.world")); return; }
+                        } else {
+                            sender.sendMessage(translate(true, "plot.world.required"));
+                            return;
+                        }
+                    } else {
+                        sender.sendMessage(translate(true, "plot.world.required"));
+                        return;
                     }
                 } else {
                     sender.sendMessage(translate(true, "plot.world.required"));
                     return;
                 }
-            } else plotPos = FuturePlots.getInstance().getPlotBorderPosition(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
-            try {
-                ((Player) sender).teleport(plotPos);
+                return;
+            }
+            if(args.length > 1) {
+                if(isInteger(args[1])) {
+                    if(provider.getHomes(sender.getName(), Settings.levels.get(0)).size() > 0) {
+                        Plot plot = provider.getPlotFromNumber(sender.getName(), Integer.parseInt(args[1]), Settings.levels.get(0));
+                        if(plot != null) {
+                            ((Player) sender).teleport(plot.getBorderPosition());
+                            sender.sendMessage(translate(true, "plot.teleport"));
+                        } else {
+                            sender.sendMessage(translate(true, "has.no.plot.number", args[1]));
+                        }
+                    } else {
+                        sender.sendMessage(translate(true, "has.no.plot"));
+                    }
+                }
+            } else {
+                Plot plot = provider.getPlot(sender.getName(), homeNumber);
+                ((Player) sender).teleport(plot.getBorderPosition());
                 sender.sendMessage(translate(true, "plot.teleport"));
-            } catch (IndexOutOfBoundsException exception) {
-                sender.sendMessage(translate(true, "has.no.plot.number", args[1]));
             }
         }
+    }
+
+    public boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException | NullPointerException e) {
+            return false;
+        }
+        return true;
     }
 }

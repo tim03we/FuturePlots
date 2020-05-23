@@ -204,7 +204,7 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public String getPlotId(String username, int homeNumber) {
+    public Plot getPlot(String username, int homeNumber) {
         ArrayList<String> homes = new ArrayList<>();
         for (String list : yaml.getAll().keySet()) {
             if(yaml.getString(list + ".owner").equals(username)) {
@@ -212,13 +212,14 @@ public class YamlProvider implements DataProvider {
             }
         }
         if(homes.size() > 0) {
-            return homes.get(homeNumber - 1);
+            String[] ex = homes.get(homeNumber - 1).split(";");
+            return new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]);
         }
         return null;
     }
 
     @Override
-    public String getPlotId(String username, int homeNumber, String levelName) {
+    public Plot getPlotFromNumber(String username, int homeNumber, String levelName) {
         ArrayList<String> homes = new ArrayList<>();
         for (String list : yaml.getAll().keySet()) {
             String[] ex = list.split(";");
@@ -229,7 +230,10 @@ public class YamlProvider implements DataProvider {
             }
         }
         if(homes.size() > 0) {
-            return homes.get(homeNumber - 1);
+            try {
+                String[] ex = homes.get(homeNumber - 1).split(";");
+                return new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), levelName);
+            } catch (IndexOutOfBoundsException e) { return null; }
         }
         return null;
     }

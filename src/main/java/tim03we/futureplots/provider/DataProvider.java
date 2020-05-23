@@ -64,9 +64,9 @@ public interface DataProvider {
 
     ArrayList<String> getHomes(String username);
 
-    String getPlotId(String username, int homeNumber);
+    Plot getPlot(String username, int homeNumber);
 
-    String getPlotId(String username, int homeNumber, String levelName);
+    Plot getPlotFromNumber(String username, int homeNumber, String levelName);
 
     String getPlotName(Plot plot);
 
