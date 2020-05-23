@@ -33,25 +33,21 @@ public class DisposeCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
-                if(new PlotPlayer((Player) sender).onPlot()) {
-                    Plot plot = new PlotPlayer((Player) sender).getPlot();
-                    if(plot.canByPass((Player) sender)) {
-                        if(Settings.economy) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
-                            } else {
-                                sender.sendMessage(translate(true, "economy.no.money"));
-                                return;
-                            }
+            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            if(plot != null) {
+                if(plot.canByPass((Player) sender)) {
+                    if(Settings.economy) {
+                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
+                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
+                        } else {
+                            sender.sendMessage(translate(true, "economy.no.money"));
+                            return;
                         }
-                        plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
-                        FuturePlots.provider.deletePlot(plot);
-                        sender.sendMessage(translate(true, "plot.dispose"));
                     }
+                    plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
+                    FuturePlots.provider.deletePlot(plot);
+                    sender.sendMessage(translate(true, "plot.dispose"));
                 }
-            } else {
-                sender.sendMessage(translate(true, "not.in.world"));
             }
         }
     }

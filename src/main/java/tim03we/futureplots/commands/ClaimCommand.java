@@ -25,7 +25,6 @@ import tim03we.futureplots.utils.PlotPlayer;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
-import static tim03we.futureplots.utils.Settings.max_plots;
 import static tim03we.futureplots.utils.Settings.plotSize;
 
 public class ClaimCommand extends BaseCommand {
@@ -37,40 +36,36 @@ public class ClaimCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
-                if(new PlotPlayer((Player) sender).onPlot()) {
-                    Plot plot = new PlotPlayer((Player) sender).getPlot();
-                    if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getHomes(sender.getName()).size() <= Settings.max_plots) {
-                        if (!FuturePlots.provider.hasOwner(plot)) {
-                            if (!FuturePlots.provider.isOwner(sender.getName(), plot)) {
-                                if(Settings.economy) {
-                                    if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
-                                        FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
-                                    } else {
-                                        sender.sendMessage(translate(true, "economy.no.money"));
-                                        return;
-                                    }
+            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            if(plot != null) {
+                if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getHomes(sender.getName()).size() <= Settings.max_plots) {
+                    if (!FuturePlots.provider.hasOwner(plot)) {
+                        if (!FuturePlots.provider.isOwner(sender.getName(), plot)) {
+                            if(Settings.economy) {
+                                if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
+                                    FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                                } else {
+                                    sender.sendMessage(translate(true, "economy.no.money"));
+                                    return;
                                 }
-                                plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockClaimed());
-                                FuturePlots.provider.claimPlot(sender.getName(), plot);
-                                if(Settings.claim_tp) {
-                                    ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
-                                }
-                                sender.sendMessage(translate(true, "plot.claim"));
-                            } else {
-                                sender.sendMessage(translate(true, "plot.claim.already"));
                             }
+                            plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockClaimed());
+                            FuturePlots.provider.claimPlot(sender.getName(), plot);
+                            if(Settings.claim_tp) {
+                                ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
+                            }
+                            sender.sendMessage(translate(true, "plot.claim"));
                         } else {
                             sender.sendMessage(translate(true, "plot.claim.already"));
                         }
                     } else {
-                        sender.sendMessage(translate(true, "plot.max"));
+                        sender.sendMessage(translate(true, "plot.claim.already"));
                     }
                 } else {
-                    sender.sendMessage(translate(true, "not.in.plot"));
+                    sender.sendMessage(translate(true, "plot.max"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not.in.world"));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

@@ -26,10 +26,11 @@ import cn.nukkit.event.entity.EntityShootBowEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.item.ItemEdible;
-import tim03we.futureplots.utils.Language;
-import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.events.PlotBlockEvent;
+import tim03we.futureplots.events.PlotEnterEvent;
+import tim03we.futureplots.events.PlotEvent;
+import tim03we.futureplots.events.PlotLeaveEvent;
+import tim03we.futureplots.utils.*;
 
 public class EventListener extends Language implements Listener {
 
@@ -43,6 +44,7 @@ public class EventListener extends Language implements Listener {
                 if(FuturePlots.provider.isDenied(player.getName(), plot) && !FuturePlots.provider.isOwner(player.getName(), plot) && !FuturePlots.provider.isHelper(player.getName(), plot)) {
                     event.setCancelled(true);
                 } else {
+                    new PlotEvent(new PlotEnterEvent(FuturePlots.getInstance(), plot, player));
                     if(Settings.popup) {
                         if(FuturePlots.provider.hasOwner(plot)) {
                             player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getPlotName(plot)));
@@ -52,7 +54,7 @@ public class EventListener extends Language implements Listener {
                     }
                 }
             } else if(plotFrom != null && plot == null) {
-                //
+                new PlotEvent(new PlotLeaveEvent(FuturePlots.getInstance(), plot, player));
             }
         }
     }
@@ -61,8 +63,9 @@ public class EventListener extends Language implements Listener {
     public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if(Settings.levels.contains(player.getLevel().getName())) {
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+            new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot));
             if(!player.isOp()) {
-                Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
                 if(plot != null) {
                     if(!plot.canInteract(player)) {
                         event.setCancelled(true);
@@ -78,8 +81,9 @@ public class EventListener extends Language implements Listener {
     public void onPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if(Settings.levels.contains(player.getLevel().getName())) {
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+            new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot));
             if(!player.isOp()) {
-                Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
                 if(plot != null) {
                     if(!plot.canInteract(player)) {
                         event.setCancelled(true);

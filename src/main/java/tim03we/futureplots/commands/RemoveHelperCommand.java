@@ -21,7 +21,6 @@ import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.Settings;
 
 public class RemoveHelperCommand extends BaseCommand {
 
@@ -32,28 +31,24 @@ public class RemoveHelperCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
-                if(new PlotPlayer((Player) sender).onPlot()) {
-                    Plot plot = new PlotPlayer((Player) sender).getPlot();
-                    if(plot.canByPass((Player) sender)) {
-                        if (args.length > 1) {
-                            if (FuturePlots.provider.isHelper(args[1], plot)) {
-                                FuturePlots.provider.removeHelper(args[1], plot);
-                                sender.sendMessage(translate(true, "helper.removed", args[1]));
-                            } else {
-                                sender.sendMessage(translate(true, "helper.not.exists"));
-                            }
+            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            if(plot != null) {
+                if(plot.canByPass((Player) sender)) {
+                    if (args.length > 1) {
+                        if (FuturePlots.provider.isHelper(args[1], plot)) {
+                            FuturePlots.provider.removeHelper(args[1], plot);
+                            sender.sendMessage(translate(true, "helper.removed", args[1]));
                         } else {
-                            sender.sendMessage(getUsage());
+                            sender.sendMessage(translate(true, "helper.not.exists"));
                         }
                     } else {
-                        sender.sendMessage(translate(true, "not.a.owner"));
+                        sender.sendMessage(getUsage());
                     }
                 } else {
-                    sender.sendMessage(translate(true, "not.in.plot"));
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not.in.world"));
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

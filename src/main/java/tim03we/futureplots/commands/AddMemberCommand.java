@@ -31,8 +31,8 @@ public class AddMemberCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(new PlotPlayer((Player) sender).onPlot()) {
-                Plot plot = new PlotPlayer((Player) sender).getPlot();
+            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if (args.length > 1) {
                         if (!FuturePlots.provider.isMember(args[1], plot)) {

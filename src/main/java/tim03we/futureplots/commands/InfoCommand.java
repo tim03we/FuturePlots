@@ -21,7 +21,6 @@ import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.Settings;
 
 public class InfoCommand extends BaseCommand {
 
@@ -32,19 +31,15 @@ public class InfoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            if(Settings.levels.contains(((Player) sender).getLevel().getName())) {
-                if(new PlotPlayer((Player) sender).onPlot()) {
-                    Plot plot = FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition());
-                    sender.sendMessage(translate(false, "plot.info.title"));
-                    if(FuturePlots.provider.hasOwner(plot)) {
-                        sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot), FuturePlots.provider.getMembers(plot)));
-                    } else {
-                        sender.sendMessage(translate(false, "plot.info.text", " ", " ", " ", " ", " "));
+            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            if(plot != null) {
+                sender.sendMessage(translate(false, "plot.info.title"));
+                if(FuturePlots.provider.hasOwner(plot)) {
+                    sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot), FuturePlots.provider.getMembers(plot)));
+                } else {
+                    sender.sendMessage(translate(false, "plot.info.text", " ", " ", " ", " ", " "));
 
-                    }
                 }
-            } else {
-                sender.sendMessage(translate(true, "not.in.world"));
             }
         }
     }

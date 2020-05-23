@@ -27,12 +27,11 @@ public class PlotPlayer {
         this.player = player;
     }
 
-    public boolean onPlot() {
-        return FuturePlots.getInstance().getPlotByPosition(player.getPosition()) != null;
-    }
-
     public Plot getPlot() {
-        return FuturePlots.getInstance().getPlotByPosition(player.getPosition());
+        if(Settings.levels.contains(player.getLevel().getName())) {
+            return FuturePlots.getInstance().getPlotByPosition(player.getPosition());
+        }
+        return null;
     }
 
     public boolean isOwner() {
