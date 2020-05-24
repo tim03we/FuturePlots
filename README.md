@@ -2,6 +2,9 @@
 
 FuturePlots is a plot plugin that will be further developed in the future. This Plot Plugin should be an alternative to PlotSquared for Nukkit, because from Nukkit 2.0 on FastAsyncWorldEdit and PlotSquared will not work anymore.This Plugin have many Features:
 
+# Features
+- Border System ([NukkitX](https://nukkitx.com/resources/bordersystem-futureplots.479/))
+
 # Commands
 Command | Sub-Command | Permission | Alias
 ------- | ----------- | ---------- | ------
@@ -26,7 +29,6 @@ Command | Sub-Command | Permission | Alias
 - ✅ Yaml Provider<br>
 - ❌ MongoDB Provider<br>
 - ❌ MySQL Provider<br>
-- ✅ Border System<br>
 
 ----------------
 
