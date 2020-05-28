@@ -21,9 +21,11 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.plugin.PluginManager;
 import tim03we.futureplots.commands.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
+import tim03we.futureplots.listener.*;
 import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.provider.EconomyProvider;
 import tim03we.futureplots.provider.EconomySProvider;
@@ -59,12 +61,24 @@ public class FuturePlots extends PluginBase {
     public void onEnable() {
         new File(getDataFolder() + "/worlds/").mkdirs();
         registerCommands();
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
+        registerEvents();
         Settings.init();
         Language.init();
         loadWorlds();
         initProvider();
         checkVersion();
+    }
+
+    private void registerEvents() {
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new BlockBreak(), this);
+        pm.registerEvents(new BlockPiston(), this);
+        pm.registerEvents(new BlockPlace(), this);
+        pm.registerEvents(new EntityExplode(), this);
+        pm.registerEvents(new EntityShootBow(), this);
+        pm.registerEvents(new LiquidFlow(), this);
+        pm.registerEvents(new PlayerInteract(), this);
+        pm.registerEvents(new PlayerMove(), this);
     }
 
     private void checkVersion() {
