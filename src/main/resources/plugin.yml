@@ -10,3 +10,4 @@ softdepend:
 permissions:
   futureplots.command.generate:
     description: "You can generate plot world with this permission."
+    default: op
