@@ -21,8 +21,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
-import cn.nukkit.event.block.BlockBreakEvent;
-import cn.nukkit.event.block.BlockPlaceEvent;
+import cn.nukkit.event.block.*;
 import cn.nukkit.event.entity.*;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
@@ -34,6 +33,7 @@ import tim03we.futureplots.events.PlotLeaveEvent;
 import tim03we.futureplots.utils.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventListener extends Language implements Listener {
 
@@ -153,6 +153,30 @@ public class EventListener extends Language implements Listener {
                 }
             }
             event.setBlockList(allowedBlocks);
+        }
+    }
+
+    @EventHandler
+    public void onLiquid(LiquidFlowEvent event) {
+        if (event.isCancelled()) return;
+        if(Settings.levels.contains(event.getBlock().getLevel().getName())) {
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+            if(plot == null) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPiston(BlockPistonEvent event) {
+        if(Settings.levels.contains(event.getBlock().getLevel().getName())) {
+            List<Block> blocks = event.getBlocks();
+            for (Block block : blocks) {
+                Plot plot = FuturePlots.getInstance().getPlotByPosition(block.getLocation());
+                if(plot == null) {
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 }
