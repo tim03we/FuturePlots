@@ -22,6 +22,8 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 
+import java.util.Arrays;
+
 public class InfoCommand extends BaseCommand {
 
     public InfoCommand(String name, String description, String usage) {
@@ -34,10 +36,10 @@ public class InfoCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 sender.sendMessage(translate(false, "plot.info.title"));
-                if(FuturePlots.provider.hasOwner(plot)) {
-                    sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getPlotName(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot), FuturePlots.provider.getDenied(plot), FuturePlots.provider.getMembers(plot)));
+                if(FuturePlots.provider.getOwner(plot) != null) {
+                    sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getOwner(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot).toString(), FuturePlots.provider.getDenied(plot).toString(), FuturePlots.provider.getMembers(plot).toString()));
                 } else {
-                    sender.sendMessage(translate(false, "plot.info.text", " ", " ", " ", " ", " "));
+                    sender.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));
 
                 }
             }

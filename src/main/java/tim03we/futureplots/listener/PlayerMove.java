@@ -26,8 +26,8 @@ public class PlayerMove extends Language implements Listener {
                 } else {
                     new PlotEvent(new PlotEnterEvent(FuturePlots.getInstance(), plot, player));
                     if(Settings.popup) {
-                        if(FuturePlots.provider.hasOwner(plot)) {
-                            player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getPlotName(plot)));
+                        if(FuturePlots.provider.getOwner(plot) != null) {
+                            player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getOwner(plot)));
                         } else {
                             player.sendPopup(translate(false, "plot.enter.free", plot.getX() + ";" + plot.getZ()));
                         }

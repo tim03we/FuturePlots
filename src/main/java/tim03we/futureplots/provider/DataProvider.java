@@ -19,56 +19,47 @@ package tim03we.futureplots.provider;
 import tim03we.futureplots.utils.Plot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface DataProvider {
 
-    void saveAll();
+    void save();
 
-    void claimPlot(String username, Plot plot);
+    void claimPlot(String name, Plot plot);
 
     void deletePlot(Plot plot);
 
-    boolean isHelper(String username, Plot plot);
+    boolean isHelper(String name, Plot plot);
 
-    void addHelper(String username, Plot plot);
+    boolean isMember(String name, Plot plot);
 
-    void removeHelper(String username, Plot plot);
+    boolean isDenied(String name, Plot plot);
 
-    String getHelpers(Plot plot);
+    boolean isOwner(String name, Plot plot);
 
-    boolean isMember(String username, Plot plot);
+    String getOwner(Plot plot);
 
-    void addMember(String username, Plot plot);
+    List<String> getHelpers(Plot plot);
 
-    void removeMember(String username, Plot plot);
+    List<String> getMembers(Plot plot);
 
-    String getMembers(Plot plot);
+    List<String> getDenied(Plot plot);
 
-    String getDenied(Plot plot);
+    void addHelper(String name, Plot plot);
 
-    boolean isDenied(String username, Plot plot);
+    void addMember(String name, Plot plot);
 
-    void addDenied(String username, Plot plot);
+    void addDenied(String name, Plot plot);
 
-    void removeDenied(String username, Plot plot);
+    void removeHelper(String name, Plot plot);
 
-    boolean isOwner(String username, Plot plot);
+    void removeMember(String name, Plot plot);
 
-    boolean hasOwner(Plot plot);
+    void removeDenied(String name, Plot plot);
 
-    boolean hasHome(String username, int homenNumber);
+    Plot getPlot(String name, Object number, Object level);
 
-    boolean hasHomeInLevel(String username, int homenNumber, String levelName);
-
-    ArrayList<String> getHomes(String username, String world);
-
-    ArrayList<String> getHomes(String username);
-
-    Plot getPlot(String username, int homeNumber);
-
-    Plot getPlotFromNumber(String username, int homeNumber, String levelName);
-
-    String getPlotName(Plot plot);
+    List<String> getPlots(String name, Object level);
 
     Plot getNextFreePlot(Plot plot);
 }

@@ -78,7 +78,7 @@ public class Plot {
             return true;
         } else {
             if(FuturePlots.provider.isMember(player.getName(), getPlot())) {
-                Player target = Server.getInstance().getPlayer(FuturePlots.provider.getPlotName(getPlot()));
+                Player target = Server.getInstance().getPlayer(FuturePlots.provider.getOwner(getPlot()));
                 return target != null;
             }
         }

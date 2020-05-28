@@ -21,13 +21,14 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class YamlProvider implements DataProvider {
 
-    private Config yaml = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
+    private final Config yaml = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
 
     @Override
-    public void saveAll() {
+    public void save() {
         yaml.save();
     }
 
@@ -47,220 +48,128 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public String getHelpers(Plot plot) {
-        StringBuilder sb = new StringBuilder();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
-            sb.append(list + ", ");
-        }
-        return sb.toString();
+    public List<String> getHelpers(Plot plot) {
+        return yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers");
     }
 
     @Override
-    public String getMembers(Plot plot) {
-        StringBuilder sb = new StringBuilder();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
-            sb.append(list + ", ");
-        }
-        return sb.toString();
+    public List<String> getMembers(Plot plot) {
+        return yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members");
     }
 
     @Override
-    public String getDenied(Plot plot) {
-        StringBuilder sb = new StringBuilder();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
-            sb.append(list + ", ");
-        }
-        return sb.toString();    }
-
-    @Override
-    public boolean isHelper(String username, Plot plot) {
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
-            if(list.toLowerCase().equals(username.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+    public List<String> getDenied(Plot plot) {
+        return yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied");
     }
 
     @Override
-    public boolean isMember(String username, Plot plot) {
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
-            if(list.toLowerCase().equals(username.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isHelper(String name, Plot plot) {
+        return getHelpers(plot).contains(name);
     }
 
     @Override
-    public void addHelper(String username, Plot plot) {
-        ArrayList<String> helpers = new ArrayList<>();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
-            helpers.add(list);
+    public boolean isDenied(String name, Plot plot) {
+        return getDenied(plot).contains(name);
+    }
+
+    @Override
+    public boolean isMember(String name, Plot plot) {
+        return getMembers(plot).contains(name);
+    }
+
+    @Override
+    public boolean isOwner(String name, Plot plot) {
+        return getOwner(plot).equals(name);
+    }
+
+    @Override
+    public String getOwner(Plot plot) {
+        if(yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ())) {
+            return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
         }
-        helpers.add(username.toLowerCase());
+        return null;
+    }
+
+    @Override
+    public void addHelper(String name, Plot plot) {
+        List<String> helpers = getHelpers(plot);
+        helpers.add(name.toLowerCase());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
     }
 
     @Override
-    public void addMember(String username, Plot plot) {
-        ArrayList<String> helpers = new ArrayList<>();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
-            helpers.add(list);
-        }
-        helpers.add(username.toLowerCase());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
+    public void addMember(String name, Plot plot) {
+        List<String> members = getMembers(plot);
+        members.add(name.toLowerCase());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", members);
     }
 
     @Override
-    public void removeMember(String username, Plot plot) {
-        ArrayList<String> helpers = new ArrayList<>();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members")) {
-            helpers.add(list);
-        }
-        helpers.remove(username.toLowerCase());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", helpers);
+    public void addDenied(String name, Plot plot) {
+        List<String> denied = getDenied(plot);
+        denied.add(name.toLowerCase());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
     }
 
     @Override
-    public void removeHelper(String username, Plot plot) {
-        ArrayList<String> helpers = new ArrayList<>();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers")) {
-            helpers.add(list);
-        }
-        helpers.remove(username.toLowerCase());
+    public void removeMember(String name, Plot plot) {
+        List<String> members = getMembers(plot);
+        members.remove(name.toLowerCase());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", members);
+    }
+
+    @Override
+    public void removeHelper(String name, Plot plot) {
+        List<String> helpers = getHelpers(plot);
+        helpers.remove(name.toLowerCase());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
     }
 
     @Override
-    public boolean isDenied(String username, Plot plot) {
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
-            if(list.toLowerCase().equals(username.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void addDenied(String username, Plot plot) {
-        ArrayList<String> denied = new ArrayList<>();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
-            denied.add(list);
-        }
-        denied.add(username.toLowerCase());
+    public void removeDenied(String name, Plot plot) {
+        List<String> denied = getDenied(plot);
+        denied.remove(name.toLowerCase());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
     }
 
     @Override
-    public void removeDenied(String username, Plot plot) {
-        ArrayList<String> denied = new ArrayList<>();
-        for (String list : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied")) {
-            denied.add(list);
+    public Plot getPlot(String name, Object number, Object level) {
+        int i = 1;
+        if(number != null && (int) number > 0) {
+            i = (int) number;
         }
-        denied.remove(username.toLowerCase());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
-    }
-
-    @Override
-    public boolean isOwner(String username, Plot plot) {
-        return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner").equals(username);
-    }
-
-    @Override
-    public boolean hasOwner(Plot plot) {
-        return yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
-    }
-
-    @Override
-    public boolean hasHome(String username, int homeNumber) {
-        ArrayList<String> homes = new ArrayList<>();
-        for (String list : yaml.getAll().keySet()) {
-            if(yaml.getString(list + ".owner").equals(username)) {
-                homes.add(list);
+        ArrayList<String> plots = new ArrayList<>();
+        if(level != null) {
+            for (String plot : yaml.getAll().keySet()) {
+                String[] ex = plot.split(";");
+                if(ex[0].equals(level) && yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
+            }
+        } else {
+            for (String plot : yaml.getAll().keySet()) {
+                if(yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
             }
         }
-        if (homes.get(homeNumber - 1) != null) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean hasHomeInLevel(String username, int homeNumber, String levelName) {
-        ArrayList<String> homes = new ArrayList<>();
-        for (String list : yaml.getAll().keySet()) {
-            String[] ex = list.split(";");
-            if(ex[0].equals(levelName)) {
-                if(yaml.getString(list + ".owner").equals(username)) {
-                    homes.add(list);
-                }
-            }
-        }
-        if (homes.get(homeNumber - 1) != null) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Plot getPlot(String username, int homeNumber) {
-        ArrayList<String> homes = new ArrayList<>();
-        for (String list : yaml.getAll().keySet()) {
-            if(yaml.getString(list + ".owner").equals(username)) {
-                homes.add(list);
-            }
-        }
-        if(homes.size() > 0) {
-            String[] ex = homes.get(homeNumber - 1).split(";");
+        if(plots.size() > 0) {
+            String[] ex = plots.get(i - 1).split(";");
             return new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]);
         }
         return null;
     }
 
     @Override
-    public Plot getPlotFromNumber(String username, int homeNumber, String levelName) {
-        ArrayList<String> homes = new ArrayList<>();
-        for (String list : yaml.getAll().keySet()) {
-            String[] ex = list.split(";");
-            if(ex[0].equals(levelName)) {
-                if(yaml.getString(list + ".owner").equals(username)) {
-                    homes.add(list);
-                }
+    public List<String> getPlots(String name, Object level) {
+        List<String> plots = new ArrayList<>();
+        if(level != null) {
+            for (String plot : yaml.getAll().keySet()) {
+                String[] ex = plot.split(";");
+                if(ex[0].equals(level) && yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
+            }
+        } else {
+            for (String plot : yaml.getAll().keySet()) {
+                if(yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
             }
         }
-        if(homes.size() > 0) {
-            try {
-                String[] ex = homes.get(homeNumber - 1).split(";");
-                return new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), levelName);
-            } catch (IndexOutOfBoundsException e) { return null; }
-        }
-        return null;
-    }
-
-    @Override
-    public ArrayList<String> getHomes(String username, String world) {
-        ArrayList<String> homes = new ArrayList<>();
-        for (String list : yaml.getAll().keySet()) {
-            if(yaml.getString(list + ".owner").equals(username)) {
-                homes.add(list);
-            }
-        }
-        return homes;
-    }
-
-    @Override
-    public ArrayList<String> getHomes(String username) {
-        ArrayList<String> homes = new ArrayList<>();
-        for (String list : yaml.getAll().keySet()) {
-            homes.add(list);
-        }
-        return homes;
-    }
-
-    @Override
-    public String getPlotName(Plot plot) {
-        return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
+        return plots;
     }
 
     @Override

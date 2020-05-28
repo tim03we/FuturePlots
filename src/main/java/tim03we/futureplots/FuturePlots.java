@@ -26,10 +26,7 @@ import tim03we.futureplots.commands.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
 import tim03we.futureplots.listener.*;
-import tim03we.futureplots.provider.DataProvider;
-import tim03we.futureplots.provider.EconomyProvider;
-import tim03we.futureplots.provider.EconomySProvider;
-import tim03we.futureplots.provider.YamlProvider;
+import tim03we.futureplots.provider.*;
 import tim03we.futureplots.tasks.PlotClearTask;
 import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
@@ -100,7 +97,7 @@ public class FuturePlots extends PluginBase {
 
     @Override
     public void onDisable() {
-        provider.saveAll();
+        provider.save();
     }
 
     private void initProvider() {
