@@ -181,10 +181,6 @@ public class FuturePlots extends PluginBase {
     public int claimAvailable(Player player) {
         if (player.isOp()) return -1;
         int max_plots = Settings.max_plots;
-
-        for (String perm : player.getEffectivePermissions().keySet()) {
-            System.out.println(perm);
-        }
         for (String perm : player.getEffectivePermissions().keySet()) {
             if (perm.contains("futureplots.plot.")) {
                 String max = perm.replace("futureplots.plot.", "");
