@@ -20,7 +20,6 @@ import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
-import cn.nukkit.permission.Permission;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import tim03we.futureplots.commands.*;
@@ -145,6 +144,7 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand("addmember", new AddMemberCommand("addmember", "", "/plot addmember <name>"), new String[]{});
         commandHandler.registerCommand("removemember", new RemoveMemberCommand("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
         commandHandler.registerCommand("dispose", new DisposeCommand("dispose", "", "/plot dispose"), new String[]{});
+        FuturePlots.getInstance().getServer().getCommandMap().register("plots", new MainCommand());
         /* ToDo */
         //commandHandler.registerCommand("flag", new FlagCommand("flag", " , "/plot flag <flag> [value]"), new String[]{});
         /* ToDo */

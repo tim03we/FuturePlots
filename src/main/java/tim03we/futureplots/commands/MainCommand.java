@@ -18,13 +18,23 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.data.CommandParamType;
+import cn.nukkit.command.data.CommandParameter;
 import tim03we.futureplots.handler.CommandHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainCommand extends Command {
 
     public MainCommand() {
         super("plot", "FuturePlots Command", "/plots <sub-command>");
         setAliases(new String[]{"plots", "p"});
+        commandParameters.clear();
+        this.commandParameters.put("default", new CommandParameter[]{
+                new CommandParameter("subcommand", false, convertToStringArray(CommandHandler.commmands, CommandHandler.aliases)),
+                new CommandParameter("player", CommandParamType.TARGET, true)
+        });
     }
 
     @Override
@@ -44,5 +54,20 @@ public class MainCommand extends Command {
             sender.sendMessage(getUsage());
         }
         return false;
+    }
+
+    private String[] convertToStringArray(HashMap<String, BaseCommand> map, HashMap<String, BaseCommand> map2) {
+        ArrayList<String> commands = new ArrayList<>();
+        for (String command : map.keySet()) {
+            commands.add(command);
+        }
+        for (String alias : map2.keySet()) {
+            commands.add(alias);
+        }
+        String[] array = new String[commands.size()];
+        for(int j = 0; j < commands.size(); j++){
+            array[j] = commands.get(j);
+        }
+        return array;
     }
 }

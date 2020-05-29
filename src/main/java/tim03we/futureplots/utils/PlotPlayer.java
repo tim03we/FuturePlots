@@ -34,11 +34,7 @@ public class PlotPlayer {
         return null;
     }
 
-    public boolean isOwner() {
-        return FuturePlots.provider.isOwner(player.getName(), getPlot());
-    }
-
     public boolean canByPass() {
-        return isOwner() || player.isOp() || player.hasPermission("futureplots.bypass");
+        return (FuturePlots.provider.getOwner(getPlot()) != null && FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) || player.isOp() || player.hasPermission("futureplots.bypass");
     }
 }

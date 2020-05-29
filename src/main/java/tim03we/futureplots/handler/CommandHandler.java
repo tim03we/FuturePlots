@@ -16,9 +16,7 @@ package tim03we.futureplots.handler;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
-import tim03we.futureplots.commands.MainCommand;
 
 import java.util.HashMap;
 
@@ -26,10 +24,6 @@ public class CommandHandler {
 
     public static HashMap<String, BaseCommand> commmands = new HashMap<>();
     public static HashMap<String, BaseCommand> aliases = new HashMap<>();
-
-    public CommandHandler() {
-        FuturePlots.getInstance().getServer().getCommandMap().register("plots", new MainCommand());
-    }
 
     public void registerCommand(String name, BaseCommand command, String[] ali) {
         commmands.put(name, command);

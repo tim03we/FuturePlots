@@ -64,17 +64,17 @@ public class YamlProvider implements DataProvider {
 
     @Override
     public boolean isHelper(String name, Plot plot) {
-        return getHelpers(plot).contains(name);
+        return getHelpers(plot).contains(name.toLowerCase());
     }
 
     @Override
     public boolean isDenied(String name, Plot plot) {
-        return getDenied(plot).contains(name);
+        return getDenied(plot).contains(name.toLowerCase());
     }
 
     @Override
     public boolean isMember(String name, Plot plot) {
-        return getMembers(plot).contains(name);
+        return getMembers(plot).contains(name.toLowerCase());
     }
 
     @Override
