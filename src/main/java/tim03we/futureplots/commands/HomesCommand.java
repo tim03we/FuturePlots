@@ -29,12 +29,14 @@ public class HomesCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-                if(FuturePlots.provider.getPlots(sender.getName(), ((Player) sender).getLevel().getName()).size() != 0) {
-                    sender.sendMessage(translate(true, "plot.homes.title"));
-                    for (String home : FuturePlots.provider.getPlots(sender.getName(), ((Player) sender).getLevel().getName())) {
-                        sender.sendMessage(translate(false, "plot.homes.text", home.split(";")[0], home.split(";")[1]+ ";" + home.split(";")[2]));
-                    }
+            if (FuturePlots.provider.getPlots(sender.getName(), ((Player) sender).getLevel().getName()).size() != 0) {
+                sender.sendMessage(translate(true, "plot.homes.title"));
+                for (String home : FuturePlots.provider.getPlots(sender.getName(), ((Player) sender).getLevel().getName())) {
+                    sender.sendMessage(translate(false, "plot.homes.text", home.split(";")[0], home.split(";")[1] + ";" + home.split(";")[2]));
                 }
+            } else {
+                sender.sendMessage(translate(true, "has.no.plot"));
+            }
         }
     }
 }

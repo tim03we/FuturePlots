@@ -18,7 +18,6 @@ package tim03we.futureplots.provider;
 
 import tim03we.futureplots.utils.Plot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface DataProvider {

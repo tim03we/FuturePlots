@@ -47,8 +47,9 @@ public class AutoCommand extends BaseCommand {
                         }
                     }
                     Plot plot = FuturePlots.provider.getNextFreePlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                    plot.changeBorder(new PlotSettings(plot.getLevelName()).getWallBlockClaimed());
                     FuturePlots.provider.claimPlot(sender.getName(), plot);
-                    Position pos = FuturePlots.getInstance().getPlotPosition(plot);
+                    Position pos = plot.getPosition();
                     ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
                     sender.sendMessage(translate(true, "plot.claim"));
                 } else {

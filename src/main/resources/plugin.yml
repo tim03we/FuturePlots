@@ -11,3 +11,6 @@ permissions:
   futureplots.command.generate:
     description: "You can generate plot world with this permission."
     default: op
+  futureplots.plots.unlimited:
+    description: "Claim as many plots as you want."
+    default: op

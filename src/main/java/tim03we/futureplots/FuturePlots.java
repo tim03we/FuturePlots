@@ -20,6 +20,7 @@ import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
+import cn.nukkit.permission.Permission;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import tim03we.futureplots.commands.*;
@@ -180,18 +181,20 @@ public class FuturePlots extends PluginBase {
     public int claimAvailable(Player player) {
         if (player.isOp()) return -1;
         int max_plots = Settings.max_plots;
-        for (Map.Entry<String, Boolean> perm : player.addAttachment(instance).getPermissions().entrySet()) {
-            if (perm.getValue()) {
-                if (perm.getKey().contains("futureplots.plot.")) {
-                    String max = perm.getKey().replace("futureplots.plot.", "");
-                    if (max.equalsIgnoreCase("unlimited")) {
-                        return -1;
-                    } else {
-                        try {
-                            int num = Integer.parseInt(max);
-                            if (num > max_plots) max_plots = num;
-                        } catch (NumberFormatException ignored) {
-                        }
+
+        for (String perm : player.getEffectivePermissions().keySet()) {
+            System.out.println(perm);
+        }
+        for (String perm : player.getEffectivePermissions().keySet()) {
+            if (perm.contains("futureplots.plot.")) {
+                String max = perm.replace("futureplots.plot.", "");
+                if (max.equalsIgnoreCase("unlimited")) {
+                    return -1;
+                } else {
+                    try {
+                        int num = Integer.parseInt(max);
+                        if (num > max_plots) max_plots = num;
+                    } catch (NumberFormatException ignored) {
                     }
                 }
             }
