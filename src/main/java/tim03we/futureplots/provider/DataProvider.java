@@ -60,5 +60,5 @@ public interface DataProvider {
 
     List<String> getPlots(String name, Object level);
 
-    Plot getNextFreePlot(Plot plot);
+    Plot getNextFreePlot(String level);
 }

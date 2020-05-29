@@ -173,7 +173,7 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public Plot getNextFreePlot(Plot plot) {
+    public Plot getNextFreePlot(String level) {
         int limitXZ = 0;
         for(int i = 0; limitXZ <= 0 || i < limitXZ; i++) {
             ArrayList<String> existing = new ArrayList<>();
@@ -190,17 +190,17 @@ public class YamlProvider implements DataProvider {
             }
             if(FuturePlots.getInstance().findEmptyPlotSquared(0, i, existing) != null) {
                 String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(0, i, existing).split(";");
-                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
+                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), level);
             }
             for (int a = 1; a < i; a++) {
                 if(FuturePlots.getInstance().findEmptyPlotSquared(a, i, existing) != null) {
                     String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(a, i, existing).split(";");
-                    return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
+                    return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), level);
                 }
             }
             if(FuturePlots.getInstance().findEmptyPlotSquared(i, i, existing) != null) {
                 String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(i, i, existing).split(";");
-                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
+                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), level);
             }
         }
         return null;
