@@ -72,14 +72,16 @@ public class Plot {
     }
 
     public boolean canInteract(Player player) {
-        if(FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) {
-            return true;
-        } else if(FuturePlots.provider.isHelper(player.getName(), getPlot())) {
-            return true;
-        } else {
-            if(FuturePlots.provider.isMember(player.getName(), getPlot())) {
-                Player target = Server.getInstance().getPlayer(FuturePlots.provider.getOwner(getPlot()));
-                return target != null;
+        if(FuturePlots.provider.getOwner(getPlot()) != null) {
+            if(FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) {
+                return true;
+            } else if(FuturePlots.provider.isHelper(player.getName(), getPlot())) {
+                return true;
+            } else {
+                if(FuturePlots.provider.isMember(player.getName(), getPlot())) {
+                    Player target = Server.getInstance().getPlayer(FuturePlots.provider.getOwner(getPlot()));
+                    return target != null;
+                }
             }
         }
         return false;
