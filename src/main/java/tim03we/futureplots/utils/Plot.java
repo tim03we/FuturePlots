@@ -72,7 +72,7 @@ public class Plot {
     }
 
     public boolean canInteract(Player player) {
-        if(FuturePlots.provider.isOwner(player.getName(), getPlot())) {
+        if(FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) {
             return true;
         } else if(FuturePlots.provider.isHelper(player.getName(), getPlot())) {
             return true;

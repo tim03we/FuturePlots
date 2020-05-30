@@ -39,25 +39,22 @@ public class ClaimCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getPlots(sender.getName(), null).size() <= Settings.max_plots) {
-                    if (FuturePlots.provider.getOwner(plot) != null) {
-                        if (!FuturePlots.provider.isOwner(sender.getName(), plot)) {
-                            if(Settings.economy) {
-                                if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
-                                    FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
-                                } else {
-                                    sender.sendMessage(translate(true, "economy.no.money"));
-                                    return;
-                                }
+                    System.out.println(FuturePlots.provider.hasOwner(plot));
+                    if (!FuturePlots.provider.hasOwner(plot)) {
+                        if(Settings.economy) {
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                            } else {
+                                sender.sendMessage(translate(true, "economy.no.money"));
+                                return;
                             }
-                            plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockClaimed());
-                            FuturePlots.provider.claimPlot(sender.getName(), plot);
-                            if(Settings.claim_tp) {
-                                ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
-                            }
-                            sender.sendMessage(translate(true, "plot.claim"));
-                        } else {
-                            sender.sendMessage(translate(true, "plot.claim.already"));
                         }
+                        plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockClaimed());
+                        FuturePlots.provider.claimPlot(sender.getName(), plot);
+                        if(Settings.claim_tp) {
+                            ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
+                        }
+                        sender.sendMessage(translate(true, "plot.claim"));
                     } else {
                         sender.sendMessage(translate(true, "plot.claim.already"));
                     }

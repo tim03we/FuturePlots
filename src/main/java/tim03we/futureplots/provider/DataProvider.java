@@ -34,7 +34,7 @@ public interface DataProvider {
 
     boolean isDenied(String name, Plot plot);
 
-    boolean isOwner(String name, Plot plot);
+    boolean hasOwner(Plot plot);
 
     String getOwner(Plot plot);
 

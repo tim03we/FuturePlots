@@ -78,8 +78,8 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public boolean isOwner(String name, Plot plot) {
-        return getOwner(plot).equals(name);
+    public boolean hasOwner(Plot plot) {
+        return getOwner(plot) != null;
     }
 
     @Override
