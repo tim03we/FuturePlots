@@ -1,8 +1,9 @@
 ---
-version: "1.2.1"
+version: "1.2.2"
 
 prefix: "FuturePlots > "
 
+no.plotworld: "There is no plot world on the server."
 not.in.world: "You are not in a plot world."
 not.in.plot: "You're not on a plot."
 not.a.owner: "This action can only be performed as owner of the plot."

@@ -18,7 +18,7 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.utils.World;
+import tim03we.futureplots.utils.Settings;
 
 public class GenerateCommand extends BaseCommand {
 
@@ -30,7 +30,7 @@ public class GenerateCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender.hasPermission("futureplots.command.generate")) {
             if(args.length > 1) {
-                if(!new World(args[1]).exists()) {
+                if(!Settings.levels.contains(args[1])) {
                     FuturePlots.getInstance().generateLevel(args[1]);
                     sender.sendMessage(translate(true, "generate.world.success", args[1]));
                 } else {

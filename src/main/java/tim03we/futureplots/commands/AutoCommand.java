@@ -36,6 +36,16 @@ public class AutoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            if(Settings.levels.size() == 0) {
+                sender.sendMessage(translate(true, "no.plotworld"));
+                return;
+            }
+            if(Settings.levels.size() > 1) {
+                if(!Settings.levels.contains(((Player) sender).getLevel().getName())) {
+                    sender.sendMessage(translate(true, "not.in.world"));
+                    return;
+                }
+            }
             if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
                 if(FuturePlots.provider.getPlots(sender.getName(), null).size() != Settings.max_plots) {
                     if(Settings.economy) {
@@ -46,7 +56,7 @@ public class AutoCommand extends BaseCommand {
                             return;
                         }
                     }
-                    Plot plot = FuturePlots.provider.getNextFreePlot(((Player) sender).getLevel().getName());
+                    Plot plot = FuturePlots.provider.getNextFreePlot(Settings.levels.get(0));
                     plot.changeBorder(new PlotSettings(plot.getLevelName()).getWallBlockClaimed());
                     FuturePlots.provider.claimPlot(sender.getName(), plot);
                     Position pos = plot.getPosition();

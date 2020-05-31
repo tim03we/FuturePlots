@@ -1,6 +1,8 @@
 package tim03we.futureplots.listener;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockDragonEgg;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerInteractEvent;
@@ -28,6 +30,12 @@ public class PlayerInteract implements Listener {
                         } else {
                             plot = new PlotPlayer(player).getPlot();
                             if(plot == null || !plot.canInteract(player)) {
+                                event.setCancelled(true);
+                            }
+                        }
+                    } else {
+                        if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+                            if(event.getBlock() instanceof BlockDragonEgg) {
                                 event.setCancelled(true);
                             }
                         }
