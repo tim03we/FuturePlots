@@ -18,14 +18,11 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
-
-import static tim03we.futureplots.utils.Settings.plotSize;
 
 public class DeleteCommand extends BaseCommand {
 
@@ -50,7 +47,7 @@ public class DeleteCommand extends BaseCommand {
                     plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
                     FuturePlots.provider.deletePlot(plot);
                     FuturePlots.getInstance().clearPlot(plot);
-                    ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
+                    ((Player) sender).teleport(plot.getBorderPosition());
                     sender.sendMessage(translate(true, "plot.delete"));
                 } else {
                     sender.sendMessage(translate(true, "not.a.owner"));

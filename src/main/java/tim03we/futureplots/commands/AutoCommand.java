@@ -18,14 +18,12 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
 import static tim03we.futureplots.utils.Settings.max_plots;
-import static tim03we.futureplots.utils.Settings.plotSize;
 
 public class AutoCommand extends BaseCommand {
 
@@ -59,8 +57,7 @@ public class AutoCommand extends BaseCommand {
                     Plot plot = FuturePlots.provider.getNextFreePlot(Settings.levels.get(0));
                     plot.changeBorder(new PlotSettings(plot.getLevelName()).getWallBlockClaimed());
                     FuturePlots.provider.claimPlot(sender.getName(), plot);
-                    Position pos = plot.getPosition();
-                    ((Player) sender).teleport(new Position(pos.x += Math.floor(plotSize / 2), pos.y += 1.5, pos.z -= 1,  pos.getLevel()));
+                    ((Player) sender).teleport(plot.getBorderPosition());
                     sender.sendMessage(translate(true, "plot.claim"));
                 } else {
                     sender.sendMessage(translate(true, "plot.max"));

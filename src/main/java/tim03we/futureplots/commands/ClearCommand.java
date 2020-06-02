@@ -46,6 +46,8 @@ public class ClearCommand extends BaseCommand {
                     }
                     FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
                     sender.sendMessage(translate(true, "plot.clear"));
+                } else {
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             }
         }
