@@ -24,6 +24,7 @@ Command | Sub-Command | Permission | Alias
 ~ | home | - | h
 ~ | homes | - | -
 ~ | info | - | i
+~ | kick | - | -
 
 # ToDo
 - ✅ Yaml Provider<br>

@@ -6,7 +6,7 @@ package tim03we.futureplots.commands;
  * all allowed to sell this plugin at any cost. If found doing so the
  * necessary action required would be taken.
  *
- * GunGame is distributed in the hope that it will be useful,
+ * FuturePlots is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License v3.0 for more details.
@@ -37,17 +37,21 @@ public class DisposeCommand extends BaseCommand {
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if(Settings.economy) {
-                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
-                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
-                        } else {
-                            sender.sendMessage(translate(true, "economy.no.money"));
-                            return;
+                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
+                            } else {
+                                sender.sendMessage(translate(true, "economy.no.money"));
+                                return;
+                            }
                         }
                     }
                     plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
                     FuturePlots.provider.deletePlot(plot);
                     sender.sendMessage(translate(true, "plot.dispose"));
                 }
+            } else {
+                sender.sendMessage(translate(true, "not.in.plot"));
             }
         }
     }

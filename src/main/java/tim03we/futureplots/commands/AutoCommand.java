@@ -6,7 +6,7 @@ package tim03we.futureplots.commands;
  * all allowed to sell this plugin at any cost. If found doing so the
  * necessary action required would be taken.
  *
- * GunGame is distributed in the hope that it will be useful,
+ * FuturePlots is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License v3.0 for more details.
@@ -20,6 +20,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotPlayer;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
@@ -47,11 +48,13 @@ public class AutoCommand extends BaseCommand {
             if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
                 if(FuturePlots.provider.getPlots(sender.getName(), null).size() != Settings.max_plots) {
                     if(Settings.economy) {
-                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
-                            FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
-                        } else {
-                            sender.sendMessage(translate(true, "economy.no.money"));
-                            return;
+                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                            } else {
+                                sender.sendMessage(translate(true, "economy.no.money"));
+                                return;
+                            }
                         }
                     }
                     Plot plot = FuturePlots.provider.getNextFreePlot(Settings.levels.get(0));

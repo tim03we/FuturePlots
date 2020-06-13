@@ -6,7 +6,7 @@ package tim03we.futureplots.provider;
  * all allowed to sell this plugin at any cost. If found doing so the
  * necessary action required would be taken.
  *
- * GunGame is distributed in the hope that it will be useful,
+ * FuturePlots is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License v3.0 for more details.

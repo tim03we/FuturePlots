@@ -6,7 +6,7 @@ package tim03we.futureplots.provider;
  * all allowed to sell this plugin at any cost. If found doing so the
  * necessary action required would be taken.
  *
- * GunGame is distributed in the hope that it will be useful,
+ * FuturePlots is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License v3.0 for more details.
@@ -79,7 +79,7 @@ public class YamlProvider implements DataProvider {
 
     @Override
     public boolean hasOwner(Plot plot) {
-        return getOwner(plot) != null;
+        return !getOwner(plot).equals("none");
     }
 
     @Override
@@ -87,7 +87,7 @@ public class YamlProvider implements DataProvider {
         if(yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ())) {
             return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
         }
-        return null;
+        return "none";
     }
 
     @Override
@@ -174,35 +174,35 @@ public class YamlProvider implements DataProvider {
 
     @Override
     public Plot getNextFreePlot(String level) {
-        int limitXZ = 0;
-        for(int i = 0; limitXZ <= 0 || i < limitXZ; i++) {
-            ArrayList<String> existing = new ArrayList<>();
-            for (String list : yaml.getAll().keySet()) {
-                String[] ex = list.split(";");
-                if(Math.abs(Integer.parseInt(ex[1])) == i && Math.abs(Integer.parseInt(ex[2])) <= i) {
-                    existing.add(list);
-                } else if(Math.abs(Integer.parseInt(ex[2])) == i && Math.abs(Integer.parseInt(ex[1])) <= i) {
-                    existing.add(list);
-                }
-            }
-            if(existing.size() == Math.max(1, 8 * i)) {
-                continue;
-            }
-            if(FuturePlots.getInstance().findEmptyPlotSquared(0, i, existing) != null) {
-                String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(0, i, existing).split(";");
-                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), level);
-            }
-            for (int a = 1; a < i; a++) {
-                if(FuturePlots.getInstance().findEmptyPlotSquared(a, i, existing) != null) {
-                    String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(a, i, existing).split(";");
-                    return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), level);
-                }
-            }
-            if(FuturePlots.getInstance().findEmptyPlotSquared(i, i, existing) != null) {
-                String[] ex = FuturePlots.getInstance().findEmptyPlotSquared(i, i, existing).split(";");
-                return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), level);
+        List<Plot> plots = new ArrayList<>();
+        for (String list : yaml.getAll().keySet()) {
+            String[] ex = list.split(";");
+            if(ex[0].equals(level)) {
+                plots.add(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
             }
         }
-        return null;
+        if (plots.size() == 0) return new Plot(0, 0, level);
+        int lastX = 0;
+        int lastZ = 0;
+
+        for (Plot plot : plots) {
+            int x = plot.getX() - lastX;
+            int y = plot.getZ() - lastZ;
+            int diff = Math.abs(x * y);
+            if (diff < 4) {
+                lastX = plot.getX();
+                lastZ = plot.getZ();
+
+                Plot find = new Plot(plot.getX() + 1, plot.getZ(), level);
+                if (!hasOwner(find)) return find;
+                find = new Plot(plot.getX(), plot.getZ() + 1, level);
+                if (!hasOwner(find)) return find;
+                find = new Plot(plot.getX() - 1, plot.getZ(), level);
+                if (!hasOwner(find)) return find;
+                find = new Plot(plot.getX(), plot.getZ() - 1, level);
+                if (!hasOwner(find)) return find;
+            }
+        }
+        return getNextFreePlot(level);
     }
 }

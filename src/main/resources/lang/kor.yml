@@ -1,6 +1,6 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.2.2"
+version: "1.2.3"
 
 prefix: "FuturePlots > "
 
@@ -27,6 +27,9 @@ plot.world.required: "당신의 plot에 가려면 월드 이름과 plot 번호�
 plot.world.not.exists: "이 월드는 존재하지 않습니다."
 plot.world.exists: "이 월드는 이미 존재합니다."
 plot.dispose: "plot이 잠금 해제되었습니다."
+plot.kick: "당신은 플롯에서 플레이어 %1을 던졌다."
+plot.kick.target: "주인이 플롯에서 당신을 던졌습니다."
+plot.kick.error: "이 플레이어는 플롯에 없습니다."
 
 helper.added: "플레이어 %1(이)가 plot의 도우미로 추가되었습니다."
 helper.removed: "플레이어 %1(이)가 plot의 도우미에서 삭제되었습니다."
@@ -52,4 +55,6 @@ has.no.plot.world: "이 월드에는 당신의 plot이 없습니다."
 has.no.plot.number: "당신은 %1번 plot을 소유하고 있지 않습니다."
 
 economy.no.money: "이 행동을 할 충분한 돈이 없습니다."
+
+player.not.found: "이 플레이어는 찾을 수 없습니다."
 ...

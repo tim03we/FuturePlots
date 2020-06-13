@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.listener;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -16,20 +16,22 @@ package tim03we.futureplots.commands;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import cn.nukkit.command.CommandSender;
-import tim03we.futureplots.handler.CommandHandler;
+import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.BlockBurnEvent;
+import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.Settings;
 
-public class HelpCommand extends BaseCommand {
+public class BlockBurn implements Listener {
 
-    public HelpCommand(String name, String description, String usage) {
-        super(name, description, usage);
-    }
-
-    @Override
-    public void execute(CommandSender sender, String command, String[] args) {
-        sender.sendMessage(translate(false, "plot.help.title"));
-        for (String cmd : CommandHandler.commmands.keySet()) {
-            sender.sendMessage(translate(false, "plot.help.text", cmd));
+    @EventHandler
+    public void onBurn(BlockBurnEvent event) {
+        if(Settings.levels.contains(event.getBlock().getLevel().getName())) {
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+            if(plot == null) {
+                event.setCancelled(true);
+            }
         }
     }
 }

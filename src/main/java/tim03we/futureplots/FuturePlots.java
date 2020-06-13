@@ -6,7 +6,7 @@ package tim03we.futureplots;
  * all allowed to sell this plugin at any cost. If found doing so the
  * necessary action required would be taken.
  *
- * GunGame is distributed in the hope that it will be useful,
+ * FuturePlots is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License v3.0 for more details.
@@ -17,6 +17,7 @@ package tim03we.futureplots;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
@@ -36,6 +37,7 @@ import tim03we.futureplots.utils.Settings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FuturePlots extends PluginBase {
@@ -69,6 +71,7 @@ public class FuturePlots extends PluginBase {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new BlockBreak(), this);
+        pm.registerEvents(new BlockBurn(), this);
         pm.registerEvents(new BlockPiston(), this);
         pm.registerEvents(new BlockPlace(), this);
         pm.registerEvents(new EntityExplode(), this);
@@ -79,7 +82,7 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.2")) {
+        if(!Language.getNoPrefix("version").equals("1.2.3")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
@@ -144,6 +147,7 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand("addmember", new AddMemberCommand("addmember", "", "/plot addmember <name>"), new String[]{});
         commandHandler.registerCommand("removemember", new RemoveMemberCommand("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
         commandHandler.registerCommand("dispose", new DisposeCommand("dispose", "", "/plot dispose"), new String[]{});
+        commandHandler.registerCommand("kick", new KickCommand("kick", "", "/plot kick"), new String[]{});
         FuturePlots.getInstance().getServer().getCommandMap().register("plots", new MainCommand());
         /* ToDo */
         //commandHandler.registerCommand("flag", new FlagCommand("flag", " , "/plot flag <flag> [value]"), new String[]{});
@@ -176,6 +180,13 @@ public class FuturePlots extends PluginBase {
 
     public void clearPlot(Plot plot) {
         getServer().getScheduler().scheduleDelayedTask(this, new PlotClearTask(plot), 1, true);
+        for (Entity entity : getServer().getLevelByName(plot.getLevelName()).getEntities()) {
+            if(!(entity instanceof Player)) {
+                if(getPlotByPosition(entity.getLocation()).getX() == plot.getX() && getPlotByPosition(entity.getLocation()).getZ() == plot.getZ() && getPlotByPosition(entity.getLocation()).getLevelName().equals(plot.getLevelName())) {
+                    entity.close();
+                }
+            }
+        }
     }
 
     public int claimAvailable(Player player) {
@@ -239,7 +250,7 @@ public class FuturePlots extends PluginBase {
         if(z >= 0) {
             Z = (int) Math.floor(z / totalSize);
             difZ = z % totalSize;
-        }else {
+        } else {
             Z = (int) Math.ceil((z - plotSize + 1) / totalSize);
             difZ = Math.abs((z - plotSize + 1) % totalSize);
         }
@@ -247,23 +258,5 @@ public class FuturePlots extends PluginBase {
             return null;
         }
         return new Plot(X, Z, position.getLevel().getName());
-    }
-
-    public String findEmptyPlotSquared(int a, int b, ArrayList<String> plots) {
-        if (!plots.contains(a + ";" + b)) return a + ";" + b;
-        if(!plots.contains(b + ";" + a)) return b + ";" + a;
-        if(a != 0) {
-            if(!plots.contains(-a + ";" + b)) return -a + ";" + b;
-            if(!plots.contains(b + ";" + -a)) return b + ";" + -a;
-        }
-        if(b != 0) {
-            if(!plots.contains(-b + ";" + a)) return -b + ";" + a;
-            if(!plots.contains(a + ";" + -b)) return a + ";" + -b;
-        }
-        if(a == 0 | b == 0) {
-            if(!plots.contains(-a + ";" + -b)) return -a + ";" + -b;
-            if(!plots.contains(-b + ";" + -a)) return -b + ";" + -a;
-        }
-        return null;
     }
 }

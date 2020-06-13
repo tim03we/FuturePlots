@@ -1,5 +1,5 @@
 ---
-version: "1.2.2"
+version: "1.2.3"
 
 prefix: "FuturePlots > "
 
@@ -26,6 +26,9 @@ plot.world.required: "Enter a world name and the plot number to get to your plot
 plot.world.not.exists: "This world does not exist."
 plot.world.exists: "This world already exists."
 plot.dispose: "The plot has been unlocked."
+plot.kick: "You threw player %1 off the plot."
+plot.kick.target: "The owner threw you off the plot."
+plot.kick.error: "This player is not on the plot."
 
 helper.added: "The helper %1 was added to the plot."
 helper.removed: "The helper %1 was removed to the plot."
@@ -51,4 +54,6 @@ has.no.plot.world: "You have no plot in this world."
 has.no.plot.number: "You do not own a plot with the number %1."
 
 economy.no.money: "You do not have enough money for this action."
+
+player.not.found: "This player was not found."
 ...
