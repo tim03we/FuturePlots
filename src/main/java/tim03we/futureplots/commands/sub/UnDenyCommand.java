@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -19,14 +19,13 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.utils.Settings;
 
-public class ClearCommand extends BaseCommand {
+public class UnDenyCommand extends BaseCommand {
 
-    public ClearCommand(String name, String description, String usage) {
+    public UnDenyCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -36,19 +35,16 @@ public class ClearCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
-                    if(Settings.economy) {
-                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice());
-                            } else {
-                                sender.sendMessage(translate(true, "economy.no.money"));
-                                return;
-                            }
+                    if (args.length > 1) {
+                        if (FuturePlots.provider.isDenied(args[1], plot)) {
+                            FuturePlots.provider.removeDenied(args[1], plot);
+                            sender.sendMessage(translate(true, "deny.removed", args[1]));
+                        } else {
+                            sender.sendMessage(translate(true, "deny.not.exists"));
                         }
+                    } else {
+                        sender.sendMessage(getUsage());
                     }
-                    ((Player) sender).teleport(plot.getBorderPosition());
-                    FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
-                    sender.sendMessage(translate(true, "plot.clear"));
                 } else {
                     sender.sendMessage(translate(true, "not.a.owner"));
                 }

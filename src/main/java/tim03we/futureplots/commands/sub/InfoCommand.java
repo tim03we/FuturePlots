@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -19,14 +19,13 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.utils.Settings;
 
-public class DisposeCommand extends BaseCommand {
+public class InfoCommand extends BaseCommand {
 
-    public DisposeCommand(String name, String description, String usage) {
+    public InfoCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -35,20 +34,12 @@ public class DisposeCommand extends BaseCommand {
         if(sender instanceof Player) {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    if(Settings.economy) {
-                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
-                            } else {
-                                sender.sendMessage(translate(true, "economy.no.money"));
-                                return;
-                            }
-                        }
-                    }
-                    plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
-                    FuturePlots.provider.deletePlot(plot);
-                    sender.sendMessage(translate(true, "plot.dispose"));
+                sender.sendMessage(translate(false, "plot.info.title"));
+                if(FuturePlots.provider.getOwner(plot) != null) {
+                    sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getOwner(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot).toString(), FuturePlots.provider.getDenied(plot).toString(), FuturePlots.provider.getMembers(plot).toString()));
+                } else {
+                    sender.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));
+
                 }
             } else {
                 sender.sendMessage(translate(true, "not.in.plot"));

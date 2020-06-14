@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -17,14 +17,15 @@ package tim03we.futureplots.commands;
  */
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
+import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 
-public class KickCommand extends BaseCommand {
+public class RemoveHelperCommand extends BaseCommand {
 
-    public KickCommand(String name, String description, String usage) {
+    public RemoveHelperCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -34,19 +35,12 @@ public class KickCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
-                    if(args.length > 1) {
-                        Player target = Server.getInstance().getPlayer(args[1]);
-                        if(target != null) {
-                            Plot tpp = new PlotPlayer(target).getPlot();
-                            if(tpp != null && tpp.getX() == plot.getX() && tpp.getZ() == plot.getZ() && tpp.getLevelName().equals(plot.getLevelName())) {
-                                sender.sendMessage(translate(true, "plot.kick", target.getName()));
-                                target.sendMessage(translate(true, "plot.kick.target"));
-                                target.teleport(Server.getInstance().getDefaultLevel().getSafeSpawn());
-                            } else {
-                                sender.sendMessage(translate(true, "plot.kick.error"));
-                            }
+                    if (args.length > 1) {
+                        if (FuturePlots.provider.isHelper(args[1], plot)) {
+                            FuturePlots.provider.removeHelper(args[1], plot);
+                            sender.sendMessage(translate(true, "helper.removed", args[1]));
                         } else {
-                            sender.sendMessage(translate(true, "player.not.found"));
+                            sender.sendMessage(translate(true, "helper.not.exists"));
                         }
                     } else {
                         sender.sendMessage(getUsage());

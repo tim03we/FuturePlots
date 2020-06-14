@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -19,14 +19,13 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 
-import java.util.Arrays;
+public class RemoveMemberCommand extends BaseCommand {
 
-public class InfoCommand extends BaseCommand {
-
-    public InfoCommand(String name, String description, String usage) {
+    public RemoveMemberCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -35,12 +34,19 @@ public class InfoCommand extends BaseCommand {
         if(sender instanceof Player) {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
-                sender.sendMessage(translate(false, "plot.info.title"));
-                if(FuturePlots.provider.getOwner(plot) != null) {
-                    sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getOwner(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot).toString(), FuturePlots.provider.getDenied(plot).toString(), FuturePlots.provider.getMembers(plot).toString()));
+                if(plot.canByPass((Player) sender)) {
+                    if (args.length > 1) {
+                        if (FuturePlots.provider.isMember(args[1], plot)) {
+                            FuturePlots.provider.removeMember(args[1], plot);
+                            sender.sendMessage(translate(true, "member.removed", args[1]));
+                        } else {
+                            sender.sendMessage(translate(true, "member.not.exists"));
+                        }
+                    } else {
+                        sender.sendMessage(getUsage());
+                    }
                 } else {
-                    sender.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));
-
+                    sender.sendMessage(translate(true, "not.a.owner"));
                 }
             } else {
                 sender.sendMessage(translate(true, "not.in.plot"));

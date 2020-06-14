@@ -1,6 +1,6 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.2.4"
+version: "1.2.5"
 
 prefix: "FuturePlots > "
 
@@ -31,6 +31,10 @@ plot.dispose: "plot이 잠금 해제되었습니다."
 plot.kick: "당신은 플레이어 %1을(를) plot에서 내보냈습니다."
 plot.kick.target: "plot 소유자가 당신을 plot에서 내보냈습니다."
 plot.kick.error: "이 플레이어는 plot에 있지 않습니다."
+plot.setowner: "당신은 %1에 플롯을 주었다."
+plot.setowner.target: "ID %1이 있는 플롯이 주어졌습니다."
+plot.setowner.target.max: "이 플레이어는 이미 플롯의 최대 수를 가지고있다."
+plot.setowner.target.not.online: "이 플레이어는 그에게 음모를 제공하기 위해 온라인해야합니다."
 
 helper.added: "플레이어 %1(이)가 plot의 도우미로 추가되었습니다."
 helper.removed: "플레이어 %1(이)가 plot의 도우미에서 삭제되었습니다."

@@ -1,5 +1,5 @@
 ---
-version: "1.2.4"
+version: "1.2.5"
 
 prefix: "FuturePlots > "
 
@@ -30,6 +30,10 @@ plot.dispose: "The plot has been unlocked."
 plot.kick: "You threw player %1 off the plot."
 plot.kick.target: "The owner threw you off the plot."
 plot.kick.error: "This player is not on the plot."
+plot.setowner: "You gave the plot to %1."
+plot.setowner.target: "You were given the plot with the ID %1."
+plot.setowner.target.max: "This player already has the maximum number of plots."
+plot.setowner.target.not.online: "This player must be online to give him the plot."
 
 helper.added: "The helper %1 was added to the plot."
 helper.removed: "The helper %1 was removed to the plot."

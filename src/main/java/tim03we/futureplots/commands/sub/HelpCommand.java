@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -18,11 +18,10 @@ package tim03we.futureplots.commands;
 
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.handler.CommandHandler;
-import tim03we.futureplots.utils.Language;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class HelpCommand extends BaseCommand {

@@ -1,5 +1,5 @@
 ---
-version: "1.0.0"
+version: "1.0.1"
 
 plot:
   parameters:
@@ -94,4 +94,9 @@ plot:
     usage: "/plot undeny <player>"
     description: "Pardon a player from the plot"
     alias: []
+  setowner:
+    name: "setowner"
+    usage: "/plot setowner <player>"
+    description: "Give the plot to someone else"
+    alias: ["give"]
 ...

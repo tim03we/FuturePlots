@@ -1,11 +1,11 @@
 ---
-version: "1.2.4"
+version: "1.2.5"
 
 prefix: "FuturePlots > "
 
 no.plotworld: "Es befindet sich keine Plotwelt auf dem Server."
 not.in.world: "Du befindest dich in keiner Plotwelt."
-not.in.plot: "Du befindest dich nicht auf deinem Plot."
+not.in.plot: "Du befindest dich nicht auf einem Plot."
 not.a.owner: "Diese Aktion kann nur der Plot Besitzer ausführen."
 
 plot.teleport: "Du wurdest zu deinem Plot teleportiert."
@@ -30,6 +30,10 @@ plot.dispose: "Das Plot wurde freigegeben."
 plot.kick: "Du hast den Spieler %1 vom Plot geschmissen."
 plot.kick.target: "Der Besitzer hat dich vom Plot geschmissen."
 plot.kick.error: "Dieser Spieler befindet sich nicht auf dem Plot."
+plot.setowner: "Du hast das Plot %1 gegeben."
+plot.setowner.target: "Du hast das Plot mit der ID %1 erhalten."
+plot.setowner.target.max: "Dieser Spieler hat bereits das maximum an Plots erreicht."
+plot.setowner.target.not.online: "Dieser Spieler muss Online sein, um ihm das Plot zu geben."
 
 helper.added: "Der Spieler %1 wurde als Helfer hinzugefügt."
 helper.removed: "Der Spieler %1 wurde als Helfer entfernt."

@@ -83,6 +83,11 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
+    public void setOwner(String name, Plot plot) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", name);
+    }
+
+    @Override
     public String getOwner(Plot plot) {
         if(yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ())) {
             return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
@@ -149,6 +154,7 @@ public class YamlProvider implements DataProvider {
                 if(yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
             }
         }
+        if((i - 1) >= plots.size()) return null;
         if(plots.size() > 0) {
             String[] ex = plots.get(i - 1).split(";");
             return new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]);

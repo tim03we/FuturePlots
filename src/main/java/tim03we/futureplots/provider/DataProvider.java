@@ -36,6 +36,8 @@ public interface DataProvider {
 
     boolean hasOwner(Plot plot);
 
+    void setOwner(String name, Plot plot);
+
     String getOwner(Plot plot);
 
     List<String> getHelpers(Plot plot);

@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -19,12 +19,15 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.Settings;
 
-public class AddMemberCommand extends BaseCommand {
+public class ClearCommand extends BaseCommand {
 
-    public AddMemberCommand(String name, String description, String usage) {
+    public ClearCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -34,16 +37,19 @@ public class AddMemberCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
-                    if (args.length > 1) {
-                        if (!FuturePlots.provider.isMember(args[1], plot)) {
-                            FuturePlots.provider.addMember(args[1], plot);
-                            sender.sendMessage(translate(true, "member.added", args[1].toLowerCase()));
-                        } else {
-                            sender.sendMessage(translate(true, "member.exists"));
+                    if(Settings.economy) {
+                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice()) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice());
+                            } else {
+                                sender.sendMessage(translate(true, "economy.no.money"));
+                                return;
+                            }
                         }
-                    } else {
-                        sender.sendMessage(getUsage());
                     }
+                    ((Player) sender).teleport(plot.getBorderPosition());
+                    FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                    sender.sendMessage(translate(true, "plot.clear"));
                 } else {
                     sender.sendMessage(translate(true, "not.a.owner"));
                 }

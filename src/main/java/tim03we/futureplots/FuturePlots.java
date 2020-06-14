@@ -25,6 +25,7 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.commands.*;
+import tim03we.futureplots.commands.sub.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
 import tim03we.futureplots.listener.*;
@@ -51,23 +52,25 @@ public class FuturePlots extends PluginBase {
     @Override
     public void onLoad() {
         instance = this;
-        saveDefaultConfig();
         providerClass.put("yaml", YamlProvider.class);
         registerGenerator();
+
+        saveDefaultConfig();
+        Settings.init();
+        Language.init();
+        saveResource("commands.yml");
     }
 
     @Override
     public void onEnable() {
-        new File(getDataFolder() + "/worlds/").mkdirs();
-        saveResource("commands.yml");
         cmds = new Config(getDataFolder() + "/commands.yml", Config.YAML);
+        checkVersion();
+        cmds = new Config(getDataFolder() + "/commands.yml", Config.YAML);
+        new File(getDataFolder() + "/worlds/").mkdirs();
         registerCommands();
         registerEvents();
-        Settings.init();
-        Language.init();
         loadWorlds();
         initProvider();
-        checkVersion();
     }
 
     private void registerEvents() {
@@ -84,7 +87,7 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.4")) {
+        if(!Language.getNoPrefix("version").equals("1.2.5")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
@@ -98,7 +101,7 @@ public class FuturePlots extends PluginBase {
                 saveDefaultConfig();
             }
         }
-        if(!cmds.getString("version").equals("1.0.0")) {
+        if(!cmds.getString("version").equals("1.0.1")) {
             new File(getDataFolder() + "/commands_old.yml").delete();
             if(new File(getDataFolder() + "/commands.yml").renameTo(new File(getDataFolder() + "/commands_old.yml"))) {
                 getLogger().critical("The version of the commands file does not match. You will find the old file marked \"commands_old.yml\" in the same directory.");
@@ -157,6 +160,7 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand(cmds.getString("plot.removemember.name"), new RemoveMemberCommand(cmds.getString("plot.removemember.name"), cmds.getString("plot.removemember.description"), cmds.getString("plot.removemember.usage")), cmds.getStringList("plot.removemember.alias").toArray(new String[0]));
         commandHandler.registerCommand(cmds.getString("plot.dispose.name"), new DisposeCommand(cmds.getString("plot.dispose.name"), cmds.getString("plot.dispose.description"), cmds.getString("plot.dispose.usage")), cmds.getStringList("plot.dispose.alias").toArray(new String[0]));
         commandHandler.registerCommand(cmds.getString("plot.kick.name"), new KickCommand(cmds.getString("plot.kick.name"), cmds.getString("plot.kick.description"), cmds.getString("plot.kick.usage")), cmds.getStringList("plot.kick.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.setowner.name"), new SetOwnerCommand(cmds.getString("plot.setowner.name"), cmds.getString("plot.setowner.description"), cmds.getString("plot.setowner.usage")), cmds.getStringList("plot.setowner.alias").toArray(new String[0]));
         FuturePlots.getInstance().getServer().getCommandMap().register(cmds.getString("plot.name"), new MainCommand());
     }
 
@@ -218,21 +222,23 @@ public class FuturePlots extends PluginBase {
     public Position getPlotPosition(Plot plot) {
         int plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
         int roadWidth = new PlotSettings(plot.getLevelName()).getRoadWidth();
+        int groundHeight = new PlotSettings(plot.getLevelName()).getGroundHeight();
         int totalSize = plotSize + roadWidth;
         int x = totalSize * plot.getX();
         int z = totalSize * plot.getZ();
         Level level = getServer().getLevelByName(plot.getLevelName());
-        return new Position(x, Settings.groundHeight, z, level);
+        return new Position(x, groundHeight, z, level);
     }
 
     public Position getPlotBorderPosition(Plot plot) {
         int plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
         int roadWidth = new PlotSettings(plot.getLevelName()).getRoadWidth();
+        int groundHeight = new PlotSettings(plot.getLevelName()).getGroundHeight();
         int totalSize = plotSize + roadWidth;
         int x = totalSize * plot.getX();
         int z = totalSize * plot.getZ();
         Level level = getServer().getLevelByName(plot.getLevelName());
-        return new Position(x += Math.floor(new PlotSettings(plot.getLevelName()).getPlotSize() / 2), Settings.groundHeight += 1.5, z -= 1, level);
+        return new Position(x + Math.floor(plotSize / 2), groundHeight + 1.5, z - 1, level);
     }
 
 

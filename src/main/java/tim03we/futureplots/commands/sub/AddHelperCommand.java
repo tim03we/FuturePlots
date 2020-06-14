@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -19,12 +19,13 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 
-public class RemoveHelperCommand extends BaseCommand {
+public class AddHelperCommand extends BaseCommand {
 
-    public RemoveHelperCommand(String name, String description, String usage) {
+    public AddHelperCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -35,11 +36,11 @@ public class RemoveHelperCommand extends BaseCommand {
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if (args.length > 1) {
-                        if (FuturePlots.provider.isHelper(args[1], plot)) {
-                            FuturePlots.provider.removeHelper(args[1], plot);
-                            sender.sendMessage(translate(true, "helper.removed", args[1]));
+                        if (!FuturePlots.provider.isHelper(args[1], plot)) {
+                            FuturePlots.provider.addHelper(args[1], plot);
+                            sender.sendMessage(translate(true, "helper.added", args[1].toLowerCase()));
                         } else {
-                            sender.sendMessage(translate(true, "helper.not.exists"));
+                            sender.sendMessage(translate(true, "helper.exists"));
                         }
                     } else {
                         sender.sendMessage(getUsage());

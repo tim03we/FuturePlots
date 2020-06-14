@@ -1,4 +1,4 @@
-package tim03we.futureplots.commands;
+package tim03we.futureplots.commands.sub;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -19,12 +19,13 @@ package tim03we.futureplots.commands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
 
-public class UnDenyCommand extends BaseCommand {
+public class AddMemberCommand extends BaseCommand {
 
-    public UnDenyCommand(String name, String description, String usage) {
+    public AddMemberCommand(String name, String description, String usage) {
         super(name, description, usage);
     }
 
@@ -35,11 +36,11 @@ public class UnDenyCommand extends BaseCommand {
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if (args.length > 1) {
-                        if (FuturePlots.provider.isDenied(args[1], plot)) {
-                            FuturePlots.provider.removeDenied(args[1], plot);
-                            sender.sendMessage(translate(true, "deny.removed", args[1]));
+                        if (!FuturePlots.provider.isMember(args[1], plot)) {
+                            FuturePlots.provider.addMember(args[1], plot);
+                            sender.sendMessage(translate(true, "member.added", args[1].toLowerCase()));
                         } else {
-                            sender.sendMessage(translate(true, "deny.not.exists"));
+                            sender.sendMessage(translate(true, "member.exists"));
                         }
                     } else {
                         sender.sendMessage(getUsage());
