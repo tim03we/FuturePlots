@@ -1,5 +1,5 @@
 ---
-version: "1.2.3"
+version: "1.2.4"
 
 prefix: "FuturePlots > "
 
@@ -17,7 +17,8 @@ plot.max: "Du hast bereits die maximale Anzahl von Plots erreicht."
 plot.enter.owned: "%1\n%2"
 plot.enter.free: "%1\nFreies Plot"
 plot.help.title: "FuturePlots Befehle:"
-plot.help.text: "- %1"
+plot.help.text: "%1 - %2"
+plot.help.page: "Seite %1 von %2"
 plot.info.title: "- Plot Info -"
 plot.info.text: "Owner: %1\nID: %2\nHelfer: %3\nVerboten: %4\nMitglieder: %5"
 plot.homes.title: "Deine Plots:"

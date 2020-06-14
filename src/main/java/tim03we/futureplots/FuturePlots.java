@@ -23,6 +23,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
+import cn.nukkit.utils.Config;
 import tim03we.futureplots.commands.*;
 import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
@@ -35,9 +36,7 @@ import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FuturePlots extends PluginBase {
@@ -47,6 +46,7 @@ public class FuturePlots extends PluginBase {
     private static FuturePlots instance;
     public static EconomyProvider economyProvider;
     public static DataProvider provider;
+    public static Config cmds;
 
     @Override
     public void onLoad() {
@@ -59,6 +59,8 @@ public class FuturePlots extends PluginBase {
     @Override
     public void onEnable() {
         new File(getDataFolder() + "/worlds/").mkdirs();
+        saveResource("commands.yml");
+        cmds = new Config(getDataFolder() + "/commands.yml", Config.YAML);
         registerCommands();
         registerEvents();
         Settings.init();
@@ -82,7 +84,7 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.3")) {
+        if(!Language.getNoPrefix("version").equals("1.2.4")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
@@ -94,6 +96,13 @@ public class FuturePlots extends PluginBase {
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
                 saveDefaultConfig();
+            }
+        }
+        if(!cmds.getString("version").equals("1.0.0")) {
+            new File(getDataFolder() + "/commands_old.yml").delete();
+            if(new File(getDataFolder() + "/commands.yml").renameTo(new File(getDataFolder() + "/commands_old.yml"))) {
+                getLogger().critical("The version of the commands file does not match. You will find the old file marked \"commands_old.yml\" in the same directory.");
+                saveResource("commands.yml");
             }
         }
     }
@@ -131,27 +140,24 @@ public class FuturePlots extends PluginBase {
 
     private void registerCommands() {
         CommandHandler commandHandler = new CommandHandler();
-        commandHandler.registerCommand("clear", new ClearCommand("clear", "Run the command", "/plot clear"), new String[]{"reset"});
-        commandHandler.registerCommand("delete", new DeleteCommand("delete", "Run the command", "/plot delete"), new String[]{"del"});
-        commandHandler.registerCommand("claim", new ClaimCommand("claim", "Run the command", "/plot claim"), new String[]{"c"});
-        commandHandler.registerCommand("home", new HomeCommand("home", "Run the command", "/plot home"), new String[]{"h"});
-        commandHandler.registerCommand("homes", new HomesCommand("homes", "Run the command", "/plot homes"), new String[]{});
-        commandHandler.registerCommand("help", new HelpCommand("help", "Run the command", "/plot help"), new String[]{});
-        commandHandler.registerCommand("generate", new GenerateCommand("generate", "Run the command", "/plot generate"), new String[]{"gen"});
-        commandHandler.registerCommand("auto", new AutoCommand("auto", "Run the command", "/plot auto"), new String[]{"a"});
-        commandHandler.registerCommand("info", new InfoCommand("info", "Run the command", "/plot info"), new String[]{"i"});
-        commandHandler.registerCommand("deny", new DenyCommand("deny", "", "/plot deny <name>"), new String[]{});
-        commandHandler.registerCommand("undeny", new UnDenyCommand("undeny", "", "/plot undeny <name>"), new String[]{});
-        commandHandler.registerCommand("addhelper", new AddHelperCommand("addhelper", "Run the command", "/plot addhelper <name>"), new String[]{"trust"});
-        commandHandler.registerCommand("removehelper", new RemoveHelperCommand("removehelper", "Run the command", "/plot removehelper <name>"), new String[]{"rmhelper", "untrust"});
-        commandHandler.registerCommand("addmember", new AddMemberCommand("addmember", "", "/plot addmember <name>"), new String[]{});
-        commandHandler.registerCommand("removemember", new RemoveMemberCommand("removehome", "", "/plot removemember <name>"), new String[]{"rmmember"});
-        commandHandler.registerCommand("dispose", new DisposeCommand("dispose", "", "/plot dispose"), new String[]{});
-        commandHandler.registerCommand("kick", new KickCommand("kick", "", "/plot kick"), new String[]{});
-        FuturePlots.getInstance().getServer().getCommandMap().register("plots", new MainCommand());
-        /* ToDo */
-        //commandHandler.registerCommand("flag", new FlagCommand("flag", " , "/plot flag <flag> [value]"), new String[]{});
-        /* ToDo */
+        commandHandler.registerCommand(cmds.getString("plot.clear.name"), new ClearCommand(cmds.getString("plot.clear.name"), cmds.getString("plot.clear.description"), cmds.getString("plot.clear.usage")), cmds.getStringList("plot.clear.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.delete.name"), new DeleteCommand(cmds.getString("plot.delete.name"), cmds.getString("plot.delete.description"), cmds.getString("plot.delete.usage")), cmds.getStringList("plot.delete.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.claim.name"), new ClaimCommand(cmds.getString("plot.claim.name"), cmds.getString("plot.claim.description"), cmds.getString("plot.claim.usage")), cmds.getStringList("plot.claim.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.home.name"), new HomeCommand(cmds.getString("plot.home.name"), cmds.getString("plot.home.description"), cmds.getString("plot.home.usage")), cmds.getStringList("plot.home.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.homes.name"), new HomesCommand(cmds.getString("plot.homes.name"), cmds.getString("plot.homes.description"), cmds.getString("plot.homes.usage")), cmds.getStringList("plot.homes.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.help.name"), new HelpCommand(cmds.getString("plot.help.name"), cmds.getString("plot.help.description"), cmds.getString("plot.help.usage")), cmds.getStringList("plot.help.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.generate.name"), new GenerateCommand(cmds.getString("plot.generate.name"), cmds.getString("plot.generate.description"), cmds.getString("plot.generate.usage")), cmds.getStringList("plot.generate.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.auto.name"), new AutoCommand(cmds.getString("plot.auto.name"), cmds.getString("plot.auto.description"), cmds.getString("plot.auto.usage")), cmds.getStringList("plot.auto.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.info.name"), new InfoCommand(cmds.getString("plot.info.name"), cmds.getString("plot.info.description"), cmds.getString("plot.info.usage")), cmds.getStringList("plot.info.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.deny.name"), new DenyCommand(cmds.getString("plot.deny.name"), cmds.getString("plot.deny.description"), cmds.getString("plot.deny.usage")), cmds.getStringList("plot.deny.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.undeny.name"), new UnDenyCommand(cmds.getString("plot.undeny.name"), cmds.getString("plot.undeny.description"), cmds.getString("plot.undeny.usage")), cmds.getStringList("plot.undeny.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.addhelper.name"), new AddHelperCommand(cmds.getString("plot.addhelper.name"), cmds.getString("plot.addhelper.description"), cmds.getString("plot.addhelper.usage")), cmds.getStringList("plot.addhelper.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.removehelper.name"), new RemoveHelperCommand(cmds.getString("plot.removehelper.name"), cmds.getString("plot.removehelper.description"), cmds.getString("plot.removehelper.usage")), cmds.getStringList("plot.removehelper.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.addmember.name"), new AddMemberCommand(cmds.getString("plot.addmember.name"), cmds.getString("plot.addmember.description"), cmds.getString("plot.addmember.usage")), cmds.getStringList("plot.addmember.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.removemember.name"), new RemoveMemberCommand(cmds.getString("plot.removemember.name"), cmds.getString("plot.removemember.description"), cmds.getString("plot.removemember.usage")), cmds.getStringList("plot.removemember.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.dispose.name"), new DisposeCommand(cmds.getString("plot.dispose.name"), cmds.getString("plot.dispose.description"), cmds.getString("plot.dispose.usage")), cmds.getStringList("plot.dispose.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.kick.name"), new KickCommand(cmds.getString("plot.kick.name"), cmds.getString("plot.kick.description"), cmds.getString("plot.kick.usage")), cmds.getStringList("plot.kick.alias").toArray(new String[0]));
+        FuturePlots.getInstance().getServer().getCommandMap().register(cmds.getString("plot.name"), new MainCommand());
     }
 
     public static FuturePlots getInstance() {

@@ -1,0 +1,97 @@
+---
+version: "1.0.0"
+
+plot:
+  parameters:
+    subcommand: "subcommand"
+    player: "player"
+  name: "plot"
+  usage: "/plot <subcommand>"
+  description: "FuturePlots Main command for everything"
+  alias: ["plots", "p"]
+  addhelper:
+    name: "addhelper"
+    usage: "/plot addhelper <player>"
+    description: "Add a helper of the plot"
+    alias: ["trust"]
+  addmember:
+    name: "addmember"
+    usage: "/plot addmember <player>"
+    description: "Add a member of the plot"
+    alias: []
+  auto:
+    name: "auto"
+    usage: "/plot auto"
+    description: "Find a free plot"
+    alias: ["a"]
+  claim:
+    name: "claim"
+    usage: "/plot claim"
+    description: "Claim a plot"
+    alias: ["c"]
+  clear:
+    name: "clear"
+    usage: "/plot clear"
+    description: "Empty the desired plot"
+    alias: ["reset"]
+  delete:
+    name: "delete"
+    usage: "/plot delete"
+    description: "Delete the desired plot"
+    alias: ["del"]
+  deny:
+    name: "deny"
+    usage: "/plot deny <player>"
+    description: "Ban a player from the plot"
+    alias: []
+  dispose:
+    name: "dispose"
+    usage: "/plot dispose"
+    description: "Unlock the desired plot to claim"
+    alias: []
+  generate:
+    name: "generate"
+    usage: "/plot generate <name>"
+    description: "Generate a plot world"
+    alias: ["gen"]
+  help:
+    name: "help"
+    usage: "/plot help [page]"
+    description: "List all commands on"
+    alias: []
+  home:
+    name: "home"
+    usage: "/plot home [number] [world]"
+    description: "Go to your plots"
+    alias: ["h"]
+  homes:
+    name: "homes"
+    usage: "/plot homes"
+    description: "List your plots on"
+    alias: []
+  info:
+    name: "info"
+    usage: "/plot info"
+    description: "Display plot information"
+    alias: ["i"]
+  kick:
+    name: "kick"
+    usage: "/plot kick <player>"
+    description: "Throw a player off the plot"
+    alias: []
+  removehelper:
+    name: "removehelper"
+    usage: "/plot removehelper <player>"
+    description: "Remove a helper"
+    alias: ["rmhelper"]
+  removemember:
+    name: "removemember"
+    usage: "/plot removemember <player>"
+    description: "Remove a member"
+    alias: ["rmmember"]
+  undeny:
+    name: "undeny"
+    usage: "/plot undeny <player>"
+    description: "Pardon a player from the plot"
+    alias: []
+...

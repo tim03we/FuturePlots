@@ -20,6 +20,7 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
+import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.handler.CommandHandler;
 
 import java.util.ArrayList;
@@ -28,12 +29,12 @@ import java.util.HashMap;
 public class MainCommand extends Command {
 
     public MainCommand() {
-        super("plot", "FuturePlots Command", "/plots <sub-command>");
-        setAliases(new String[]{"plots", "p"});
+        super(FuturePlots.cmds.getString("plot.name"), FuturePlots.cmds.getString("plot.description"), FuturePlots.cmds.getString("plot.usage"));
+        setAliases(FuturePlots.cmds.getStringList("plot.alias").toArray(new String[0]));
         commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
-                new CommandParameter("subcommand", false, convertToStringArray(CommandHandler.commmands, CommandHandler.aliases)),
-                new CommandParameter("player", CommandParamType.TARGET, true)
+                new CommandParameter(FuturePlots.cmds.getString("plot.parameters.subcommand"), false, convertToStringArray(CommandHandler.commmands, CommandHandler.aliases)),
+                new CommandParameter(FuturePlots.cmds.getString("plot.parameters.player"), CommandParamType.TARGET, true)
         });
     }
 

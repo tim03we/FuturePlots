@@ -1,6 +1,6 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.2.3"
+version: "1.2.4"
 
 prefix: "FuturePlots > "
 
@@ -19,6 +19,7 @@ plot.enter.owned: "%1\n%2"
 plot.enter.free: "%1\n개방된 plot"
 plot.help.title: "FuturePlots 명령어:"
 plot.help.text: "- %1"
+plot.help.page: "페이지 %1 /%2"
 plot.info.title: "- plot 정보 -"
 plot.info.text: "소유자: %1\nID: %2\n도우미: %3\n금지된 플레이어: %4\n구성원: %5"
 plot.homes.title: "당신의 plot:"

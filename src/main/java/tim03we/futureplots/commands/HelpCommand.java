@@ -17,7 +17,13 @@ package tim03we.futureplots.commands;
  */
 
 import cn.nukkit.command.CommandSender;
+import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.handler.CommandHandler;
+import tim03we.futureplots.utils.Language;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class HelpCommand extends BaseCommand {
 
@@ -27,9 +33,32 @@ public class HelpCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
-        sender.sendMessage(translate(false, "plot.help.title"));
+        List<String> commands = new ArrayList<>();
         for (String cmd : CommandHandler.commmands.keySet()) {
-            sender.sendMessage(translate(false, "plot.help.text", cmd));
+            commands.add(cmd);
         }
+
+        int maxPages = commands.size() / 5;
+        int page;
+
+        try {
+            if (args.length > 1) {
+                int tPage = Integer.parseInt(args[1]) - 1;
+
+                page = tPage;
+                if (tPage > maxPages) page = maxPages;
+            } else page = 0;
+        } catch (Exception ex) { /* ignored */ return; }
+
+        sender.sendMessage(translate(false, "plot.help.title"));
+
+        int startFromIndex = page * 5;
+        for (int i = 0; i < 5; i++) {
+            int at = startFromIndex + i;
+            if (commands.size() - 1 >= at) {
+                sender.sendMessage(translate(false, "plot.help.text", commands.get(at), FuturePlots.cmds.getString("plot." + commands.get(at) + ".description")));
+            }
+        }
+        sender.sendMessage(translate(false, "plot.help.page", (page + 1), (maxPages + 1)));
     }
 }
