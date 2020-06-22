@@ -28,6 +28,10 @@ public class YamlProvider implements DataProvider {
     private final Config yaml = new Config(FuturePlots.getInstance().getDataFolder() + "/plots.yml", Config.YAML);
 
     @Override
+    public void connect() {
+    }
+
+    @Override
     public void save() {
         yaml.save();
     }

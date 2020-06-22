@@ -38,7 +38,7 @@ public class ClearCommand extends BaseCommand {
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if(Settings.economy) {
-                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                        if(!new PlotPlayer((Player) sender).bypassEco()) {
                             if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice()) >= 0) {
                                 FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice());
                             } else {
@@ -48,7 +48,7 @@ public class ClearCommand extends BaseCommand {
                         }
                     }
                     ((Player) sender).teleport(plot.getBorderPosition());
-                    FuturePlots.getInstance().clearPlot(FuturePlots.getInstance().getPlotByPosition(((Player) sender).getPosition()));
+                    FuturePlots.getInstance().clearPlot(plot);
                     sender.sendMessage(translate(true, "plot.clear"));
                 } else {
                     sender.sendMessage(translate(true, "not.a.owner"));

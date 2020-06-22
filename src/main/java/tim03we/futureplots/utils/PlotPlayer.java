@@ -38,7 +38,7 @@ public class PlotPlayer {
         return (FuturePlots.provider.getOwner(getPlot()) != null && FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) || player.isOp();
     }
 
-    public boolean canByPassEco() {
-        return player.isOp() || player.hasPermission("futureplots.economy.bypass");
+    public boolean bypassEco() {
+        return player.isOp() && player.hasPermission("futureplots.economy.bypass");
     }
 }

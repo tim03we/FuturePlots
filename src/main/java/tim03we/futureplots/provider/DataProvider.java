@@ -22,6 +22,8 @@ import java.util.List;
 
 public interface DataProvider {
 
+    void connect();
+
     void save();
 
     void claimPlot(String name, Plot plot);

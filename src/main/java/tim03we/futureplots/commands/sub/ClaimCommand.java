@@ -37,12 +37,13 @@ public class ClaimCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            PlotPlayer plotPlayer = new PlotPlayer((Player) sender);
+            Plot plot = plotPlayer.getPlot();
             if(plot != null) {
                 if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getPlots(sender.getName(), null).size() <= Settings.max_plots) {
                     if (!FuturePlots.provider.hasOwner(plot)) {
                         if(Settings.economy) {
-                            if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                            if(!plotPlayer.bypassEco()) {
                                 if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
                                     FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
                                 } else {

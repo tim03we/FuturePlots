@@ -49,7 +49,7 @@ public class AutoCommand extends BaseCommand {
             if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.getInstance().claimAvailable((Player) sender) >= max_plots) {
                 if(FuturePlots.provider.getPlots(sender.getName(), null).size() != Settings.max_plots) {
                     if(Settings.economy) {
-                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                        if(!new PlotPlayer((Player) sender).bypassEco()) {
                             if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
                                 FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
                             } else {

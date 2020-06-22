@@ -38,7 +38,7 @@ public class DeleteCommand extends BaseCommand {
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if(Settings.economy) {
-                        if(!new PlotPlayer((Player) sender).canByPassEco()) {
+                        if(!new PlotPlayer((Player) sender).bypassEco()) {
                             if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice()) >= 0) {
                                 FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice());
                             } else {

@@ -54,19 +54,18 @@ public class FuturePlots extends PluginBase {
         instance = this;
         providerClass.put("yaml", YamlProvider.class);
         registerGenerator();
-
-        saveDefaultConfig();
-        Settings.init();
-        Language.init();
-        saveResource("commands.yml");
     }
 
     @Override
     public void onEnable() {
+        new File(getDataFolder() + "/worlds/").mkdirs();
+        saveDefaultConfig();
+        Settings.init();
+        Language.init();
+        saveResource("commands.yml");
         cmds = new Config(getDataFolder() + "/commands.yml", Config.YAML);
         checkVersion();
         cmds = new Config(getDataFolder() + "/commands.yml", Config.YAML);
-        new File(getDataFolder() + "/worlds/").mkdirs();
         registerCommands();
         registerEvents();
         loadWorlds();
