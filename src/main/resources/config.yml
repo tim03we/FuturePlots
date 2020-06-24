@@ -5,7 +5,7 @@ version: "1.2.0"
 # Available languages: eng, deu, kor
 lang: "eng"
 
-# Available providers: yaml
+# Available providers: yaml, mysql
 provider: "yaml"
 
 # MySQL connection data
