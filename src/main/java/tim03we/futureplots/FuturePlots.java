@@ -53,6 +53,7 @@ public class FuturePlots extends PluginBase {
     public void onLoad() {
         instance = this;
         providerClass.put("yaml", YamlProvider.class);
+        providerClass.put("mysql", MySQLProvider.class);
         registerGenerator();
     }
 
@@ -93,7 +94,7 @@ public class FuturePlots extends PluginBase {
                 Language.init();
             }
         }
-        if(!getConfig().getString("version").equals("1.1.0")) {
+        if(!getConfig().getString("version").equals("1.2.0")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
@@ -115,13 +116,14 @@ public class FuturePlots extends PluginBase {
     }
 
     private void initProvider() {
-        Class<?> providerClass = this.providerClass.get((this.getConfig().get(Settings.provider, "yaml")).toLowerCase());
+        Class<?> providerClass = this.providerClass.get(this.getConfig().getString("provider"));
         if (providerClass == null) { this.getLogger().critical("The specified provider could not be found."); }
-        try { this.provider = (DataProvider) providerClass.newInstance();
+        try { provider = (DataProvider) providerClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
             getServer().getPluginManager().disablePlugin(getServer().getPluginManager().getPlugin("FuturePlots"));
             return;
         }
+        provider.connect();
         if(Settings.economy) {
             try {
                 if(getServer().getPluginManager().getPlugin("EconomyAPI") != null) {

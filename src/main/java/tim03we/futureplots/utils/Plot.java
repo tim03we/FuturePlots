@@ -43,6 +43,10 @@ public class Plot {
         return new Plot(x, z, levelName);
     }
 
+    public String getFullID() {
+        return this.x + ";" + this.z;
+    }
+
     public int getX() {
         return this.x;
     }

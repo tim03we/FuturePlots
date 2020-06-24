@@ -43,6 +43,7 @@ public class Settings {
     public static String language;
     public static int max_plots;
     public static boolean popup;
+    public static boolean debug;
     public static boolean economy;
     public static boolean claim_tp;
 
@@ -65,11 +66,13 @@ public class Settings {
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");
         popup = config.getBoolean("show-popup");
+        debug = config.getBoolean("debug");
         claim_tp = config.getBoolean("teleport-on-claim");
         economy = config.getBoolean("economy");
         claim_price = config.getInt("default-settings.price.claim");
         clear_price = config.getInt("default-settings.price.clear");
         delete_price = config.getInt("default-settings.price.delete");
+        dispose_price = config.getInt("default-settings.price.dispose");
     }
 
 }

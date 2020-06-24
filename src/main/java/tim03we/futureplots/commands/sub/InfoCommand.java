@@ -35,7 +35,7 @@ public class InfoCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 sender.sendMessage(translate(false, "plot.info.title"));
-                if(FuturePlots.provider.getOwner(plot) != null) {
+                if(FuturePlots.provider.hasOwner(plot)) {
                     sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getOwner(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot).toString(), FuturePlots.provider.getDenied(plot).toString(), FuturePlots.provider.getMembers(plot).toString()));
                 } else {
                     sender.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));

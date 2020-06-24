@@ -1,12 +1,23 @@
 ---
 # Do not change the version, this can lead to deletion of the file
-version: "1.1.0"
+version: "1.2.0"
 
 # Available languages: eng, deu, kor
 lang: "eng"
 
 # Available providers: yaml
 provider: "yaml"
+
+# MySQL connection data
+mysql:
+  host: "127.0.0.1"
+  port: "3306"
+  user: "root"
+  password: "ThisIsMyStrongPassword"
+  database: "futureplots"
+
+# To be able to locate an error correction more precisely
+debug: false
 
 # How many plots a player can own
 max-plots: 2

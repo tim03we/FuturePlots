@@ -39,6 +39,6 @@ public class PlotPlayer {
     }
 
     public boolean bypassEco() {
-        return player.isOp() && player.hasPermission("futureplots.economy.bypass");
+        return player.isOp() || player.hasPermission("futureplots.economy.bypass");
     }
 }
