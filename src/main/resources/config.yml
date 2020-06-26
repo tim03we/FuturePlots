@@ -1,11 +1,12 @@
 ---
 # Do not change the version, this can lead to deletion of the file
-version: "1.2.0"
+version: "1.2.1"
 
-# Available languages: eng, deu, kor
+# Available languages:
+# eng (English), deu (German), kor (Korean), chs (Chinese)
 lang: "eng"
 
-# Available providers: yaml, mysql
+# Available providers: yaml, mysql, sqlite
 provider: "yaml"
 
 # MySQL connection data

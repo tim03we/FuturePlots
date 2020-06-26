@@ -1,0 +1,64 @@
+---
+version: "1.2.5"
+
+prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
+
+no.plotworld: "服务器中尚无地皮世界."
+not.in.world: "你不在一个地皮世界."
+not.in.plot: "你不在一个地皮中."
+not.a.owner: "仅有地皮的主人可以执行此操作."
+
+plot.teleport: "你被传送到了你的地皮."
+plot.claim.already: "这个地皮已经被领取了."
+plot.claim: "你刚刚领取了地皮."
+plot.clear: "这个地皮被清理了."
+plot.delete: "这个地皮被删除了."
+plot.max: "你达到了地皮的领取数量上限."
+plot.enter.owned: "%1\n%2"
+plot.enter.free: "%1\n空地皮"
+plot.help.title: "地皮命令帮助:"
+plot.help.text: "- %1"
+plot.help.page: "页码 %1 of %2"
+plot.info.title: "- 地皮信息 -"
+plot.info.text: "拥有者: %1\nID: %2\n地皮管理员: %3\n被拒绝者: %4\n成员: %5"
+plot.homes.title: "你的地皮:"
+plot.homes.text: "- %2 (%1)"
+plot.world.required: "请输入世界名和地皮编号以传送到地皮."
+plot.world.not.exists: "这个世界不存在."
+plot.world.exists: "这个世界已经存在了."
+plot.dispose: "这个地皮被上锁了."
+plot.kick: "你将玩家 %1 踢出了地皮."
+plot.kick.target: "这个地皮的拥有者将你踢出了地皮."
+plot.kick.error: "这个玩家不在这个地皮中."
+plot.setowner: "你给的情节%1。"
+plot.setowner.target: "您已收到ID为%1的绘图."
+plot.setowner.target.max: "这个玩家已经达到了最大的地块数."
+plot.setowner.target.not.online: "这个玩家必须在线给他剧情."
+
+helper.added: "地皮管理员 %1 被添加到了该地皮."
+helper.removed: "地皮管理员 %1 从该地皮中被移除了."
+helper.exists: "这个玩家已经是该地皮的管理员了."
+helper.not.exists: "这个玩家不是该地皮的管理员了."
+
+deny.added: "玩家 %1 被禁止进入这个地皮了."
+deny.removed: "玩家 %1 现在可以进入你的地皮了."
+deny.exists: "这个玩家已经禁止进入这个地皮了."
+deny.not.exists: "这个玩家可以进入这个地皮了."
+
+member.added: "成员 %1 被添加到了该地皮."
+member.removed: "成员 %1 从该地皮中被移除了."
+member.exists: "这个玩家已经是该地皮的成员了."
+member.not.exists: "这个玩家不是该地皮的成员了."
+
+generate.world.required: "请输入生成的地皮世界的名字."
+generate.world.exists: "这个世界已经存在了."
+generate.world.success: "世界 %1 正在生成..."
+
+has.no.plot: "你没有一个地皮."
+has.no.plot.world: "你在这个世界没有地皮."
+has.no.plot.number: "你没有拥有 %1 号地皮."
+
+economy.no.money: "你没有足够的金钱执行此操作."
+
+player.not.found: "找不到该玩家."
+...

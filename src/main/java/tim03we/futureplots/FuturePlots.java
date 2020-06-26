@@ -54,6 +54,7 @@ public class FuturePlots extends PluginBase {
         instance = this;
         providerClass.put("yaml", YamlProvider.class);
         providerClass.put("mysql", MySQLProvider.class);
+        providerClass.put("sqlite", SQLiteProvider.class);
         registerGenerator();
     }
 
@@ -94,7 +95,7 @@ public class FuturePlots extends PluginBase {
                 Language.init();
             }
         }
-        if(!getConfig().getString("version").equals("1.2.0")) {
+        if(!getConfig().getString("version").equals("1.2.1")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");

@@ -50,7 +50,7 @@ public class PlayerMove extends Language implements Listener {
                     }
                 }
             } else if(plotFrom != null && plot == null) {
-                new PlotEvent(new PlotLeaveEvent(FuturePlots.getInstance(), plot, player));
+                new PlotEvent(new PlotLeaveEvent(FuturePlots.getInstance(), plotFrom, player));
             }
         }
     }
