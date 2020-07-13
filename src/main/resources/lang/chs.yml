@@ -1,5 +1,5 @@
 ---
-version: "1.2.5"
+version: "1.2.6"
 
 prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
 
@@ -34,6 +34,8 @@ plot.setowner: "你给的情节%1。"
 plot.setowner.target: "您已收到ID为%1的绘图."
 plot.setowner.target.max: "这个玩家已经达到了最大的地块数."
 plot.setowner.target.not.online: "这个玩家必须在线给他剧情."
+plot.home.set: "你已经设置了一个新的剧情产卵点."
+plot.home.delete: "你已经重置了剧情的产卵点."
 
 helper.added: "地皮管理员 %1 被添加到了该地皮."
 helper.removed: "地皮管理员 %1 从该地皮中被移除了."

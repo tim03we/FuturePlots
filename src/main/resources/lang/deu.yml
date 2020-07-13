@@ -1,5 +1,5 @@
 ---
-version: "1.2.5"
+version: "1.2.6"
 
 prefix: "FuturePlots > "
 
@@ -34,6 +34,8 @@ plot.setowner: "Du hast das Plot %1 gegeben."
 plot.setowner.target: "Du hast das Plot mit der ID %1 erhalten."
 plot.setowner.target.max: "Dieser Spieler hat bereits das maximum an Plots erreicht."
 plot.setowner.target.not.online: "Dieser Spieler muss Online sein, um ihm das Plot zu geben."
+plot.home.set: "Du hast einen neuen Spawnpunkt des Plots festgelegt."
+plot.home.delete: "Du hast den Spawnpunkt des Plots zurückgesetzt."
 
 helper.added: "Der Spieler %1 wurde als Helfer hinzugefügt."
 helper.removed: "Der Spieler %1 wurde als Helfer entfernt."

@@ -17,14 +17,17 @@ package tim03we.futureplots.provider;
  */
 
 import cn.nukkit.Server;
+import cn.nukkit.level.Location;
 import com.google.gson.Gson;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.SQLHelper;
 import tim03we.futureplots.utils.Settings;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class SQLiteProvider implements DataProvider {
 
@@ -42,7 +45,7 @@ public class SQLiteProvider implements DataProvider {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + FuturePlots.getInstance().getDataFolder().getPath() + "/plots.db");
             connection.setAutoCommit(false);
-            checkAndCreate();
+            checkAndRun();
             Server.getInstance().getLogger().info("[FuturePlots] Connection to SQLite database successful.");
         } catch (SQLException | ClassNotFoundException ex) {
             Server.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
@@ -50,14 +53,29 @@ public class SQLiteProvider implements DataProvider {
         }
     }
 
-    private void checkAndCreate() {
-        try {
-            PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
-            statement.executeUpdate();
-            statement.close();
-        } catch (Exception e) {
-            if(Settings.debug) e.printStackTrace();
-        }
+    private void checkAndRun() {
+        CompletableFuture.runAsync(() -> {
+            String[] array = new String[]{"home VARCHAR(999)"};
+            if (connection != null) {
+                try {
+                    PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
+                    statement.executeUpdate();
+                    statement.close();
+
+                    for (String s : array) {
+                        String[] ex = s.split(" ");
+                        if(!new SQLHelper(connection).columnExists(ex[0])) {
+                            statement = connection.prepareStatement("ALTER TABLE plots ADD COLUMN " + s + ";");
+                            statement.executeUpdate();
+                            statement.close();
+                            connection.commit();
+                        }
+                    }
+                } catch (Exception e) {
+                    if(Settings.debug) e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -290,6 +308,58 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
+    public void setHome(Plot plot, Location location) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
+                statement.setString(1, location.getX() + ":" + location.getY() + ":" + location.getZ());
+                statement.setString(2, plot.getLevelName());
+                statement.setString(3, plot.getFullID());
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                if(Settings.debug) e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void deleteHome(Plot plot) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
+                statement.setString(1, null);
+                statement.setString(2, plot.getLevelName());
+                statement.setString(3, plot.getFullID());
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                if(Settings.debug) e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public Location getHome(Plot plot) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
+            statement.setString(1, plot.getLevelName());
+            statement.setString(2, plot.getFullID());
+            ResultSet result = statement.executeQuery();
+            result.next();
+            connection.commit();
+            String locationString = result.getString("home");
+            if(locationString != null) {
+                String[] ex = result.getString("home").split(":");
+                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Server.getInstance().getLevelByName(plot.getLevelName()));
+            }
+        } catch (SQLException e) {
+            if(Settings.debug) e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public Plot getPlot(String name, Object number, Object level) {
         int i = 1;
         if(number != null && (int) number > 0) {
@@ -325,7 +395,7 @@ public class SQLiteProvider implements DataProvider {
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM plots;");
                 connection.commit();
                 while(resultSet.next()) {
-                    if(resultSet.getString("level").equals(level)) {
+                    if(resultSet.getString("level").equals(level) && resultSet.getString("owner").equals(name)) {
                         String[] plotid = resultSet.getString("plotid").split(";");
                         plots.add(level + ";" + plotid[0] + ";" + plotid[1]);
                     }
@@ -339,8 +409,10 @@ public class SQLiteProvider implements DataProvider {
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM plots;");
                 connection.commit();
                 while(resultSet.next()) {
-                    String[] plotid = resultSet.getString("plotid").split(";");
-                    plots.add(resultSet.getString("level") + ";" + plotid[0] + ";" + plotid[1]);
+                    if(resultSet.getString("owner").equals(name)) {
+                        String[] plotid = resultSet.getString("plotid").split(";");
+                        plots.add(resultSet.getString("level") + ";" + plotid[0] + ";" + plotid[1]);
+                    }
                 }
             } catch (SQLException e) {
                 if(Settings.debug) e.printStackTrace();

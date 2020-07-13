@@ -46,7 +46,11 @@ public class HomeCommand extends BaseCommand {
                             if(provider.getPlots(sender.getName(), args[2]).size() > 0) {
                                 Plot plot = provider.getPlot(sender.getName(), Integer.parseInt(args[1]), args[2]);
                                 if(plot != null) {
-                                    ((Player) sender).teleport(plot.getBorderPosition());
+                                    if(provider.getHome(plot) != null) {
+                                        ((Player) sender).teleport(provider.getHome(plot));
+                                    } else {
+                                        ((Player) sender).teleport(plot.getBorderPosition());
+                                    }
                                     sender.sendMessage(translate(true, "plot.teleport"));
                                 } else {
                                     sender.sendMessage(translate(true, "has.no.plot.world"));
@@ -75,7 +79,11 @@ public class HomeCommand extends BaseCommand {
                     if(provider.getPlots(sender.getName(), Settings.levels.get(0)).size() > 0) {
                         Plot plot = provider.getPlot(sender.getName(), Integer.parseInt(args[1]), Settings.levels.get(0));
                         if(plot != null) {
-                            ((Player) sender).teleport(plot.getBorderPosition());
+                            if(provider.getHome(plot) != null) {
+                                ((Player) sender).teleport(provider.getHome(plot));
+                            } else {
+                                ((Player) sender).teleport(plot.getBorderPosition());
+                            }
                             sender.sendMessage(translate(true, "plot.teleport"));
                         } else {
                             sender.sendMessage(translate(true, "has.no.plot.number", args[1]));
@@ -86,7 +94,11 @@ public class HomeCommand extends BaseCommand {
                 }
             } else {
                 Plot plot = provider.getPlot(sender.getName(), homeNumber, null);
-                ((Player) sender).teleport(plot.getBorderPosition());
+                if(provider.getHome(plot) != null) {
+                    ((Player) sender).teleport(provider.getHome(plot));
+                } else {
+                    ((Player) sender).teleport(plot.getBorderPosition());
+                }
                 sender.sendMessage(translate(true, "plot.teleport"));
             }
         }

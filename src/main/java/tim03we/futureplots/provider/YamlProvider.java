@@ -16,6 +16,8 @@ package tim03we.futureplots.provider;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Server;
+import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
@@ -139,6 +141,28 @@ public class YamlProvider implements DataProvider {
         List<String> denied = getDenied(plot);
         denied.remove(name.toLowerCase());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
+    }
+
+    @Override
+    public void setHome(Plot plot, Location location) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", location.getX() + ":" + location.getY() + ":" + location.getZ());
+    }
+
+    @Override
+    public void deleteHome(Plot plot) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", "");
+    }
+
+    @Override
+    public Location getHome(Plot plot) {
+        if(yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home")) {
+            String locationString = yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home");
+            if(!locationString.equals("")) {
+                String[] ex = yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home").split(":");
+                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Server.getInstance().getLevelByName(plot.getLevelName()));
+            }
+        }
+        return null;
     }
 
     @Override

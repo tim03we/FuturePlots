@@ -17,10 +17,12 @@ package tim03we.futureplots.provider;
  */
 
 import cn.nukkit.Server;
+import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import com.google.gson.Gson;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.SQLHelper;
 import tim03we.futureplots.utils.Settings;
 
 import java.sql.*;
@@ -45,7 +47,7 @@ public class MySQLProvider implements DataProvider {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://" + config.getString("mysql.host") + ":" + config.getString("mysql.port") + "/" + config.getString("mysql.database") + "?autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8", config.getString("mysql.user"), config.getString("mysql.password"));
             connection.setAutoCommit(false);
-            checkAndCreate();
+            checkAndRun();
             Server.getInstance().getLogger().info("[FuturePlots] Connection to MySQL database successful.");
         } catch (SQLException | ClassNotFoundException ex) {
             Server.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
@@ -53,13 +55,24 @@ public class MySQLProvider implements DataProvider {
         }
     }
 
-    private void checkAndCreate() {
+    private void checkAndRun() {
         CompletableFuture.runAsync(() -> {
+            String[] array = new String[]{"home VARCHAR(999)"};
             if (connection != null) {
                 try {
                     PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
                     statement.executeUpdate();
                     statement.close();
+
+                    for (String s : array) {
+                        String[] ex = s.split(" ");
+                        if(!new SQLHelper(connection).columnExists(ex[0])) {
+                            statement = connection.prepareStatement("ALTER TABLE plots ADD COLUMN " + s + ";");
+                            statement.executeUpdate();
+                            statement.close();
+                            connection.commit();
+                        }
+                    }
                 } catch (Exception e) {
                     if(Settings.debug) e.printStackTrace();
                 }
@@ -312,6 +325,58 @@ public class MySQLProvider implements DataProvider {
                 if(Settings.debug) e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void setHome(Plot plot, Location location) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
+                statement.setString(1, location.getX() + ":" + location.getY() + ":" + location.getZ());
+                statement.setString(2, plot.getLevelName());
+                statement.setString(3, plot.getFullID());
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                if(Settings.debug) e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void deleteHome(Plot plot) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
+                statement.setString(1, null);
+                statement.setString(2, plot.getLevelName());
+                statement.setString(3, plot.getFullID());
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                if(Settings.debug) e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public Location getHome(Plot plot) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
+            statement.setString(1, plot.getLevelName());
+            statement.setString(2, plot.getFullID());
+            ResultSet result = statement.executeQuery();
+            result.next();
+            connection.commit();
+            String locationString = result.getString("home");
+            if(locationString != null) {
+                String[] ex = result.getString("home").split(":");
+                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Server.getInstance().getLevelByName(plot.getLevelName()));
+            }
+        } catch (SQLException e) {
+            if(Settings.debug) e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

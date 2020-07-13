@@ -1,5 +1,5 @@
 ---
-version: "1.0.1"
+version: "1.0.2"
 
 plot:
   parameters:
@@ -99,4 +99,14 @@ plot:
     usage: "/plot setowner <player>"
     description: "Give the plot to someone else"
     alias: ["give"]
+  sethome:
+    name: "sethome"
+    usage: "/plot sethome"
+    description: "Set the home of the plot"
+    alias: []
+  deletehome:
+    name: "deletehome"
+    usage: "/plot deletehome"
+    description: "Delete the home of the plot"
+    alias: ["delhome"]
 ...

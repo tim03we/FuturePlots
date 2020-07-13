@@ -16,6 +16,7 @@ package tim03we.futureplots.provider;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.level.Location;
 import tim03we.futureplots.utils.Plot;
 
 import java.util.List;
@@ -59,6 +60,12 @@ public interface DataProvider {
     void removeMember(String name, Plot plot);
 
     void removeDenied(String name, Plot plot);
+
+    void setHome(Plot plot, Location location);
+
+    void deleteHome(Plot plot);
+
+    Location getHome(Plot plot);
 
     Plot getPlot(String name, Object number, Object level);
 
