@@ -312,7 +312,7 @@ public class SQLiteProvider implements DataProvider {
         CompletableFuture.runAsync(() -> {
             try {
                 PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, location.getX() + ":" + location.getY() + ":" + location.getZ());
+                statement.setString(1, location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch());
                 statement.setString(2, plot.getLevelName());
                 statement.setString(3, plot.getFullID());
                 statement.executeUpdate();
@@ -351,7 +351,7 @@ public class SQLiteProvider implements DataProvider {
             String locationString = result.getString("home");
             if(locationString != null) {
                 String[] ex = result.getString("home").split(":");
-                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Server.getInstance().getLevelByName(plot.getLevelName()));
+                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Double.parseDouble(ex[3]), Double.parseDouble(ex[4]), Server.getInstance().getLevelByName(plot.getLevelName()));
             }
         } catch (SQLException e) {
             if(Settings.debug) e.printStackTrace();

@@ -145,7 +145,7 @@ public class YamlProvider implements DataProvider {
 
     @Override
     public void setHome(Plot plot, Location location) {
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", location.getX() + ":" + location.getY() + ":" + location.getZ());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch());
     }
 
     @Override
@@ -159,7 +159,7 @@ public class YamlProvider implements DataProvider {
             String locationString = yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home");
             if(!locationString.equals("")) {
                 String[] ex = yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home").split(":");
-                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Server.getInstance().getLevelByName(plot.getLevelName()));
+                return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Double.parseDouble(ex[3]), Double.parseDouble(ex[4]), Server.getInstance().getLevelByName(plot.getLevelName()));
             }
         }
         return null;
