@@ -20,16 +20,18 @@ Command | Sub-Command | Permission | Alias
 ~ | claim | - | c
 ~ | clear | - | reset
 ~ | delete | - | del
+~ | dispose | - | -
 ~ | help | - | -
 ~ | home | - | h
 ~ | homes | - | -
 ~ | info | - | i
 ~ | kick | - | -
+~ | sethome | - | -
+~ | deletehome | - | delhome
+~ | setowner | - | give
 
 # ToDo
-- ✅ Yaml Provider<br>
-- ❌ MongoDB Provider<br>
-- ❌ MySQL Provider<br>
+- MongoDB Provider<br>
 
 ----------------
 

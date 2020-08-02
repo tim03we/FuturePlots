@@ -40,6 +40,10 @@ public class PlayerInteract implements Listener {
                 }
                 if(plot != null) {
                     if(!plot.canInteract(player)) {
+                        if(event.getAction() == PlayerInteractEvent.Action.PHYSICAL) {
+                            event.setCancelled(true);
+                            return;
+                        }
                         if(event.getItem().canBeActivated() || event.getBlock().canBeActivated()) {
                             event.setCancelled(true);
                         } else {
