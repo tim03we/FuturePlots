@@ -1,4 +1,4 @@
-package tim03we.chickenmc.lobbysystem.sql;
+package tim03we.futureplots.provider.sql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +14,9 @@ public class SQLTable {
 
     private String table;
 
-    public SQLTable(String table, SQLConnection instance) {
+    public SQLTable(String table, SQLDatabase database, SQLConnection instance) {
         this.table = table;
+        database.set();
         this.instance = instance;
     }
 
@@ -33,6 +34,34 @@ public class SQLTable {
                 i++;
             }
             statement.setObject(i, equals);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(SQLEntity whereEntity, SQLEntity newDocument) {
+        try {
+            StringBuilder updateBuilder = new StringBuilder();
+            for (String update : newDocument.getDataMap().keySet()) {
+                updateBuilder.append(update).append(" = ?, ");
+            }
+            StringBuilder whereBuilder = new StringBuilder();
+            for (String where : whereEntity.getDataMap().keySet()) {
+                whereBuilder.append(where).append(" = ? AND ");
+            }
+            String whereString = whereBuilder.toString().substring(0, (whereBuilder.toString().length() - 5));
+            String updateString = updateBuilder.toString().substring(0, (updateBuilder.toString().length() - 2));
+            PreparedStatement statement = instance.connection.prepareStatement("UPDATE " + this.table + " SET " + updateString + " WHERE " + whereString + ";");
+            int i = 1;
+            for (Object value : newDocument.getDataMap().values()) {
+                statement.setObject(i, value);
+                i++;
+            }
+            for (Object value : whereEntity.getDataMap().values()) {
+                statement.setObject(i, value);
+                i++;
+            }
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,7 +91,17 @@ public class SQLTable {
 
     public SQLEntity find(SQLEntity sqlDocument) {
         try {
-            PreparedStatement statement = instance.connection.prepareStatement("SELECT * FROM " + this.table + ";");
+            StringBuilder whereBuilder = new StringBuilder();
+            for (String where : sqlDocument.getDataMap().keySet()) {
+                whereBuilder.append(where).append(" = ? AND ");
+            }
+            String whereString = whereBuilder.toString().substring(0, (whereBuilder.toString().length() - 5));
+            PreparedStatement statement = instance.connection.prepareStatement("SELECT * FROM " + this.table + " WHERE " + whereString + ";");
+            int whereInt = 1;
+            for (Object value : sqlDocument.getDataMap().values()) {
+                statement.setObject(whereInt, value);
+                whereInt++;
+            }
             ResultSet resultSet = statement.executeQuery();
             ResultSetMetaData meta = resultSet.getMetaData();
 
@@ -122,5 +161,17 @@ public class SQLTable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean columnExists(String column) {
+        boolean exists;
+        try {
+            instance.connection.prepareStatement("SELECT " + column + " FROM '" + table + "';");
+            instance.connection.commit();
+            exists = true;
+        } catch (SQLException e) {
+            exists = false;
+        }
+        return exists;
     }
 }

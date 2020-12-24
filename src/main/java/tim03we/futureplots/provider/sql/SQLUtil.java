@@ -1,4 +1,4 @@
-package tim03we.chickenmc.clansystem.sql;
+package tim03we.futureplots.provider.sql;
 
 import java.util.ArrayList;
 import java.util.List;

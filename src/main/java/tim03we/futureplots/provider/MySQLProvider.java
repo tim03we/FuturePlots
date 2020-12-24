@@ -21,8 +21,11 @@ import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import com.google.gson.Gson;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.provider.sql.SQLConnection;
+import tim03we.futureplots.provider.sql.SQLDatabase;
+import tim03we.futureplots.provider.sql.SQLEntity;
+import tim03we.futureplots.provider.sql.SQLTable;
 import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.SQLHelper;
 import tim03we.futureplots.utils.Settings;
 
 import java.sql.*;
@@ -32,8 +35,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MySQLProvider implements DataProvider {
 
-    private static Connection connection;
-    private static Statement statement;
+    private SQLDatabase database;
 
     @Override
     public void connect() {
@@ -45,11 +47,16 @@ public class MySQLProvider implements DataProvider {
         Config config = FuturePlots.getInstance().getConfig();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://" + config.getString("mysql.host") + ":" + config.getString("mysql.port") + "/" + config.getString("mysql.database") + "?autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8", config.getString("mysql.user"), config.getString("mysql.password"));
-            connection.setAutoCommit(false);
+            SQLConnection sqlConnection = new SQLConnection(
+                    config.getString("mysql.host"),
+                    config.getString("mysql.port"),
+                    config.getString("mysql.user"),
+                    config.getString("mysql.password")
+            );
+            database = sqlConnection.getDatabase(config.getString("mysql.database"));
             checkAndRun();
             Server.getInstance().getLogger().info("[FuturePlots] Connection to MySQL database successful.");
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             Server.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
             ex.printStackTrace();
         }
@@ -57,20 +64,21 @@ public class MySQLProvider implements DataProvider {
 
     private void checkAndRun() {
         CompletableFuture.runAsync(() -> {
+            SQLTable table = database.getTable("plots");
             String[] array = new String[]{"home VARCHAR(999)"};
-            if (connection != null) {
+            if (database.getConnection() != null) {
                 try {
-                    PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
+                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
                     statement.executeUpdate();
                     statement.close();
 
                     for (String s : array) {
                         String[] ex = s.split(" ");
-                        if(!new SQLHelper(connection).columnExists(ex[0])) {
-                            statement = connection.prepareStatement("ALTER TABLE plots ADD COLUMN " + s + ";");
+                        if(!table.columnExists(ex[0])) {
+                            statement = database.getConnection().prepareStatement("ALTER TABLE plots ADD COLUMN " + s + ";");
                             statement.executeUpdate();
                             statement.close();
-                            connection.commit();
+                            database.getConnection().commit();
                         }
                     }
                 } catch (Exception e) {
@@ -87,31 +95,21 @@ public class MySQLProvider implements DataProvider {
     @Override
     public void claimPlot(String name, Plot plot) {
         CompletableFuture.runAsync(() -> {
-            try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO plots (level, plotid, owner) VALUES (?, ?, ?)");
-                statement.setObject(1, plot.getLevelName());
-                statement.setObject(2, plot.getFullID());
-                statement.setObject(3, name);
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
+            SQLTable table = database.getTable("plots");
+            SQLEntity insertEntity = new SQLEntity("level", plot.getLevelName());
+            insertEntity.append("plotid", plot.getFullID());
+            insertEntity.append("owner", name);
+            table.insert(insertEntity);
         });
     }
 
     @Override
     public void deletePlot(Plot plot) {
         CompletableFuture.runAsync(() -> {
-            try {
-                PreparedStatement statement = connection.prepareStatement("DELETE FROM plots WHERE level = ? AND plotid = ?;");
-                statement.setString(1, plot.getLevelName());
-                statement.setString(2, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
+            SQLTable table = database.getTable("plots");
+            SQLEntity deleteEntity = new SQLEntity("level", plot.getLevelName());
+            deleteEntity.append("plotid", plot.getFullID());
+            table.delete(deleteEntity);
         });
     }
 
@@ -138,243 +136,149 @@ public class MySQLProvider implements DataProvider {
     @Override
     public void setOwner(String name, Plot plot) {
         CompletableFuture.runAsync(() -> {
-            try {
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET owner = ? WHERE level = ? AND plotid = ?;");
-                statement.setObject(1, name);
-                statement.setObject(2, plot.getLevelName());
-                statement.setObject(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
+            SQLTable table = database.getTable("plots");
+            SQLEntity updateEntity = new SQLEntity("owner", name);
+            table.update(new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID()), updateEntity);
         });
     }
 
     @Override
     public String getOwner(Plot plot) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
-            statement.setString(1, plot.getLevelName());
-            statement.setString(2, plot.getFullID());
-            ResultSet result = statement.executeQuery();
-            result.next();
-            connection.commit();
-
-            return result.getString("owner");
-        } catch (SQLException e) {
-            if(Settings.debug) e.printStackTrace();
+        SQLTable table = database.getTable("plots");
+        System.out.println(plot.getFullID());
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            System.out.println("OWNER: " + find.getString("owner"));
+            return find.getString("owner");
         }
         return "none";
     }
 
     @Override
     public List<String> getHelpers(Plot plot) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
-            statement.setString(1, plot.getLevelName());
-            statement.setString(2, plot.getFullID());
-            ResultSet result = statement.executeQuery();
-            result.next();
-            connection.commit();
-            if(result.getString("helpers") == null) return new ArrayList<>();
-            return new Gson().fromJson(result.getString("helpers"), List.class);
-        } catch (SQLException e) {
-            if(Settings.debug) e.printStackTrace();
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            if(find.getString("helpers") == null) return new ArrayList<>();
+            return new Gson().fromJson(find.getString("helpers"), List.class);
         }
         return null;
     }
 
     @Override
     public List<String> getMembers(Plot plot) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
-            statement.setString(1, plot.getLevelName());
-            statement.setString(2, plot.getFullID());
-            ResultSet result = statement.executeQuery();
-            result.next();
-            connection.commit();
-            if(result.getString("members") == null) return new ArrayList<>();
-            return new Gson().fromJson(result.getString("members"), List.class);
-        } catch (SQLException e) {
-            if(Settings.debug) e.printStackTrace();
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            if(find.getString("members") == null) return new ArrayList<>();
+            return new Gson().fromJson(find.getString("members"), List.class);
         }
         return null;
     }
 
     @Override
     public List<String> getDenied(Plot plot) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
-            statement.setString(1, plot.getLevelName());
-            statement.setString(2, plot.getFullID());
-            ResultSet result = statement.executeQuery();
-            result.next();
-            connection.commit();
-            if(result.getString("denied") == null) return new ArrayList<>();
-            return new Gson().fromJson(result.getString("denied"), List.class);
-        } catch (SQLException e) {
-            if(Settings.debug) e.printStackTrace();
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            if(find.getString("denied") == null) return new ArrayList<>();
+            return new Gson().fromJson(find.getString("denied"), List.class);
         }
         return null;
     }
 
     @Override
     public void addHelper(String name, Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<String> helpers = getHelpers(plot);
-                helpers.add(name.toLowerCase());
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET helpers = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, new Gson().toJson(helpers));
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        List<String> helpers = getHelpers(plot);
+        helpers.add(name.toLowerCase());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("helpers", new Gson().toJson(helpers));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void addMember(String name, Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<String> members = getMembers(plot);
-                members.add(name.toLowerCase());
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET members = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, new Gson().toJson(members));
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        List<String> members = getMembers(plot);
+        members.add(name.toLowerCase());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("members", new Gson().toJson(members));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void addDenied(String name, Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<String> denied = getDenied(plot);
-                denied.add(name.toLowerCase());
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET denied = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, new Gson().toJson(denied));
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        List<String> denied = getDenied(plot);
+        denied.add(name.toLowerCase());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("denied", new Gson().toJson(denied));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void removeHelper(String name, Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<String> helpers = getHelpers(plot);
-                helpers.remove(name.toLowerCase());
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET helpers = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, new Gson().toJson(helpers));
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        List<String> helpers = getHelpers(plot);
+        helpers.remove(name.toLowerCase());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("helpers", new Gson().toJson(helpers));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void removeMember(String name, Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<String> members = getMembers(plot);
-                members.remove(name.toLowerCase());
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET members = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, new Gson().toJson(members));
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        List<String> members = getMembers(plot);
+        members.remove(name.toLowerCase());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("members", new Gson().toJson(members));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void removeDenied(String name, Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<String> denied = getDenied(plot);
-                denied.remove(name.toLowerCase());
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET denied = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, new Gson().toJson(denied));
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        List<String> denied = getDenied(plot);
+        denied.remove(name.toLowerCase());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("denied", new Gson().toJson(denied));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void setHome(Plot plot, Location location) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch());
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        String locationString = location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
+        SQLEntity updateEntity = new SQLEntity("home", locationString);
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void deleteHome(Plot plot) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                PreparedStatement statement = connection.prepareStatement("UPDATE plots SET home = ? WHERE level = ? AND plotid = ?;");
-                statement.setString(1, null);
-                statement.setString(2, plot.getLevelName());
-                statement.setString(3, plot.getFullID());
-                statement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
-            }
-        });
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("home", null);
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public Location getHome(Plot plot) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE level = ? AND plotid = ?");
-            statement.setString(1, plot.getLevelName());
-            statement.setString(2, plot.getFullID());
-            ResultSet result = statement.executeQuery();
-            result.next();
-            connection.commit();
-            String locationString = result.getString("home");
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            String locationString = find.getString("home");
             if(locationString != null) {
-                String[] ex = result.getString("home").split(":");
+                String[] ex = find.getString("home").split(":");
                 return new Location(Double.parseDouble(ex[0]), Double.parseDouble(ex[1]), Double.parseDouble(ex[2]), Double.parseDouble(ex[3]), Double.parseDouble(ex[4]), Server.getInstance().getLevelByName(plot.getLevelName()));
             }
-        } catch (SQLException e) {
-            if(Settings.debug) e.printStackTrace();
         }
         return null;
     }
@@ -410,30 +314,18 @@ public class MySQLProvider implements DataProvider {
     public List<String> getPlots(String name, Object level) {
         List<String> plots = new ArrayList<>();
         if(level != null) {
-            try {
-                statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM plots;");
-                connection.commit();
-                while(resultSet.next()) {
-                    if(resultSet.getString("level").equals(level)) {
-                        String[] plotid = resultSet.getString("plotid").split(";");
-                        plots.add(level + ";" + plotid[0] + ";" + plotid[1]);
-                    }
+            SQLTable table = database.getTable("plots");
+            for (SQLEntity resultSet : table.find()) {
+                if(resultSet.getString("level").equals(level)) {
+                    String[] plotid = resultSet.getString("plotid").split(";");
+                    plots.add(level + ";" + plotid[0] + ";" + plotid[1]);
                 }
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
             }
         } else {
-            try {
-                statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM plots;");
-                connection.commit();
-                while(resultSet.next()) {
-                    String[] plotid = resultSet.getString("plotid").split(";");
-                    plots.add(resultSet.getString("level") + ";" + plotid[0] + ";" + plotid[1]);
-                }
-            } catch (SQLException e) {
-                if(Settings.debug) e.printStackTrace();
+            SQLTable table = database.getTable("plots");
+            for (SQLEntity resultSet : table.find()) {
+                String[] plotid = resultSet.getString("plotid").split(";");
+                plots.add(resultSet.getString("level") + ";" + plotid[0] + ";" + plotid[1]);
             }
         }
         return plots;
@@ -442,42 +334,35 @@ public class MySQLProvider implements DataProvider {
     @Override
     public Plot getNextFreePlot(String level) {
         List<Plot> plots = new ArrayList<>();
-        try {
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM plots;");
-            connection.commit();
-            while(resultSet.next()) {
-                if(resultSet.getString("level").equals(level)) {
-                    String[] plotid = resultSet.getString("plotid").split(";");
-                    plots.add(new Plot(Integer.parseInt(plotid[0]), Integer.parseInt(plotid[1]), level));
-                }
+        SQLTable table = database.getTable("plots");
+        for (SQLEntity resultSet : table.find()) {
+            if(resultSet.getString("level").equals(level)) {
+                String[] plotid = resultSet.getString("plotid").split(";");
+                plots.add(new Plot(Integer.parseInt(plotid[0]), Integer.parseInt(plotid[1]), level));
             }
-            if (plots.size() == 0) return new Plot(0, 0, level);
-            int lastX = 0;
-            int lastZ = 0;
-
-            for (Plot plot : plots) {
-                int x = plot.getX() - lastX;
-                int y = plot.getZ() - lastZ;
-                int diff = Math.abs(x * y);
-                if (diff < 4) {
-                    lastX = plot.getX();
-                    lastZ = plot.getZ();
-
-                    Plot find = new Plot(plot.getX() + 1, plot.getZ(), level);
-                    if (!hasOwner(find)) return find;
-                    find = new Plot(plot.getX(), plot.getZ() + 1, level);
-                    if (!hasOwner(find)) return find;
-                    find = new Plot(plot.getX() - 1, plot.getZ(), level);
-                    if (!hasOwner(find)) return find;
-                    find = new Plot(plot.getX(), plot.getZ() - 1, level);
-                    if (!hasOwner(find)) return find;
-                }
-            }
-            return getNextFreePlot(level);
-        } catch (SQLException e) {
-            if(Settings.debug) e.printStackTrace();
         }
-        return null;
+        if (plots.size() == 0) return new Plot(0, 0, level);
+        int lastX = 0;
+        int lastZ = 0;
+
+        for (Plot plot : plots) {
+            int x = plot.getX() - lastX;
+            int y = plot.getZ() - lastZ;
+            int diff = Math.abs(x * y);
+            if (diff < 4) {
+                lastX = plot.getX();
+                lastZ = plot.getZ();
+
+                Plot find = new Plot(plot.getX() + 1, plot.getZ(), level);
+                if (!hasOwner(find)) return find;
+                find = new Plot(plot.getX(), plot.getZ() + 1, level);
+                if (!hasOwner(find)) return find;
+                find = new Plot(plot.getX() - 1, plot.getZ(), level);
+                if (!hasOwner(find)) return find;
+                find = new Plot(plot.getX(), plot.getZ() - 1, level);
+                if (!hasOwner(find)) return find;
+            }
+        }
+        return getNextFreePlot(level);
     }
 }

@@ -1,4 +1,4 @@
-package tim03we.chickenmc.lobbysystem.sql;
+package tim03we.futureplots.provider.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

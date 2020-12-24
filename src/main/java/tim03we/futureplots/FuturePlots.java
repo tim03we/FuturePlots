@@ -82,6 +82,7 @@ public class FuturePlots extends PluginBase {
         pm.registerEvents(new BlockPlace(), this);
         pm.registerEvents(new EntityExplode(), this);
         pm.registerEvents(new EntityShootBow(), this);
+        pm.registerEvents(new ItemFrameDropItem(), this);
         pm.registerEvents(new LiquidFlow(), this);
         pm.registerEvents(new PlayerInteract(), this);
         pm.registerEvents(new PlayerMove(), this);
