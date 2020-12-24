@@ -55,6 +55,7 @@ public class FuturePlots extends PluginBase {
         providerClass.put("yaml", YamlProvider.class);
         providerClass.put("mysql", MySQLProvider.class);
         providerClass.put("sqlite", SQLiteProvider.class);
+        providerClass.put("mongodb", MongoDBProvider.class);
         registerGenerator();
     }
 
@@ -117,6 +118,9 @@ public class FuturePlots extends PluginBase {
     }
 
     private void initProvider() {
+    	if(this.getConfig().getString("provider").equalsIgnoreCase("mongodb")) {
+    		// TODO: load mongo java driver and add it to classpath
+    	}
         Class<?> providerClass = this.providerClass.get(this.getConfig().getString("provider"));
         if (providerClass == null) { this.getLogger().critical("The specified provider could not be found."); }
         try { provider = (DataProvider) providerClass.newInstance();
