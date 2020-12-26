@@ -42,6 +42,7 @@ public class Settings {
     public static String provider;
     public static String language;
     public static int max_plots;
+    public static boolean uuid;
     public static boolean popup;
     public static boolean debug;
     public static boolean economy;
@@ -65,6 +66,7 @@ public class Settings {
         provider = config.getString("provider").toLowerCase();
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");
+        //uuid = config.getBoolean("uuid");
         popup = config.getBoolean("show-popup");
         debug = config.getBoolean("debug");
         claim_tp = config.getBoolean("teleport-on-claim");

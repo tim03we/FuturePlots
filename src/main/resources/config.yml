@@ -9,6 +9,10 @@ lang: "eng"
 # Available providers: yaml, mysql, sqlite, mongodb
 provider: "yaml"
 
+# NOT COMPLETED!
+# Should the UUID be used to keep the plot when changing the player name
+uuid: false
+
 # MySQL connection data
 mysql:
   host: "127.0.0.1"
