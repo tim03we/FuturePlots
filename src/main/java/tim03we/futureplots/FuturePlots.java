@@ -31,6 +31,7 @@ import tim03we.futureplots.handler.CommandHandler;
 import tim03we.futureplots.listener.*;
 import tim03we.futureplots.provider.*;
 import tim03we.futureplots.tasks.PlotClearTask;
+import tim03we.futureplots.tasks.PlotErodeTask;
 import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotSettings;
@@ -89,7 +90,7 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.6")) {
+        if(!Language.getNoPrefix("version").equals("1.2.7")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
@@ -103,7 +104,7 @@ public class FuturePlots extends PluginBase {
                 saveDefaultConfig();
             }
         }
-        if(!cmds.getString("version").equals("1.0.2")) {
+        if(!cmds.getString("version").equals("1.0.3")) {
             new File(getDataFolder() + "/commands_old.yml").delete();
             if(new File(getDataFolder() + "/commands.yml").renameTo(new File(getDataFolder() + "/commands_old.yml"))) {
                 getLogger().critical("The version of the commands file does not match. You will find the old file marked \"commands_old.yml\" in the same directory.");
@@ -166,6 +167,7 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand(cmds.getString("plot.setowner.name"), new SetOwnerCommand(cmds.getString("plot.setowner.name"), cmds.getString("plot.setowner.description"), cmds.getString("plot.setowner.usage")), cmds.getStringList("plot.setowner.alias").toArray(new String[0]));
         commandHandler.registerCommand(cmds.getString("plot.sethome.name"), new SetHomeCommand(cmds.getString("plot.sethome.name"), cmds.getString("plot.sethome.description"), cmds.getString("plot.sethome.usage")), cmds.getStringList("plot.sethome.alias").toArray(new String[0]));
         commandHandler.registerCommand(cmds.getString("plot.deletehome.name"), new DeleteHomeCommand(cmds.getString("plot.deletehome.name"), cmds.getString("plot.deletehome.description"), cmds.getString("plot.deletehome.usage")), cmds.getStringList("plot.deletehome.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.erode.name"), new ErodeCommand(cmds.getString("plot.erode.name"), cmds.getString("plot.erode.description"), cmds.getString("plot.erode.usage")), cmds.getStringList("plot.erode.alias").toArray(new String[0]));
         FuturePlots.getInstance().getServer().getCommandMap().register(cmds.getString("plot.name"), new MainCommand());
     }
 
@@ -193,17 +195,26 @@ public class FuturePlots extends PluginBase {
         getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"), options);
     }
 
-    public void clearPlot(Plot plot) {
-        getServer().getScheduler().scheduleDelayedTask(this, new PlotClearTask(plot), 1, true);
+    public void clearEntities(Plot plot) {
         for (Entity entity : getServer().getLevelByName(plot.getLevelName()).getEntities()) {
-            if(!(entity instanceof Player)) {
-                if(entity != null) {
-                    if(getPlotByPosition(entity.getLocation()).getX() == plot.getX() && getPlotByPosition(entity.getLocation()).getZ() == plot.getZ() && getPlotByPosition(entity.getLocation()).getLevelName().equals(plot.getLevelName())) {
+            if (!(entity instanceof Player)) {
+                if (entity != null) {
+                    if (getPlotByPosition(entity.getLocation()).getX() == plot.getX() && getPlotByPosition(entity.getLocation()).getZ() == plot.getZ() && getPlotByPosition(entity.getLocation()).getLevelName().equals(plot.getLevelName())) {
                         entity.close();
                     }
                 }
             }
         }
+    }
+
+    public void clearPlot(Plot plot) {
+        clearEntities(plot);
+        getServer().getScheduler().scheduleDelayedTask(this, new PlotClearTask(plot), 1, true);
+    }
+
+    public void erodePlot(Plot plot) {
+        clearEntities(plot);
+        getServer().getScheduler().scheduleDelayedTask(this, new PlotErodeTask(plot), 1, true);
     }
 
     public int claimAvailable(Player player) {

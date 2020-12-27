@@ -96,6 +96,10 @@ public class PlotSettings {
         return getConfig().getInt("settings.price.dispose");
     }
 
+    public int getErodePrice() {
+        return getConfig().getInt("settings.price.erode");
+    }
+
     public void initWorld() {
         Config worldConfig = getConfig();
         if(!worldConfig.exists("settings.wall.unclaimed")) worldConfig.set("settings.wall.unclaimed", Settings.wallBlockUnClaimed);
@@ -111,6 +115,7 @@ public class PlotSettings {
         if(!worldConfig.exists("settings.price.clear")) worldConfig.set("settings.price.clear", Settings.clear_price);
         if(!worldConfig.exists("settings.price.delete")) worldConfig.set("settings.price.delete", Settings.delete_price);
         if(!worldConfig.exists("settings.price.dispose")) worldConfig.set("settings.price.dispose", Settings.dispose_price);
+        if(!worldConfig.exists("settings.price.erode")) worldConfig.set("settings.price.erode", Settings.erode_price);
         worldConfig.save();
     }
 }

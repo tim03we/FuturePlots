@@ -1,6 +1,6 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.2.6"
+version: "1.2.7"
 
 prefix: "FuturePlots > "
 
@@ -37,6 +37,7 @@ plot.setowner.target.max: "이 플레이어는 이미 플롯의 최대 수를 �
 plot.setowner.target.not.online: "이 플레이어는 그에게 음모를 제공하기 위해 온라인해야합니다."
 plot.home.set: "플롯의 새 생성 지점을 설정했습니다."
 plot.home.delete: "플롯의 생성 점을 재설정했습니다."
+plot.erode: "줄거리가 가려졌다."
 
 helper.added: "플레이어 %1(이)가 plot의 도우미로 추가되었습니다."
 helper.removed: "플레이어 %1(이)가 plot의 도우미에서 삭제되었습니다."

@@ -1,5 +1,5 @@
 ---
-version: "1.0.2"
+version: "1.0.3"
 
 plot:
   parameters:
@@ -109,4 +109,9 @@ plot:
     usage: "/plot deletehome"
     description: "Delete the home of the plot"
     alias: ["delhome"]
+  erode:
+    name: "erode"
+    usage: "/plot erode"
+    description: "Fill out your plot"
+    alias: []
 ...

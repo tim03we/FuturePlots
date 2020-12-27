@@ -145,11 +145,9 @@ public class MySQLProvider implements DataProvider {
     @Override
     public String getOwner(Plot plot) {
         SQLTable table = database.getTable("plots");
-        System.out.println(plot.getFullID());
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity find = table.find(searchEntity);
         if(find != null) {
-            System.out.println("OWNER: " + find.getString("owner"));
             return find.getString("owner");
         }
         return "none";

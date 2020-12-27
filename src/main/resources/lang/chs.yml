@@ -1,5 +1,5 @@
 ---
-version: "1.2.6"
+version: "1.2.7"
 
 prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
 
@@ -36,6 +36,7 @@ plot.setowner.target.max: "这个玩家已经达到了最大的地块数."
 plot.setowner.target.not.online: "这个玩家必须在线给他剧情."
 plot.home.set: "你已经设置了一个新的剧情产卵点."
 plot.home.delete: "你已经重置了剧情的产卵点."
+plot.erode: "剧情已经收尾了."
 
 helper.added: "地皮管理员 %1 被添加到了该地皮."
 helper.removed: "地皮管理员 %1 从该地皮中被移除了."

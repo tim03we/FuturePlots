@@ -1,5 +1,5 @@
 ---
-version: "1.2.6"
+version: "1.2.7"
 
 prefix: "FuturePlots > "
 
@@ -36,6 +36,7 @@ plot.setowner.target.max: "This player already has the maximum number of plots."
 plot.setowner.target.not.online: "This player must be online to give him the plot."
 plot.home.set: "You have set a new spawn point of the plot."
 plot.home.delete: "You have reset the spawn point of the plot."
+plot.erode: "The plot has been wrapped up."
 
 helper.added: "The helper %1 was added to the plot."
 helper.removed: "The helper %1 was removed to the plot."

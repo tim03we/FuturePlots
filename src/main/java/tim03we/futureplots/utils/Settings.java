@@ -38,6 +38,7 @@ public class Settings {
     public static int clear_price;
     public static int claim_price;
     public static int dispose_price;
+    public static int erode_price;
 
     public static String provider;
     public static String language;
@@ -75,6 +76,7 @@ public class Settings {
         clear_price = config.getInt("default-settings.price.clear");
         delete_price = config.getInt("default-settings.price.delete");
         dispose_price = config.getInt("default-settings.price.dispose");
+        erode_price = config.getInt("default-settings.price.erode");
     }
 
 }
