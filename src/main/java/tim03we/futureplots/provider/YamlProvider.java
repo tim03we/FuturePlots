@@ -21,6 +21,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,15 @@ public class YamlProvider implements DataProvider {
 
     @Override
     public void connect() {
+        if(Settings.use_auto_save) {
+            runAutoSaveTask();
+        }
+    }
+
+    private void runAutoSaveTask() {
+        Server.getInstance().getScheduler().scheduleRepeatingTask(FuturePlots.getInstance(), () -> {
+            yaml.save();
+        }, (Settings.auto_save_interval * 20), true);
     }
 
     @Override

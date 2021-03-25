@@ -1,6 +1,6 @@
 ---
 # Do not change the version, this can lead to deletion of the file
-version: "1.2.1"
+version: "1.2.2"
 
 # Available languages:
 # eng (English), deu (German), kor (Korean), chs (Chinese)
@@ -8,6 +8,13 @@ lang: "eng"
 
 # Available providers: yaml, mysql, sqlite
 provider: "yaml"
+
+# Automatic saving of all plots
+# Supported providers: yaml
+auto-save:
+  use: true
+  # In seconds
+  interval: 180
 
 # NOT COMPLETED!
 # Should the UUID be used to keep the plot when changing the player name

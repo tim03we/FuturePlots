@@ -49,6 +49,9 @@ public class Settings {
     public static boolean economy;
     public static boolean claim_tp;
 
+    public static boolean use_auto_save;
+    public static int auto_save_interval;
+
     public static void init() {
         Config config = FuturePlots.getInstance().getConfig();
         File folder = new File(FuturePlots.getInstance().getDataFolder() + "/worlds/");
@@ -77,6 +80,8 @@ public class Settings {
         delete_price = config.getInt("default-settings.price.delete");
         dispose_price = config.getInt("default-settings.price.dispose");
         erode_price = config.getInt("default-settings.price.erode");
+        use_auto_save = config.getBoolean("auto-save.use");
+        auto_save_interval = config.getInt("auto-save.interval");
     }
 
 }

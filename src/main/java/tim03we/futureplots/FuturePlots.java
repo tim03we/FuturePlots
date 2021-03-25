@@ -17,6 +17,7 @@ package tim03we.futureplots;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
@@ -97,7 +98,7 @@ public class FuturePlots extends PluginBase {
                 Language.init();
             }
         }
-        if(!getConfig().getString("version").equals("1.2.1")) {
+        if(!getConfig().getString("version").equals("1.2.2")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
@@ -120,7 +121,11 @@ public class FuturePlots extends PluginBase {
 
     private void initProvider() {
         Class<?> providerClass = this.providerClass.get(this.getConfig().getString("provider"));
-        if (providerClass == null) { this.getLogger().critical("The specified provider could not be found."); }
+        if (providerClass == null) {
+            this.getLogger().critical("The specified provider could not be found.");
+            Server.getInstance().getPluginManager().disablePlugin(Server.getInstance().getPluginManager().getPlugin("FuturePlots"));
+            return;
+        }
         try { provider = (DataProvider) providerClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
             getServer().getPluginManager().disablePlugin(getServer().getPluginManager().getPlugin("FuturePlots"));
