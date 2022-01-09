@@ -17,6 +17,7 @@ package tim03we.futureplots.commands.sub;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
@@ -37,8 +38,13 @@ public class DenyCommand extends BaseCommand {
                 if(plot.canByPass((Player) sender)) {
                     if (args.length > 1) {
                         if (!FuturePlots.provider.isDenied(args[1], plot)) {
-                            FuturePlots.provider.addDenied(args[1], plot);
-                            sender.sendMessage(translate(true, "deny.added", args[1].toLowerCase()));
+                            Player target = Server.getInstance().getPlayer(args[1]);
+                            if (target.hasPermission("plot.deny.bypass")) {
+                                sender.sendMessage(translate(true, "deny.bypass.notallowed"));
+                            } else {
+                                FuturePlots.provider.addDenied(args[1], plot);
+                                sender.sendMessage(translate(true, "deny.added", args[1].toLowerCase()));
+                            }
                         } else {
                             sender.sendMessage(translate(true, "deny.exists"));
                         }

@@ -1,5 +1,5 @@
 ---
-version: "1.2.7"
+version: "1.2.8"
 
 prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
 
@@ -30,6 +30,7 @@ plot.dispose: "这个地皮被上锁了."
 plot.kick: "你将玩家 %1 踢出了地皮."
 plot.kick.target: "这个地皮的拥有者将你踢出了地皮."
 plot.kick.error: "这个玩家不在这个地皮中."
+plot.kick.bypass.notallowed: "这个玩家不能被踢出剧情。."
 plot.setowner: "你给的情节%1。"
 plot.setowner.target: "您已收到ID为%1的绘图."
 plot.setowner.target.max: "这个玩家已经达到了最大的地块数."
@@ -47,6 +48,7 @@ deny.added: "玩家 %1 被禁止进入这个地皮了."
 deny.removed: "玩家 %1 现在可以进入你的地皮了."
 deny.exists: "这个玩家已经禁止进入这个地皮了."
 deny.not.exists: "这个玩家可以进入这个地皮了."
+deny.bypass.notallowed: "这名球员不能被禁止入内。."
 
 member.added: "成员 %1 被添加到了该地皮."
 member.removed: "成员 %1 从该地皮中被移除了."

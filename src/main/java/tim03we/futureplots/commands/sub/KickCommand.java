@@ -40,9 +40,13 @@ public class KickCommand extends BaseCommand {
                         if(target != null) {
                             Plot tpp = new PlotPlayer(target).getPlot();
                             if(tpp != null && tpp.getX() == plot.getX() && tpp.getZ() == plot.getZ() && tpp.getLevelName().equals(plot.getLevelName())) {
-                                sender.sendMessage(translate(true, "plot.kick", target.getName()));
-                                target.sendMessage(translate(true, "plot.kick.target"));
-                                target.teleport(Server.getInstance().getDefaultLevel().getSafeSpawn());
+                                if (target.hasPermission("plot.kick.bypass")) {
+                                    sender.sendMessage(translate(true, "plot.kick.notallowed"));
+                                } else {
+                                    sender.sendMessage(translate(true, "plot.kick", target.getName()));
+                                    target.sendMessage(translate(true, "plot.kick.target"));
+                                    target.teleport(Server.getInstance().getDefaultLevel().getSafeSpawn());
+                                }
                             } else {
                                 sender.sendMessage(translate(true, "plot.kick.error"));
                             }

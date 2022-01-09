@@ -1,5 +1,5 @@
 ---
-version: "1.2.7"
+version: "1.2.8"
 
 prefix: "FuturePlots > "
 
@@ -30,6 +30,7 @@ plot.dispose: "The plot has been unlocked."
 plot.kick: "You threw player %1 off the plot."
 plot.kick.target: "The owner threw you off the plot."
 plot.kick.error: "This player is not on the plot."
+plot.kick.bypass.notallowed: "This player cannot be kicked from this plot."
 plot.setowner: "You gave the plot to %1."
 plot.setowner.target: "You were given the plot with the ID %1."
 plot.setowner.target.max: "This player already has the maximum number of plots."
@@ -47,6 +48,7 @@ deny.added: "The player %1 was banned from the plot."
 deny.removed: "The player %1 can now enter the plot again."
 deny.exists: "The player is already banned from the plot."
 deny.not.exists: "This player was not banned from the plot."
+deny.bypass.notallowed: "This player cannot be banned from this plot."
 
 member.added: "The member %1 was added to the plot."
 member.removed: "The member %1 was removed to the plot."

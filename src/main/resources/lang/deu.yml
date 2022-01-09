@@ -1,5 +1,5 @@
 ---
-version: "1.2.7"
+version: "1.2.8"
 
 prefix: "FuturePlots > "
 
@@ -30,6 +30,7 @@ plot.dispose: "Das Plot wurde freigegeben."
 plot.kick: "Du hast den Spieler %1 vom Plot geschmissen."
 plot.kick.target: "Der Besitzer hat dich vom Plot geschmissen."
 plot.kick.error: "Dieser Spieler befindet sich nicht auf dem Plot."
+plot.kick.bypass.notallowed: "Dieser Spieler kann nicht vom Plot gekickt werden."
 plot.setowner: "Du hast das Plot %1 gegeben."
 plot.setowner.target: "Du hast das Plot mit der ID %1 erhalten."
 plot.setowner.target.max: "Dieser Spieler hat bereits das maximum an Plots erreicht."
@@ -47,6 +48,7 @@ deny.added: "Der Spieler %1 wurde vom Plot verbannt."
 deny.removed: "Der Spieler %1 kann das Plot nun wieder betreten."
 deny.exists: "Der Spieler ist bereits vom Plot verbannt."
 deny.not.exists: "Dieser Spieler wurde nicht vom Plot verbannt."
+deny.bypass.notallowed: "Dieser Spieler kann nicht vom Grundstück verbannt werden."
 
 member.added: "Der Spieler %1 wurde als Mitglied hinzugefügt."
 member.removed: "Der Spieler %1 wurde als Mitglied entfernt."

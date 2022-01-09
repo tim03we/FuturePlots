@@ -91,7 +91,7 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.7")) {
+        if(!Language.getNoPrefix("version").equals("1.2.8")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
@@ -203,7 +203,7 @@ public class FuturePlots extends PluginBase {
     public void clearEntities(Plot plot) {
         for (Entity entity : getServer().getLevelByName(plot.getLevelName()).getEntities()) {
             if (!(entity instanceof Player)) {
-                if (entity != null) {
+                if (entity != null && entity.getLocation() != null) {
                     if (getPlotByPosition(entity.getLocation()).getX() == plot.getX() && getPlotByPosition(entity.getLocation()).getZ() == plot.getZ() && getPlotByPosition(entity.getLocation()).getLevelName().equals(plot.getLevelName())) {
                         entity.close();
                     }
