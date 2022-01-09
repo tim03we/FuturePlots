@@ -30,6 +30,12 @@ Command | Sub-Command | Permission | Alias
 ~ | deletehome | - | delhome
 ~ | setowner | - | give
 
+# Permissions
+Permission | Description | 
+------- | ----------- | 
+plot.kick.bypass | Players with this permission cannot be kicked from any plot. |
+plot.deny.bypass | Players with this permission cannot be denied (banned) from any plot. |
+
 # ToDo
 - MongoDB Provider<br>
 
