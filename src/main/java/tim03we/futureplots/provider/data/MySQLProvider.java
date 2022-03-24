@@ -1,4 +1,4 @@
-package tim03we.futureplots.provider;
+package tim03we.futureplots.provider.data;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -21,6 +21,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import com.google.gson.Gson;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.provider.sql.SQLConnection;
 import tim03we.futureplots.provider.sql.SQLDatabase;
 import tim03we.futureplots.provider.sql.SQLEntity;
@@ -65,10 +66,10 @@ public class MySQLProvider implements DataProvider {
     private void checkAndRun() {
         CompletableFuture.runAsync(() -> {
             SQLTable table = database.getTable("plots");
-            String[] array = new String[]{"home VARCHAR(999)"};
+            String[] array = new String[]{"home VARCHAR(999)", "merge VARCHAR(999)", "merges VARCHAR(999)", "merge_check VARCHAR(999)"};
             if (database.getConnection() != null) {
                 try {
-                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
+                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), merge VARCHAR(999), merges VARCHAR(999), merge_check VARCHAR(999));");
                     statement.executeUpdate();
                     statement.close();
 
@@ -362,5 +363,40 @@ public class MySQLProvider implements DataProvider {
             }
         }
         return getNextFreePlot(level);
+    }
+
+    @Override
+    public void addMerge(Plot plot, Plot mergePlot) {
+
+    }
+
+    @Override
+    public List<Plot> getMerges(Plot plot) {
+        return null;
+    }
+
+    @Override
+    public Plot getOriginPlot(Plot plot) {
+        return null;
+    }
+
+    @Override
+    public void setOriginPlot(Plot plot, Plot mergePlot) {
+
+    }
+
+    @Override
+    public void setMergeCheck(Plot plot, Plot mergePlot) {
+
+    }
+
+    @Override
+    public List<Plot> getMergeCheck(Plot plot) {
+        return null;
+    }
+
+    @Override
+    public void resetMerges(Plot plot) {
+
     }
 }

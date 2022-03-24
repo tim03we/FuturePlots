@@ -28,7 +28,12 @@ import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
 
+import java.util.HashMap;
+
 public class PlayerMove extends Language implements Listener {
+
+    // Username, FullID
+    private static HashMap<String, String> plotId = new HashMap<>();
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
@@ -42,11 +47,20 @@ public class PlayerMove extends Language implements Listener {
                 } else {
                     new PlotEvent(new PlotEnterEvent(FuturePlots.getInstance(), plot, player));
                     if(Settings.popup) {
-                        if(FuturePlots.provider.hasOwner(plot)) {
-                            player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getOwner(plot)));
-                        } else {
-                            player.sendPopup(translate(false, "plot.enter.free", plot.getX() + ";" + plot.getZ()));
+                        if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).size() == 0) {
+                            plot = FuturePlots.provider.getOriginPlot(plot);
+                        } else if(FuturePlots.provider.getOriginPlot(plot) == null && FuturePlots.provider.getMerges(plot).size() > 0) {
+                            plot = plot;
                         }
+                        if(plotId.get(player.getName()) == null || !plotId.get(player.getName()).equalsIgnoreCase(plot.getFullID())) {
+                            plotId.put(player.getName(), plot.getFullID());
+                            if(FuturePlots.provider.hasOwner(plot)) {
+                                player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getOwner(plot)));
+                            } else {
+                                player.sendPopup(translate(false, "plot.enter.free", plot.getX() + ";" + plot.getZ()));
+                            }
+                        }
+
                     }
                 }
             } else if(plotFrom != null && plot == null) {

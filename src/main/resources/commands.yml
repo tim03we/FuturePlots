@@ -1,5 +1,5 @@
 ---
-version: "1.0.3"
+version: "1.0.4"
 
 plot:
   parameters:
@@ -113,5 +113,10 @@ plot:
     name: "erode"
     usage: "/plot erode"
     description: "Fill out your plot"
+    alias: []
+  merge:
+    name: "merge"
+    usage: "/plot merge"
+    description: "Merge your plot"
     alias: []
 ...

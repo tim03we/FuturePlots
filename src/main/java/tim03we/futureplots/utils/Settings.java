@@ -39,6 +39,7 @@ public class Settings {
     public static int claim_price;
     public static int dispose_price;
     public static int erode_price;
+    public static int merge_price;
 
     public static String provider;
     public static String language;
@@ -70,7 +71,7 @@ public class Settings {
         provider = config.getString("provider").toLowerCase();
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");
-        //uuid = config.getBoolean("uuid");
+        uuid = config.getBoolean("uuid");
         popup = config.getBoolean("show-popup");
         debug = config.getBoolean("debug");
         claim_tp = config.getBoolean("teleport-on-claim");
@@ -80,6 +81,7 @@ public class Settings {
         delete_price = config.getInt("default-settings.price.delete");
         dispose_price = config.getInt("default-settings.price.dispose");
         erode_price = config.getInt("default-settings.price.erode");
+        merge_price = config.getInt("default-settings.price.merge");
         use_auto_save = config.getBoolean("auto-save.use");
         auto_save_interval = config.getInt("auto-save.interval");
     }

@@ -49,7 +49,17 @@ public class PlayerInteract implements Listener {
                         } else {
                             plot = new PlotPlayer(player).getPlot();
                             if(plot == null || !plot.canInteract(player)) {
-                                event.setCancelled(true);
+                                Plot merge = FuturePlots.getInstance().isInMergeCheck(event.getBlock().getLocation());
+                                if(merge == null) {
+                                    event.setCancelled(true);
+                                } else {
+                                    if(FuturePlots.provider.getOriginPlot(merge) != null && FuturePlots.provider.getMerges(merge).isEmpty()) {
+                                        merge = FuturePlots.provider.getOriginPlot(merge);
+                                    }
+                                    if(!merge.canInteract(player)) {
+                                        event.setCancelled(true);
+                                    }
+                                }
                             }
                         }
                     } else {
@@ -60,7 +70,17 @@ public class PlayerInteract implements Listener {
                         }
                     }
                 } else {
-                    event.setCancelled(true);
+                    Plot merge = FuturePlots.getInstance().isInMergeCheck(event.getBlock().getLocation());
+                    if(merge == null) {
+                        event.setCancelled(true);
+                    } else {
+                        if(FuturePlots.provider.getOriginPlot(merge) != null && FuturePlots.provider.getMerges(merge).isEmpty()) {
+                            merge = FuturePlots.provider.getOriginPlot(merge);
+                        }
+                        if(!merge.canInteract(player)) {
+                            event.setCancelled(true);
+                        }
+                    }
                 }
             }
         }

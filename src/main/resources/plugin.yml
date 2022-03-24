@@ -2,7 +2,7 @@ name: FuturePlots
 main: tim03we.futureplots.FuturePlots
 api: 1.0.9
 author: tim03we
-version: 1.4.4
+version: 2.0.0-SNAPSHOT
 description: A NukkitX based plot plugin
 softdepend:
   - EconomyAPI
@@ -17,4 +17,7 @@ permissions:
     default: op
   futureplots.economy.bypass:
     description: "Avoid paying when Economy is activated."
+    default: op
+  futureplots.command.merge:
+    description: "Permission for the Merge Command."
     default: op

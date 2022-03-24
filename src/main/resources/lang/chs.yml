@@ -1,8 +1,9 @@
 ---
-version: "1.2.7"
+version: "1.2.8"
 
 prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
 
+no.permission: "您沒有足夠的權限來執行此命令。"
 no.plotworld: "服务器中尚无地皮世界."
 not.in.world: "你不在一个地皮世界."
 not.in.plot: "你不在一个地皮中."
@@ -60,6 +61,10 @@ generate.world.success: "世界 %1 正在生成..."
 has.no.plot: "你没有一个地皮."
 has.no.plot.world: "你在这个世界没有地皮."
 has.no.plot.number: "你没有拥有 %1 号地皮."
+
+merge.merged: "您已成功將該屬性合併到 %1。"
+merge.already.merged: "您已與對面的財產合併。"
+merge.not.a.owner: "您不是對面房產的擁有者。"
 
 economy.no.money: "你没有足够的金钱执行此操作."
 

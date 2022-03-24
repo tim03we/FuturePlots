@@ -1,9 +1,10 @@
 ---
 # Korean Translation - good777LUCKY
-version: "1.2.7"
+version: "1.2.8"
 
 prefix: "FuturePlots > "
 
+no.permission: "이 명령을 실행할 권한이 충분하지 않습니다."
 no.plotworld: "이 서버에는 plot 월드가 없습니다."
 not.in.world: "당신은 plot 월드에 있지 않습니다."
 not.in.plot: "당신은 plot에 있지 않습니다."
@@ -61,6 +62,10 @@ generate.world.success: "월드 %1(이)가 생성되고 있습니다..."
 has.no.plot: "당신은 plot이 없습니다."
 has.no.plot.world: "이 월드에는 당신의 plot이 없습니다."
 has.no.plot.number: "당신은 %1번 plot을 소유하고 있지 않습니다."
+
+merge.merged: "속성을 %1로 성공적으로 병합했습니다."
+merge.already.merged: "당신은 반대 속성과 함께 속성에 가입했습니다."
+merge.not.a.owner: "당신은 반대 속성의 소유자가 아닙니다."
 
 economy.no.money: "이 행동을 할 충분한 돈이 없습니다."
 

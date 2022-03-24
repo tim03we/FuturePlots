@@ -1,8 +1,9 @@
 ---
-version: "1.2.7"
+version: "1.2.8"
 
 prefix: "FuturePlots > "
 
+no.permission: "Du besitzt nicht genügend Rechte, um diesen Befehl auszuführen."
 no.plotworld: "Es befindet sich keine Plotwelt auf dem Server."
 not.in.world: "Du befindest dich in keiner Plotwelt."
 not.in.plot: "Du befindest dich nicht auf einem Plot."
@@ -60,6 +61,10 @@ generate.world.success: "World %1 is being generated..."
 has.no.plot: "Du besitzt keine Plots."
 has.no.plot.world: "Du besitzt kein Plot in dieser Welt."
 has.no.plot.number: "Du besitzt kein Plot mit der Nummer %1."
+
+merge.merged: "Du hast das Grundstück erfolgreich nach %1 zusammengefügt."
+merge.already.merged: "Du hast das Grundstück mit dem gegenüberliegendem Grundstück zusammengefügt."
+merge.not.a.owner: "Du bist nicht der Besitzer des gegenüberliegenden Grundstückes."
 
 economy.no.money: "Du besitzt nicht genügend Geld für diese Aktion."
 

@@ -1,4 +1,4 @@
-package tim03we.futureplots.provider;
+package tim03we.futureplots.provider.economy;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -17,8 +17,9 @@ package tim03we.futureplots.provider;
  */
 
 import me.onebone.economyapi.EconomyAPI;
+import tim03we.futureplots.provider.EconomyProvider;
 
-public class EconomySProvider implements EconomyProvider {
+public class EconomyAPIProvider implements EconomyProvider {
 
     @Override
     public void reduceMoney(String username, double amount) {

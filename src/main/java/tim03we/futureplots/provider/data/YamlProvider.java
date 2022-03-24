@@ -1,4 +1,4 @@
-package tim03we.futureplots.provider;
+package tim03we.futureplots.provider.data;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -20,6 +20,7 @@ import cn.nukkit.Server;
 import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
 
@@ -35,12 +36,27 @@ public class YamlProvider implements DataProvider {
         if(Settings.use_auto_save) {
             runAutoSaveTask();
         }
+        checkData();
     }
 
     private void runAutoSaveTask() {
         Server.getInstance().getScheduler().scheduleRepeatingTask(FuturePlots.getInstance(), () -> {
             yaml.save();
         }, (Settings.auto_save_interval * 20), true);
+    }
+
+    private void checkData() {
+        for (String key : yaml.getAll().keySet()) {
+            if(!yaml.exists(key + ".owner")) yaml.set(key + ".owner", "");
+            if(!yaml.exists(key + ".helpers")) yaml.set(key + ".helpers", new ArrayList<String>());
+            if(!yaml.exists(key + ".members")) yaml.set(key + ".members", new ArrayList<String>());
+            if(!yaml.exists(key + ".denied")) yaml.set(key + ".denied", new ArrayList<String>());
+            if(!yaml.exists(key + ".flags")) yaml.set(key + ".flags", new ArrayList<String>());
+            if(!yaml.exists(key + ".home")) yaml.set(key + ".home", "");
+            if(!yaml.exists(key + ".merge")) yaml.set(key + ".merge", "");
+            if(!yaml.exists(key + ".merges")) yaml.set(key + ".merges", new ArrayList<String>());
+            if(!yaml.exists(key + ".merge_check")) yaml.set(key + ".merge_check", new ArrayList<String>());
+        }
     }
 
     @Override
@@ -55,7 +71,10 @@ public class YamlProvider implements DataProvider {
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", "");
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", "");
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", new ArrayList<String>());
     }
 
     @Override
@@ -248,5 +267,67 @@ public class YamlProvider implements DataProvider {
             }
         }
         return getNextFreePlot(level);
+    }
+
+    @Override
+    public void setMergeCheck(Plot plot, Plot mergePlot) {
+        List<String> mergeList = new ArrayList<>();
+        for (Plot plots : getMergeCheck(plot)) {
+            mergeList.add(plots.getX() + ";" + plots.getZ());
+        }
+        mergeList.add(mergePlot.getX() + ";" + mergePlot.getZ());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", mergeList);
+    }
+
+    @Override
+    public List<Plot> getMergeCheck(Plot plot) {
+        List<Plot> plots = new ArrayList<>();
+        for (String plotId : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check")) {
+            String[] ex = plotId.split(";");
+            plots.add(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName()));
+        }
+        return plots;
+    }
+
+    @Override
+    public Plot getOriginPlot(Plot plot) {
+        String originString = yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge");
+        if(originString.isEmpty()) return null;
+        String[] ex = originString.split(";");
+        return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
+    }
+
+    @Override
+    public void setOriginPlot(Plot mergePlot, Plot originPlot) {
+        yaml.set(mergePlot.getLevelName() + ";" + mergePlot.getX() + ";" + mergePlot.getZ() + ".merge", originPlot.getFullID());
+    }
+
+
+    @Override
+    public void addMerge(Plot originPlot, Plot mergePlot) {
+        List<String> mergeList = new ArrayList<>();
+        for (Plot plots : getMerges(originPlot)) {
+            mergeList.add(plots.getX() + ";" + plots.getZ());
+        }
+        mergeList.add(mergePlot.getX() + ";" + mergePlot.getZ());
+        yaml.set(originPlot.getLevelName() + ";" + originPlot.getX() + ";" + originPlot.getZ() + ".merges", mergeList);
+    }
+
+    @Override
+    public List<Plot> getMerges(Plot plot) {
+        List<Plot> plots = new ArrayList<>();
+        for (String plotId : yaml.getStringList(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges")) {
+            String[] ex = plotId.split(";");
+            plots.add(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName()));
+        }
+        return plots;
+    }
+
+    @Override
+    public void resetMerges(Plot plot) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", "");
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", "");
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", new ArrayList<>());
     }
 }

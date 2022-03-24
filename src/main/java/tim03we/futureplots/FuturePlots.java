@@ -18,10 +18,12 @@ package tim03we.futureplots;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
+import cn.nukkit.math.BlockFace;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.utils.Config;
@@ -31,15 +33,22 @@ import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
 import tim03we.futureplots.listener.*;
 import tim03we.futureplots.provider.*;
-import tim03we.futureplots.tasks.PlotClearTask;
-import tim03we.futureplots.tasks.PlotErodeTask;
+import tim03we.futureplots.provider.data.MySQLProvider;
+import tim03we.futureplots.provider.data.SQLiteProvider;
+import tim03we.futureplots.provider.data.YamlProvider;
+import tim03we.futureplots.provider.economy.EconomyAPIProvider;
+import tim03we.futureplots.provider.EconomyProvider;
+import tim03we.futureplots.provider.economy.LlamaEconomyProvider;
+import tim03we.futureplots.tasks.*;
 import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FuturePlots extends PluginBase {
@@ -91,21 +100,21 @@ public class FuturePlots extends PluginBase {
     }
 
     private void checkVersion() {
-        if(!Language.getNoPrefix("version").equals("1.2.7")) {
+        if(!Language.getNoPrefix("version").equals("1.2.8")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");
                 Language.init();
             }
         }
-        if(!getConfig().getString("version").equals("1.2.2")) {
+        if(!getConfig().getString("version").equals("1.2.3")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
                 saveDefaultConfig();
             }
         }
-        if(!cmds.getString("version").equals("1.0.3")) {
+        if(!cmds.getString("version").equals("1.0.4")) {
             new File(getDataFolder() + "/commands_old.yml").delete();
             if(new File(getDataFolder() + "/commands.yml").renameTo(new File(getDataFolder() + "/commands_old.yml"))) {
                 getLogger().critical("The version of the commands file does not match. You will find the old file marked \"commands_old.yml\" in the same directory.");
@@ -135,8 +144,11 @@ public class FuturePlots extends PluginBase {
         if(Settings.economy) {
             try {
                 if(getServer().getPluginManager().getPlugin("EconomyAPI") != null) {
-                    economyProvider = EconomySProvider.class.newInstance();
-                    getLogger().warning("Economy provider was set to EconomyS.");
+                    economyProvider = EconomyAPIProvider.class.newInstance();
+                    getLogger().warning("Economy provider was set to EconomyAPI.");
+                } else if(getServer().getPluginManager().getPlugin("LlamaEconomy") != null) {
+                    economyProvider = LlamaEconomyProvider.class.newInstance();
+                    getLogger().warning("Economy provider was set to LlamaEconomy.");
                 } else {
                     Settings.economy = false;
                     getLogger().critical("A Economy provider could not be found.");
@@ -173,6 +185,7 @@ public class FuturePlots extends PluginBase {
         commandHandler.registerCommand(cmds.getString("plot.sethome.name"), new SetHomeCommand(cmds.getString("plot.sethome.name"), cmds.getString("plot.sethome.description"), cmds.getString("plot.sethome.usage")), cmds.getStringList("plot.sethome.alias").toArray(new String[0]));
         commandHandler.registerCommand(cmds.getString("plot.deletehome.name"), new DeleteHomeCommand(cmds.getString("plot.deletehome.name"), cmds.getString("plot.deletehome.description"), cmds.getString("plot.deletehome.usage")), cmds.getStringList("plot.deletehome.alias").toArray(new String[0]));
         commandHandler.registerCommand(cmds.getString("plot.erode.name"), new ErodeCommand(cmds.getString("plot.erode.name"), cmds.getString("plot.erode.description"), cmds.getString("plot.erode.usage")), cmds.getStringList("plot.erode.alias").toArray(new String[0]));
+        commandHandler.registerCommand(cmds.getString("plot.merge.name"), new MergeCommand(cmds.getString("plot.merge.name"), cmds.getString("plot.merge.description"), cmds.getString("plot.merge.usage")), cmds.getStringList("plot.merge.alias").toArray(new String[0]));
         FuturePlots.getInstance().getServer().getCommandMap().register(cmds.getString("plot.name"), new MainCommand());
     }
 
@@ -203,7 +216,7 @@ public class FuturePlots extends PluginBase {
     public void clearEntities(Plot plot) {
         for (Entity entity : getServer().getLevelByName(plot.getLevelName()).getEntities()) {
             if (!(entity instanceof Player)) {
-                if (entity != null) {
+                if (entity != null && entity.getLocation() != null) {
                     if (getPlotByPosition(entity.getLocation()).getX() == plot.getX() && getPlotByPosition(entity.getLocation()).getZ() == plot.getZ() && getPlotByPosition(entity.getLocation()).getLevelName().equals(plot.getLevelName())) {
                         entity.close();
                     }
@@ -213,7 +226,7 @@ public class FuturePlots extends PluginBase {
     }
 
     public void clearPlot(Plot plot) {
-        clearEntities(plot);
+        //clearEntities(plot);
         getServer().getScheduler().scheduleDelayedTask(this, new PlotClearTask(plot), 1, true);
     }
 
@@ -264,7 +277,6 @@ public class FuturePlots extends PluginBase {
         return new Position(x + Math.floor(plotSize / 2), groundHeight + 1.5, z - 1, level);
     }
 
-
     public Plot getPlotByPosition(Position position) {
         double x = position.x;
         double z = position.z;
@@ -293,5 +305,331 @@ public class FuturePlots extends PluginBase {
             return null;
         }
         return new Plot(X, Z, position.getLevel().getName());
+    }
+
+    public void mergePlots(Player player, Plot plot, BlockFace direction) {
+        Plot nextPlot;
+        int x = plot.getX();
+        int z = plot.getZ();
+        if (direction == BlockFace.NORTH) {
+            z--;
+        } else if (direction == BlockFace.SOUTH) {
+            z++;
+        } else if (direction == BlockFace.WEST) {
+            x--;
+        } else if (direction == BlockFace.EAST) {
+            x++;
+        }
+        nextPlot = new Plot(x, z, plot.getLevelName());
+        if (!provider.getOwner(nextPlot).equalsIgnoreCase(player.getName())) {
+            player.sendMessage(Language.translate(true, "merge.not.a.owner"));
+            return;
+        }
+
+        if (isMergeCheck(plot, nextPlot)) {
+            player.sendMessage(Language.translate(true, "merge.already.merged"));
+            return;
+        }
+
+        if (provider.getOriginPlot(nextPlot) == null && provider.getMerges(nextPlot).isEmpty() /* && provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0*/) { // Wenn Plot noch nie gemerged wurde
+            if (provider.getOriginPlot(plot) == null) {
+                provider.setOriginPlot(nextPlot, plot); // Merge Plot wird Origin Plot hinzugefügt
+                provider.addMerge(plot, nextPlot); // Origin Plot bekommt nextPlot dazu
+            } else {
+                provider.setOriginPlot(nextPlot, provider.getOriginPlot(plot)); // Merge Plot wird Origin Plot hinzugefügt
+                provider.addMerge(provider.getOriginPlot(plot), nextPlot); // Origin Plot bekommt nextPlot dazu
+            }
+        } else {
+            /*Plot mainPlot = null;
+            Plot nextMainPlot = null;
+            if(provider.getOriginPlot(plot) != null && provider.getMerges(plot).isEmpty()) {
+                mainPlot = provider.getOriginPlot(plot);
+            } else if(provider.getOriginPlot(plot) == null && !provider.getMerges(plot).isEmpty()) {
+                mainPlot = plot;
+            }
+            if(provider.getOriginPlot(nextPlot) != null && provider.getMerges(nextPlot).isEmpty()) {
+                nextMainPlot = provider.getOriginPlot(nextPlot);
+            } else if(provider.getOriginPlot(nextPlot) == null && !provider.getMerges(nextPlot).isEmpty()) {
+                nextMainPlot = nextPlot;
+            }
+            if(mainPlot != null && nextMainPlot != null) {
+                if(provider.getMerges(nextMainPlot).size() > provider.getMerges(mainPlot).size()) {
+                    provider.addMerge(nextMainPlot, mainPlot);
+                    provider.setOriginPlot(mainPlot, nextMainPlot);
+                    for (Plot p : provider.getMerges(mainPlot)) {
+                        provider.addMerge(nextMainPlot, p);
+                        provider.setOriginPlot(p, nextMainPlot);
+                    }
+                } else {
+                    provider.addMerge(mainPlot, nextMainPlot);
+                    provider.setOriginPlot(nextMainPlot, mainPlot);
+                    for (Plot p : provider.getMerges(nextMainPlot)) {
+                        provider.addMerge(p, nextMainPlot);
+                        provider.setOriginPlot(nextMainPlot, p);
+                    }
+                }
+            }*/
+            if (provider.getMerges(nextPlot).size() > 0) {
+                if (provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0) {
+                    if (!plot.getFullID().equalsIgnoreCase(nextPlot.getFullID())) {
+                        provider.setOriginPlot(plot, nextPlot);
+                        provider.addMerge(nextPlot, plot);
+                    }
+                }
+            } else {
+                if (provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0) {
+                    if (!plot.getFullID().equalsIgnoreCase(nextPlot.getFullID())) {
+                        provider.setOriginPlot(plot, provider.getOriginPlot(nextPlot));
+                        provider.addMerge(provider.getOriginPlot(nextPlot), plot);
+                    }
+                }
+            }
+        }
+
+        provider.setMergeCheck(plot, nextPlot);
+        provider.setMergeCheck(nextPlot, plot);
+
+        getServer().getScheduler().scheduleDelayedTask(new RoadFillTask(this, plot, nextPlot), 1);
+        if (direction == BlockFace.NORTH) {
+            Plot leftPlot = new Plot(plot.getX() - 1, plot.getZ(), plot.getLevelName());
+            Plot leftUpPlot = new Plot(plot.getX() - 1, plot.getZ() - 1, plot.getLevelName());
+            Plot upPlot = new Plot(plot.getX(), plot.getZ() - 1, plot.getLevelName());
+            Plot rightPlot = new Plot(plot.getX() + 1, plot.getZ(), plot.getLevelName());
+            Plot rightUpPlot = new Plot(plot.getX() + 1, plot.getZ() - 1, plot.getLevelName());
+            if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
+                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, plot, leftUpPlot, false, direction, 256), 5);
+            }
+            if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
+                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, rightPlot, upPlot, false, direction, 256), 5);
+            }
+        } else if (direction == BlockFace.SOUTH) {
+            Plot leftPlot = new Plot(plot.getX() + 1, plot.getZ(), plot.getLevelName());
+            Plot leftUpPlot = new Plot(plot.getX() + 1, plot.getZ() + 1, plot.getLevelName());
+            Plot upPlot = new Plot(plot.getX(), plot.getZ() + 1, plot.getLevelName());
+            Plot rightPlot = new Plot(plot.getX() - 1, plot.getZ(), plot.getLevelName());
+            Plot rightUpPlot = new Plot(plot.getX() - 1, plot.getZ() + 1, plot.getLevelName());
+            if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
+                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, leftUpPlot, plot, false, direction, 256), 5);
+            }
+            if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
+                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, upPlot, rightPlot, false, direction, 256), 5);
+            }
+        } else if (direction == BlockFace.WEST) {
+            Plot leftPlot = new Plot(plot.getX(), plot.getZ() + 1, plot.getLevelName());
+            Plot leftUpPlot = new Plot(plot.getX() - 1, plot.getZ() + 1, plot.getLevelName());
+            Plot upPlot = new Plot(plot.getX() - 1, plot.getZ(), plot.getLevelName());
+            Plot rightPlot = new Plot(plot.getX(), plot.getZ() - 1, plot.getLevelName());
+            Plot rightUpPlot = new Plot(plot.getX() - 1, plot.getZ() - 1, plot.getLevelName());
+            if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
+                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, leftPlot, upPlot, false, direction, 256), 5);
+            }
+            if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
+                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, plot, rightUpPlot, false, direction, 256), 5);
+            }
+        } else if (direction == BlockFace.EAST) {
+            Plot leftPlot = new Plot(plot.getX(), plot.getZ() - 1, plot.getLevelName());
+            Plot leftUpPlot = new Plot(plot.getX() + 1, plot.getZ() - 1, plot.getLevelName());
+            Plot upPlot = new Plot(plot.getX() + 1, plot.getZ(), plot.getLevelName());
+            Plot rightPlot = new Plot(plot.getX(), plot.getZ() + 1, plot.getLevelName());
+            Plot rightUpPlot = new Plot(plot.getX() + 1, plot.getZ() + 1, plot.getLevelName());
+            if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
+                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, upPlot, leftPlot, false, direction, 256), 5);
+            }
+            if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
+                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, rightUpPlot, plot, false, direction, 256), 5);
+            }
+        }
+        player.sendMessage(Language.translate(true, "merge.merged", player.getDirection().getName()));
+    }
+
+    public boolean isMerge(Plot plot, Plot toMerge) {
+        if(provider.getOriginPlot(plot) == null) {
+            for (Plot plot1 : provider.getMerges(plot)) {
+                if(plot1.getFullID().equalsIgnoreCase(toMerge.getFullID())) {
+                    return true;
+                }
+            }
+        }
+        if(provider.getOriginPlot(toMerge) == null) {
+            for (Plot plot1 : provider.getMerges(toMerge)) {
+                if(plot1.getFullID().equalsIgnoreCase(plot.getFullID())) {
+                    return true;
+                }
+            }
+        }
+        if (provider.getOriginPlot(plot) != null && provider.getOriginPlot(toMerge) != null && provider.getOriginPlot(plot).getFullID().equalsIgnoreCase(provider.getOriginPlot(toMerge).getFullID())) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isMerge(Plot plot) {
+        return provider.getMerges(plot).size() > 0 || provider.getOriginPlot(plot) != null;
+    }
+
+    public boolean isMergeCheck(Plot plot1, Plot plot2) {
+        List<Plot> plots1 = provider.getMergeCheck(plot1);
+        List<Plot> plots2 = provider.getMergeCheck(plot2);
+        for (Plot mergePlot : plots1) {
+            if(mergePlot.getX() == plot2.getX() && mergePlot.getZ() == plot2.getZ()) {
+                return true;
+            }
+        }
+        for (Plot mergePlot : plots2) {
+            if(mergePlot.getX() == plot1.getX() && mergePlot.getZ() == plot1.getZ()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Plot getMergeByBlockFace(Plot plot, BlockFace direction) {
+        Plot mergePlot = null;
+        if(direction == BlockFace.NORTH) {
+            mergePlot = new Plot(plot.getX(), plot.getZ() - 1, plot.getLevelName());
+        } else if(direction == BlockFace.SOUTH) {
+            mergePlot = new Plot(plot.getX(), plot.getZ() + 1, plot.getLevelName());
+        } else if(direction == BlockFace.WEST) {
+            mergePlot = new Plot(plot.getX() - 1, plot.getZ(), plot.getLevelName());
+        } else if(direction == BlockFace.EAST) {
+            mergePlot = new Plot(plot.getX() + 1, plot.getZ(), plot.getLevelName());
+        }
+        return mergePlot;
+    }
+
+    public void resetMerges(Plot plot, boolean reset) {
+        List<Plot> merges = new ArrayList<>();
+        if(provider.getOriginPlot(plot) == null && !provider.getMerges(plot).isEmpty()) {
+            merges = provider.getMerges(plot);
+        } else {
+            merges = provider.getMerges(provider.getOriginPlot(plot));
+            plot = provider.getOriginPlot(plot);
+        }
+        BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+        for (Plot merge : merges) {
+            for (BlockFace face : faces) {
+                if(isMerge(merge, getMergeByBlockFace(merge, face))) {
+                    getServer().getScheduler().scheduleDelayedTask(new RoadResetTask(this, merge, getMergeByBlockFace(merge, face), reset), 1);
+                }
+            }
+            clearPlot(merge);
+        }
+        Plot finalPlot = plot;
+        getServer().getScheduler().scheduleDelayedTask(() -> {
+            clearPlot(finalPlot);
+            if(reset) {
+                finalPlot.changeBorder(new PlotSettings(finalPlot.getLevelName()).getWallBlockUnClaimed());
+            } else finalPlot.changeBorder(new PlotSettings(finalPlot.getLevelName()).getWallBlockClaimed());
+        }, 5);
+        merges.forEach((merge) -> provider.resetMerges(merge));
+        provider.resetMerges(plot);
+        if(reset) merges.forEach((merge) -> provider.deletePlot(merge));
+        if(reset) FuturePlots.provider.deletePlot(plot);
+    }
+
+    public Plot isInMerge(Player player) {
+        return isInMerge(player, player.getPosition());
+    }
+
+    public Plot isInMerge(Player player, Block block) {
+        return isInMerge(player, block.getLocation());
+    }
+
+    public Plot isInMerge(Player player, Position position) {
+        //boolean isInMerge = false;
+        boolean checkNext = true;
+        Plot inPlot = null;
+        Position newPos = position;
+        PlotSettings plotSettings = new PlotSettings(position.getLevel().getName());
+        Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, 0));
+        Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, 0));
+        if(plot1 != null && plot2 != null &&
+                FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
+                FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
+                FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check X side
+            //isInMerge = true;
+            checkNext = false;
+            inPlot = plot1;
+        }
+        if(checkNext) {
+            newPos = position;
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, plotSettings.getRoadWidth()));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -plotSettings.getRoadWidth()));
+            if(plot1 != null && plot2 != null &&
+                    FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
+                    FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
+                    FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check Z side
+                //isInMerge = true;
+                checkNext = false;
+                inPlot = plot1;
+            }
+        }
+        if(checkNext) { // SOUTH WEST to NORTH EAST
+            newPos = position;
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, plotSettings.getRoadWidth()));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, -plotSettings.getRoadWidth()));
+            if(plot1 != null && plot2 != null &&
+                    FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
+                    FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
+                    FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.NORTH)) &&
+                    FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.SOUTH)) &&
+                    FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.EAST)) &&
+                    FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.WEST)) &&
+                    FuturePlots.getInstance().isMerge(plot1, plot2)) {
+                //isInMerge = true;
+                inPlot = plot1;
+            }
+        }
+        return inPlot;
+    }
+
+    public Plot isInMergeCheck(Position position) {
+        //boolean isInMerge = false;
+        boolean checkNext = true;
+        Plot inPlot = null;
+        Position newPos = position;
+        PlotSettings plotSettings = new PlotSettings(position.getLevel().getName());
+        Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, 0));
+        Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, 0));
+        if(plot1 != null && plot2 != null &&
+                FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check X side
+            //isInMerge = true;
+            checkNext = false;
+            inPlot = plot1;
+        }
+        if(checkNext) {
+            newPos = position;
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, plotSettings.getRoadWidth()));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -plotSettings.getRoadWidth()));
+            if(plot1 != null && plot2 != null &&
+                    FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check Z side
+                //isInMerge = true;
+                checkNext = false;
+                inPlot = plot1;
+            }
+        }
+        if(checkNext) { // SOUTH WEST to NORTH EAST
+            newPos = position;
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, plotSettings.getRoadWidth()));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, -plotSettings.getRoadWidth()));
+            if(plot1 != null && plot2 != null &&
+                    FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.NORTH)) &&
+                    FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.SOUTH)) &&
+                    FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.EAST)) &&
+                    FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.WEST)) &&
+                    FuturePlots.getInstance().isMerge(plot1, plot2)) {
+                //isInMerge = true;
+                inPlot = plot1;
+            }
+        }
+        return inPlot;
     }
 }

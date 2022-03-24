@@ -1,4 +1,4 @@
-package tim03we.futureplots.provider;
+package tim03we.futureplots.provider.data;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -20,6 +20,7 @@ import cn.nukkit.Server;
 import cn.nukkit.level.Location;
 import com.google.gson.Gson;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.SQLHelper;
 import tim03we.futureplots.utils.Settings;
@@ -461,5 +462,40 @@ public class SQLiteProvider implements DataProvider {
             if(Settings.debug) e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void addMerge(Plot plot, Plot mergePlot) {
+
+    }
+
+    @Override
+    public List<Plot> getMerges(Plot plot) {
+        return null;
+    }
+
+    @Override
+    public Plot getOriginPlot(Plot plot) {
+        return null;
+    }
+
+    @Override
+    public void setOriginPlot(Plot plot, Plot mergePlot) {
+
+    }
+
+    @Override
+    public void setMergeCheck(Plot plot, Plot mergePlot) {
+
+    }
+
+    @Override
+    public List<Plot> getMergeCheck(Plot plot) {
+        return null;
+    }
+
+    @Override
+    public void resetMerges(Plot plot) {
+
     }
 }
