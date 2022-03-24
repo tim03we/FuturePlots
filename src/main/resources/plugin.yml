@@ -6,6 +6,7 @@ version: 2.0.0-SNAPSHOT
 description: A NukkitX based plot plugin
 softdepend:
   - EconomyAPI
+  - LlamaEconomy
   - DbLib
 
 permissions:
@@ -20,4 +21,10 @@ permissions:
     default: op
   futureplots.command.merge:
     description: "Permission for the Merge Command."
+    default: op
+  plot.kick.bypass:
+    description: "Players with this permission cannot be kicked from any plot."
+    default: op
+  plot.deny.bypass:
+    description: "Players with this permission cannot be denied (banned) from any plot."
     default: op
