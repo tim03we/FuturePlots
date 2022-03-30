@@ -86,4 +86,6 @@ public interface DataProvider {
     List<Plot> getMergeCheck(Plot plot);
 
     void resetMerges(Plot plot);
+
+    void deleteMergeList(Plot plot);
 }

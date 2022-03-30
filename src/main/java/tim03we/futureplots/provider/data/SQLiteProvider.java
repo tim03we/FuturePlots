@@ -498,4 +498,9 @@ public class SQLiteProvider implements DataProvider {
     public void resetMerges(Plot plot) {
 
     }
+
+    @Override
+    public void deleteMergeList(Plot plot) {
+
+    }
 }

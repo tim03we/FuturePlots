@@ -340,52 +340,47 @@ public class FuturePlots extends PluginBase {
                 provider.addMerge(provider.getOriginPlot(plot), nextPlot); // Origin Plot bekommt nextPlot dazu
             }
         } else {
-            /*Plot mainPlot = null;
-            Plot nextMainPlot = null;
-            if(provider.getOriginPlot(plot) != null && provider.getMerges(plot).isEmpty()) {
-                mainPlot = provider.getOriginPlot(plot);
-            } else if(provider.getOriginPlot(plot) == null && !provider.getMerges(plot).isEmpty()) {
-                mainPlot = plot;
+            boolean allone = true;
+            Plot currentPlot = plot;
+            Plot mergePlot = nextPlot;
+            if(provider.getOriginPlot(currentPlot) != null && provider.getMerges(currentPlot).isEmpty()) {
+                // Wenn das gegenüberliegende Plot teil eines Merges ist
+                currentPlot = provider.getOriginPlot(currentPlot);
             }
-            if(provider.getOriginPlot(nextPlot) != null && provider.getMerges(nextPlot).isEmpty()) {
-                nextMainPlot = provider.getOriginPlot(nextPlot);
-            } else if(provider.getOriginPlot(nextPlot) == null && !provider.getMerges(nextPlot).isEmpty()) {
-                nextMainPlot = nextPlot;
+            if(provider.getOriginPlot(mergePlot) != null && provider.getMerges(mergePlot).isEmpty()) {
+                // Wenn das gegenüberliegende Plot teil eines Merges ist
+                mergePlot = provider.getOriginPlot(mergePlot);
             }
-            if(mainPlot != null && nextMainPlot != null) {
-                if(provider.getMerges(nextMainPlot).size() > provider.getMerges(mainPlot).size()) {
-                    provider.addMerge(nextMainPlot, mainPlot);
-                    provider.setOriginPlot(mainPlot, nextMainPlot);
-                    for (Plot p : provider.getMerges(mainPlot)) {
-                        provider.addMerge(nextMainPlot, p);
-                        provider.setOriginPlot(p, nextMainPlot);
+            if(provider.getMerges(currentPlot).size() > 0 && provider.getMerges(mergePlot).size() > 0) {
+                allone = false;
+            }
+            if(allone) {
+                if (provider.getMerges(nextPlot).size() > 0) {
+                    if (provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0) {
+                        if (!plot.getFullID().equalsIgnoreCase(nextPlot.getFullID())) {
+                            provider.setOriginPlot(plot, nextPlot);
+                            provider.addMerge(nextPlot, plot);
+                        }
                     }
                 } else {
-                    provider.addMerge(mainPlot, nextMainPlot);
-                    provider.setOriginPlot(nextMainPlot, mainPlot);
-                    for (Plot p : provider.getMerges(nextMainPlot)) {
-                        provider.addMerge(p, nextMainPlot);
-                        provider.setOriginPlot(nextMainPlot, p);
-                    }
-                }
-            }*/
-            if (provider.getMerges(nextPlot).size() > 0) {
-                if (provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0) {
-                    if (!plot.getFullID().equalsIgnoreCase(nextPlot.getFullID())) {
-                        provider.setOriginPlot(plot, nextPlot);
-                        provider.addMerge(nextPlot, plot);
+                    if (provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0) {
+                        if (!plot.getFullID().equalsIgnoreCase(nextPlot.getFullID())) {
+                            provider.setOriginPlot(plot, provider.getOriginPlot(nextPlot));
+                            provider.addMerge(provider.getOriginPlot(nextPlot), plot);
+                        }
                     }
                 }
             } else {
-                if (provider.getOriginPlot(plot) == null && provider.getMerges(plot).size() == 0) {
-                    if (!plot.getFullID().equalsIgnoreCase(nextPlot.getFullID())) {
-                        provider.setOriginPlot(plot, provider.getOriginPlot(nextPlot));
-                        provider.addMerge(provider.getOriginPlot(nextPlot), plot);
-                    }
+                for (Plot merge : provider.getMerges(currentPlot)) {
+                    provider.setOriginPlot(merge, mergePlot);
+                    provider.addMerge(mergePlot, merge);
                 }
+                System.out.println(currentPlot.getFullID());
+                provider.setOriginPlot(currentPlot, mergePlot);
+                provider.addMerge(mergePlot, currentPlot);
+                provider.deleteMergeList(currentPlot);
             }
         }
-
         provider.setMergeCheck(plot, nextPlot);
         provider.setMergeCheck(nextPlot, plot);
 
@@ -544,7 +539,6 @@ public class FuturePlots extends PluginBase {
     }
 
     public Plot isInMerge(Player player, Position position) {
-        //boolean isInMerge = false;
         boolean checkNext = true;
         Plot inPlot = null;
         Position newPos = position;
@@ -555,7 +549,6 @@ public class FuturePlots extends PluginBase {
                 FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
                 FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
                 FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check X side
-            //isInMerge = true;
             checkNext = false;
             inPlot = plot1;
         }
@@ -567,7 +560,6 @@ public class FuturePlots extends PluginBase {
                     FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
                     FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
                     FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check Z side
-                //isInMerge = true;
                 checkNext = false;
                 inPlot = plot1;
             }
@@ -584,7 +576,6 @@ public class FuturePlots extends PluginBase {
                     FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.EAST)) &&
                     FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.WEST)) &&
                     FuturePlots.getInstance().isMerge(plot1, plot2)) {
-                //isInMerge = true;
                 inPlot = plot1;
             }
         }
@@ -592,7 +583,6 @@ public class FuturePlots extends PluginBase {
     }
 
     public Plot isInMergeCheck(Position position) {
-        //boolean isInMerge = false;
         boolean checkNext = true;
         Plot inPlot = null;
         Position newPos = position;
@@ -601,7 +591,6 @@ public class FuturePlots extends PluginBase {
         Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, 0));
         if(plot1 != null && plot2 != null &&
                 FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check X side
-            //isInMerge = true;
             checkNext = false;
             inPlot = plot1;
         }
@@ -611,7 +600,6 @@ public class FuturePlots extends PluginBase {
             plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -plotSettings.getRoadWidth()));
             if(plot1 != null && plot2 != null &&
                     FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check Z side
-                //isInMerge = true;
                 checkNext = false;
                 inPlot = plot1;
             }
@@ -626,7 +614,6 @@ public class FuturePlots extends PluginBase {
                     FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.EAST)) &&
                     FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.WEST)) &&
                     FuturePlots.getInstance().isMerge(plot1, plot2)) {
-                //isInMerge = true;
                 inPlot = plot1;
             }
         }

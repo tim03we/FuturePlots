@@ -330,4 +330,9 @@ public class YamlProvider implements DataProvider {
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<>());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", new ArrayList<>());
     }
+
+    @Override
+    public void deleteMergeList(Plot plot) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<>());
+    }
 }
