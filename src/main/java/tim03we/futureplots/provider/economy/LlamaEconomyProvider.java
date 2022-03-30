@@ -1,4 +1,4 @@
-package tim03we.futureplots.provider;
+package tim03we.futureplots.provider.economy;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -16,17 +16,18 @@ package tim03we.futureplots.provider;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import me.onebone.economyapi.EconomyAPI;
+import net.lldv.llamaeconomy.LlamaEconomy;
+import tim03we.futureplots.provider.EconomyProvider;
 
-public class EconomySProvider implements EconomyProvider {
+public class LlamaEconomyProvider implements EconomyProvider {
 
     @Override
     public void reduceMoney(String username, double amount) {
-        EconomyAPI.getInstance().reduceMoney(username, amount);
+        LlamaEconomy.getAPI().reduceMoney(username, amount);
     }
 
     @Override
     public double getMoney(String username) {
-        return EconomyAPI.getInstance().myMoney(username);
+        return LlamaEconomy.getAPI().getMoney(username);
     }
 }

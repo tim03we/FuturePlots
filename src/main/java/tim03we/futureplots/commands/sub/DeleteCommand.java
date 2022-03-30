@@ -34,6 +34,7 @@ public class DeleteCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            Player player = (Player) sender;
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
@@ -47,8 +48,12 @@ public class DeleteCommand extends BaseCommand {
                             }
                         }
                     }
-                    plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
-                    FuturePlots.provider.deletePlot(plot);
+                    if(FuturePlots.getInstance().isMerge(plot)) {
+                        FuturePlots.getInstance().resetMerges(plot, true);
+                    } else {
+                        FuturePlots.provider.deletePlot(plot);
+                        plot.changeBorder(new PlotSettings(player.getLevel().getName()).getWallBlockUnClaimed());
+                    }
                     FuturePlots.getInstance().clearPlot(plot);
                     ((Player) sender).teleport(plot.getBorderPosition());
                     sender.sendMessage(translate(true, "plot.delete"));

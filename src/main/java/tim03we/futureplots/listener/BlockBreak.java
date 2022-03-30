@@ -17,6 +17,8 @@ package tim03we.futureplots.listener;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
@@ -31,6 +33,7 @@ public class BlockBreak implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        Block block = event.getBlock();
         if(Settings.levels.contains(player.getLevel().getName())) {
             Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
             new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot));
@@ -40,7 +43,17 @@ public class BlockBreak implements Listener {
                         event.setCancelled(true);
                     }
                 } else {
-                    event.setCancelled(true);
+                    Plot merge = FuturePlots.getInstance().isInMergeCheck(block.getLocation());
+                    if(merge == null) {
+                        event.setCancelled(true);
+                    } else {
+                        if(FuturePlots.provider.getOriginPlot(merge) != null && FuturePlots.provider.getMerges(merge).isEmpty()) {
+                            merge = FuturePlots.provider.getOriginPlot(merge);
+                        }
+                        if(!merge.canInteract(player)) {
+                            event.setCancelled(true);
+                        }
+                    }
                 }
             }
         }

@@ -18,9 +18,11 @@ package tim03we.futureplots.commands.sub;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.provider.DataProvider;
+import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
 
@@ -33,74 +35,54 @@ public class HomeCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            Player player = (Player) sender;
             DataProvider provider = FuturePlots.provider;
             int homeNumber = 1;
             if(provider.getPlots(sender.getName(), null).size() == 0) {
                 sender.sendMessage(translate(true, "has.no.plot"));
                 return;
             }
-            if(Settings.levels.size() > 1) {
-                if(args.length > 2) {
-                    if(isInteger(args[1])) {
+            String levelName = Settings.levels.size() == 1 ? Settings.levels.get(0) : player.getLevel().getName();
+            if(args.length > 1) {
+                if(isInteger(args[1])) {
+                    homeNumber = Integer.parseInt(args[1]);
+                } else {
+                    player.sendMessage(Language.translate(true, "has.no.plot.number", args[1]));
+                    return;
+                }
+            }
+            if(!Settings.levels.contains(player.getLevel().getName())) {
+                if(Settings.levels.size() > 1) {
+                    if(args.length > 2) {
                         if(Settings.levels.contains(args[2])) {
-                            if(provider.getPlots(sender.getName(), args[2]).size() > 0) {
-                                Plot plot = provider.getPlot(sender.getName(), Integer.parseInt(args[1]), args[2]);
-                                if(plot != null) {
-                                    if(provider.getHome(plot) != null) {
-                                        ((Player) sender).teleport(provider.getHome(plot));
-                                    } else {
-                                        ((Player) sender).teleport(plot.getBorderPosition());
-                                    }
-                                    sender.sendMessage(translate(true, "plot.teleport"));
-                                } else {
-                                    sender.sendMessage(translate(true, "has.no.plot.world"));
-                                    return;
-                                }
-                            } else {
-                                sender.sendMessage(translate(true, "has.no.plot.world"));
-                                return;
-                            }
+                            levelName = args[2];
                         } else {
-                            sender.sendMessage(translate(true, "plot.world.required"));
+                            player.sendMessage(translate(true, "plot.world.not.exists"));
                             return;
                         }
                     } else {
-                        sender.sendMessage(translate(true, "plot.world.required"));
+                        player.sendMessage(translate(true, "plot.world.required"));
                         return;
                     }
-                } else {
-                    sender.sendMessage(translate(true, "plot.world.required"));
-                    return;
                 }
+            }
+            if(provider.getPlots(sender.getName(), levelName).size() == 0) {
+                player.sendMessage(Language.translate(true, "has.no.plot"));
                 return;
             }
-            if(args.length > 1) {
-                if(isInteger(args[1])) {
-                    if(provider.getPlots(sender.getName(), Settings.levels.get(0)).size() > 0) {
-                        Plot plot = provider.getPlot(sender.getName(), Integer.parseInt(args[1]), Settings.levels.get(0));
-                        if(plot != null) {
-                            if(provider.getHome(plot) != null) {
-                                ((Player) sender).teleport(provider.getHome(plot));
-                            } else {
-                                ((Player) sender).teleport(plot.getBorderPosition());
-                            }
-                            sender.sendMessage(translate(true, "plot.teleport"));
-                        } else {
-                            sender.sendMessage(translate(true, "has.no.plot.number", args[1]));
-                        }
-                    } else {
-                        sender.sendMessage(translate(true, "has.no.plot"));
-                    }
-                }
-            } else {
-                Plot plot = provider.getPlot(sender.getName(), homeNumber, null);
-                if(provider.getHome(plot) != null) {
-                    ((Player) sender).teleport(provider.getHome(plot));
-                } else {
-                    ((Player) sender).teleport(plot.getBorderPosition());
-                }
-                sender.sendMessage(translate(true, "plot.teleport"));
+            Plot plot = provider.getPlot(sender.getName(), homeNumber, levelName);
+            if(plot == null) {
+                player.sendMessage(translate(true, "has.no.plot.number", args[1]));
+                return;
             }
+            if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {
+                plot = FuturePlots.provider.getOriginPlot(plot);
+            }
+            Position position = plot.getBorderPosition();
+            if(provider.getHome(plot) != null) {
+                position = provider.getHome(plot);
+            }
+            player.teleport(position);
         }
     }
 

@@ -7,6 +7,11 @@
       <option name="url" value="http://jenkins.onebone.me/plugin/repository/everything/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="nukkitx-repo" />
+      <option name="name" value="nukkitx-repo" />
+      <option name="url" value="https://repo.nukkitx.com/snapshot" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />

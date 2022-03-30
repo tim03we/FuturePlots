@@ -1,12 +1,13 @@
 ---
 # Do not change the version, this can lead to deletion of the file
-version: "1.2.2"
+version: "1.2.3"
 
 # Available languages:
 # eng (English), deu (German), kor (Korean), chs (Chinese)
 lang: "eng"
 
 # Available providers: yaml, mysql, sqlite
+# Default: yaml
 provider: "yaml"
 
 # Automatic saving of all plots
@@ -41,6 +42,7 @@ teleport-on-claim: true
 show-popup: true
 
 # Decide here whether Economy should be used for claiming, emptying and deleting plots
+# Provider: EconomyAPI, LlamaEconomy
 economy: false
 
 # Here you find the plot configurations,
@@ -61,4 +63,6 @@ default-settings:
     clear: 300
     delete: 200
     dispose: 500
+    erode: 500
+    merge: 1000
 ...

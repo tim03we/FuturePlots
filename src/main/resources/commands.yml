@@ -1,5 +1,5 @@
 ---
-version: "1.0.3"
+version: "1.0.4"
 
 plot:
   parameters:
@@ -63,12 +63,12 @@ plot:
     name: "home"
     usage: "/plot home [number] [world]"
     description: "Go to your plots"
-    alias: ["h"]
+    alias: ["h", "visit"]
   homes:
     name: "homes"
     usage: "/plot homes"
     description: "List your plots on"
-    alias: []
+    alias: ["list"]
   info:
     name: "info"
     usage: "/plot info"
@@ -113,5 +113,10 @@ plot:
     name: "erode"
     usage: "/plot erode"
     description: "Fill out your plot"
+    alias: []
+  merge:
+    name: "merge"
+    usage: "/plot merge"
+    description: "Merge your plot"
     alias: []
 ...

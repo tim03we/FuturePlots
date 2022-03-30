@@ -16,7 +16,7 @@ public class SQLTable {
 
     public SQLTable(String table, SQLDatabase database, SQLConnection instance) {
         this.table = table;
-        database.set();
+        if(database.type.equalsIgnoreCase("mysql")) database.set();
         this.instance = instance;
     }
 

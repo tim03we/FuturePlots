@@ -1,4 +1,4 @@
-package tim03we.futureplots.provider;
+package tim03we.futureplots.provider.data;
 
 /*
  * This software is distributed under "GNU General Public License v3.0".
@@ -21,6 +21,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import com.google.gson.Gson;
 import tim03we.futureplots.FuturePlots;
+import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.provider.sql.SQLConnection;
 import tim03we.futureplots.provider.sql.SQLDatabase;
 import tim03we.futureplots.provider.sql.SQLEntity;
@@ -33,9 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MySQLProvider implements DataProvider {
+public class SQLiteProvider implements DataProvider {
 
-    private SQLDatabase database;
+    private static SQLDatabase database;
 
     @Override
     public void connect() {
@@ -46,16 +47,11 @@ public class MySQLProvider implements DataProvider {
         }
         Config config = FuturePlots.getInstance().getConfig();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            SQLConnection sqlConnection = new SQLConnection(
-                    config.getString("mysql.host"),
-                    config.getString("mysql.port"),
-                    config.getString("mysql.user"),
-                    config.getString("mysql.password")
-            );
-            database = sqlConnection.getDatabase(config.getString("mysql.database"));
+            Class.forName("org.sqlite.JDBC");
+            SQLConnection sqlConnection = new SQLConnection();
+            database = sqlConnection.getDatabase("sqlite", config.getString("mysql.database"));
             checkAndRun();
-            Server.getInstance().getLogger().info("[FuturePlots] Connection to MySQL database successful.");
+            Server.getInstance().getLogger().info("[FuturePlots] Connection to SQLite database successful.");
         } catch (ClassNotFoundException ex) {
             Server.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
             ex.printStackTrace();
@@ -65,10 +61,10 @@ public class MySQLProvider implements DataProvider {
     private void checkAndRun() {
         CompletableFuture.runAsync(() -> {
             SQLTable table = database.getTable("plots");
-            String[] array = new String[]{"home VARCHAR(999)"};
+            String[] array = new String[]{"home VARCHAR(999)", "merge VARCHAR(999)", "merges VARCHAR(999)", "merge_check VARCHAR(999)"};
             if (database.getConnection() != null) {
                 try {
-                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), mmerge VARCHAR(255), merges VARCHAR(999));");
+                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS plots(level VARCHAR(255), plotid VARCHAR(255), owner VARCHAR(255), helpers VARCHAR(999), members VARCHAR(999), denied VARCHAR(999), flags VARCHAR(999), merge VARCHAR(999), merges VARCHAR(999), merge_check VARCHAR(999));");
                     statement.executeUpdate();
                     statement.close();
 
@@ -362,5 +358,105 @@ public class MySQLProvider implements DataProvider {
             }
         }
         return getNextFreePlot(level);
+    }
+
+    @Override
+    public void setMergeCheck(Plot plot, Plot mergePlot) {
+        List<String> mergeList = new ArrayList<>();
+        for (Plot plots : getMergeCheck(plot)) {
+            mergeList.add(plots.getX() + ";" + plots.getZ());
+        }
+        mergeList.add(mergePlot.getFullID());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merge_check", new Gson().toJson(mergeList));
+        table.update(searchEntity, updateEntity);
+    }
+
+    @Override
+    public List<Plot> getMergeCheck(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        List<Plot> list = new ArrayList<>();
+        if(find != null) {
+            if(find.getString("merge_check") == null) return new ArrayList<>();
+            List<String> plotList = new Gson().fromJson(find.getString("merge_check"), List.class);
+            for (String plots : plotList) {
+                String[] ex = plots.split(";");
+                list.add(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName()));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Plot getOriginPlot(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            if(find.getString("merge") == null) return null;
+            String[] ex = find.getString("merge").split(";");
+            return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
+        }
+        return null;
+    }
+
+    @Override
+    public void setOriginPlot(Plot mergePlot, Plot originPlot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", mergePlot.getLevelName()).append("plotid", mergePlot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merge", originPlot.getFullID());
+        table.update(searchEntity, updateEntity);
+    }
+
+
+    @Override
+    public void addMerge(Plot originPlot, Plot mergePlot) {
+        List<String> mergeList = new ArrayList<>();
+        for (Plot plots : getMerges(originPlot)) {
+            mergeList.add(plots.getX() + ";" + plots.getZ());
+        }
+        mergeList.add(mergePlot.getFullID());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", originPlot.getLevelName()).append("plotid", originPlot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merges", new Gson().toJson(mergeList));
+        table.update(searchEntity, updateEntity);
+    }
+
+    @Override
+    public List<Plot> getMerges(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        List<Plot> list = new ArrayList<>();
+        if(find != null) {
+            if(find.getString("merges") == null) return new ArrayList<>();
+            List<String> plotList = new Gson().fromJson(find.getString("merges"), List.class);
+            for (String plots : plotList) {
+                String[] ex = plots.split(";");
+                list.add(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName()));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public void resetMerges(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("home", null).append("merge", null)
+                .append("merges", null)
+                .append("merge_check", null);
+        table.update(searchEntity, updateEntity);
+    }
+
+    @Override
+    public void deleteMergeList(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merges", null);
+        table.update(searchEntity, updateEntity);
     }
 }

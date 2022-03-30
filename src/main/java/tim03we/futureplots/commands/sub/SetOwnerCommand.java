@@ -34,13 +34,13 @@ public class SetOwnerCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
+            Player player = (Player) sender;
+            Plot plot = new PlotPlayer(player).getPlot();
             if (plot != null) {
                 if(args.length > 1) {
-                    if (plot.canByPass((Player) sender)) {
-                        String targetName;
+                    if (plot.canByPass(player)) {
                         Player target = Server.getInstance().getPlayerExact(args[1]);
-                        if(target != null) targetName = target.getName(); else targetName = args[1];
+                        String targetName = target == null ? args[1] : target.getName();
                         if(sender.isOp()) {
                             if(target != null) target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
                             if(!FuturePlots.provider.hasOwner(plot)) {

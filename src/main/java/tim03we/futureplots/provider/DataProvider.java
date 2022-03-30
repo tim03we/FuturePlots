@@ -72,4 +72,20 @@ public interface DataProvider {
     List<String> getPlots(String name, Object level);
 
     Plot getNextFreePlot(String level);
+
+    void addMerge(Plot originPlot, Plot mergePlot);
+
+    List<Plot> getMerges(Plot originPlot);
+
+    Plot getOriginPlot(Plot originPlot);
+
+    void setOriginPlot(Plot mergePlot, Plot originPlot);
+
+    void setMergeCheck(Plot plot, Plot mergePlot);
+
+    List<Plot> getMergeCheck(Plot plot);
+
+    void resetMerges(Plot plot);
+
+    void deleteMergeList(Plot plot);
 }

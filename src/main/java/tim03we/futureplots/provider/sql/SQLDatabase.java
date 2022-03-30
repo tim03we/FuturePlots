@@ -6,13 +6,15 @@ import java.sql.SQLException;
 
 public class SQLDatabase {
 
+    public String type;
     private String database;
     private SQLConnection instance;
 
-    public SQLDatabase(String database, SQLConnection instance) {
+    public SQLDatabase(String type, String database, SQLConnection instance) {
+        this.type = type;
         this.database = database;
         this.instance = instance;
-        set();
+        if(type.equalsIgnoreCase("mysql")) set();
     }
 
     public void set() {

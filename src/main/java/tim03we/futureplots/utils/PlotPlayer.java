@@ -29,13 +29,24 @@ public class PlotPlayer {
 
     public Plot getPlot() {
         if(Settings.levels.contains(player.getLevel().getName())) {
-            return FuturePlots.getInstance().getPlotByPosition(player.getPosition());
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(player.getPosition());
+            if(plot == null) {
+                Plot merge = FuturePlots.getInstance().isInMergeCheck(player.getPosition());
+                if(merge != null) {
+                    plot = merge;
+                }
+            }
+            if(plot != null && FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {
+                plot = FuturePlots.provider.getOriginPlot(plot);
+            }
+            return plot;
         }
         return null;
     }
 
     public boolean canByPass() {
-        return (FuturePlots.provider.getOwner(getPlot()) != null && FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) || player.isOp();
+        Plot plot = getPlot();
+        return (FuturePlots.provider.getOwner(plot) != null && FuturePlots.provider.getOwner(plot).equals(player.getName())) || player.isOp();
     }
 
     public boolean bypassEco() {

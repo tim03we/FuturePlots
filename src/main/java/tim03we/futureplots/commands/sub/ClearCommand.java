@@ -47,6 +47,9 @@ public class ClearCommand extends BaseCommand {
                             }
                         }
                     }
+                    if(FuturePlots.getInstance().isMerge(plot)) {
+                        FuturePlots.getInstance().resetMerges(plot, false);
+                    }
                     ((Player) sender).teleport(plot.getBorderPosition());
                     FuturePlots.getInstance().clearPlot(plot);
                     sender.sendMessage(translate(true, "plot.clear"));
