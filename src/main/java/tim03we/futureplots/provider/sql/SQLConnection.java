@@ -1,5 +1,7 @@
 package tim03we.futureplots.provider.sql;
 
+import tim03we.futureplots.FuturePlots;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,7 +22,21 @@ public class SQLConnection {
         }
     }
 
-    public SQLDatabase getDatabase(String database) {
-        return new SQLDatabase(database, this);
+    // SQLite
+    public SQLConnection() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + FuturePlots.getInstance().getDataFolder().getPath() + "/plots.db");
+            connection.setAutoCommit(true);
+            System.out.println("Connection to SQLite database successful.");
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println("No connection to the database could be established.");
+            ex.printStackTrace();
+        }
+    }
+
+    // type = sqlite
+    public SQLDatabase getDatabase(String type, String database) {
+        return new SQLDatabase(type, database, this);
     }
 }

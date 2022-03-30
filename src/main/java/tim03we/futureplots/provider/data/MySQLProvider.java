@@ -54,7 +54,7 @@ public class MySQLProvider implements DataProvider {
                     config.getString("mysql.user"),
                     config.getString("mysql.password")
             );
-            database = sqlConnection.getDatabase(config.getString("mysql.database"));
+            database = sqlConnection.getDatabase("mysql", config.getString("mysql.database"));
             checkAndRun();
             Server.getInstance().getLogger().info("[FuturePlots] Connection to MySQL database successful.");
         } catch (ClassNotFoundException ex) {
@@ -366,42 +366,102 @@ public class MySQLProvider implements DataProvider {
     }
 
     @Override
-    public void addMerge(Plot plot, Plot mergePlot) {
-
-    }
-
-    @Override
-    public List<Plot> getMerges(Plot plot) {
-        return null;
-    }
-
-    @Override
-    public Plot getOriginPlot(Plot plot) {
-        return null;
-    }
-
-    @Override
-    public void setOriginPlot(Plot plot, Plot mergePlot) {
-
-    }
-
-    @Override
     public void setMergeCheck(Plot plot, Plot mergePlot) {
-
+        List<String> mergeList = new ArrayList<>();
+        for (Plot plots : getMergeCheck(plot)) {
+            mergeList.add(plots.getX() + ";" + plots.getZ());
+        }
+        mergeList.add(mergePlot.getFullID());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merge_check", new Gson().toJson(mergeList));
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public List<Plot> getMergeCheck(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        List<Plot> list = new ArrayList<>();
+        if(find != null) {
+            if(find.getString("merge_check") == null) return new ArrayList<>();
+            List<String> plotList = new Gson().fromJson(find.getString("merge_check"), List.class);
+            for (String plots : plotList) {
+                String[] ex = plots.split(";");
+                list.add(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName()));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Plot getOriginPlot(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        if(find != null) {
+            if(find.getString("merge") == null) return null;
+            String[] ex = find.getString("merge").split(";");
+            return new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName());
+        }
         return null;
     }
 
     @Override
-    public void resetMerges(Plot plot) {
+    public void setOriginPlot(Plot mergePlot, Plot originPlot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", mergePlot.getLevelName()).append("plotid", mergePlot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merge", originPlot.getFullID());
+        table.update(searchEntity, updateEntity);
+    }
 
+
+    @Override
+    public void addMerge(Plot originPlot, Plot mergePlot) {
+        List<String> mergeList = new ArrayList<>();
+        for (Plot plots : getMerges(originPlot)) {
+            mergeList.add(plots.getX() + ";" + plots.getZ());
+        }
+        mergeList.add(mergePlot.getFullID());
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", originPlot.getLevelName()).append("plotid", originPlot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merges", new Gson().toJson(mergeList));
+        table.update(searchEntity, updateEntity);
+    }
+
+    @Override
+    public List<Plot> getMerges(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity find = table.find(searchEntity);
+        List<Plot> list = new ArrayList<>();
+        if(find != null) {
+            if(find.getString("merges") == null) return new ArrayList<>();
+            List<String> plotList = new Gson().fromJson(find.getString("merges"), List.class);
+            for (String plots : plotList) {
+                String[] ex = plots.split(";");
+                list.add(new Plot(Integer.parseInt(ex[0]), Integer.parseInt(ex[1]), plot.getLevelName()));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public void resetMerges(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("home", null).append("merge", null)
+                .append("merges", null)
+                .append("merge_check", null);
+        table.update(searchEntity, updateEntity);
     }
 
     @Override
     public void deleteMergeList(Plot plot) {
-
+        SQLTable table = database.getTable("plots");
+        SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
+        SQLEntity updateEntity = new SQLEntity("merges", null);
+        table.update(searchEntity, updateEntity);
     }
 }

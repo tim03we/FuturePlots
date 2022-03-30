@@ -375,7 +375,6 @@ public class FuturePlots extends PluginBase {
                     provider.setOriginPlot(merge, mergePlot);
                     provider.addMerge(mergePlot, merge);
                 }
-                System.out.println(currentPlot.getFullID());
                 provider.setOriginPlot(currentPlot, mergePlot);
                 provider.addMerge(mergePlot, currentPlot);
                 provider.deleteMergeList(currentPlot);
