@@ -28,6 +28,6 @@ permissions:
   plot.deny.bypass:
     description: "Players with this permission cannot be denied (banned) from any plot."
     default: op
-  futureplots.plot.bypass:
+  plot.bypass:
     description: "Bypassing the protection of a plot."
     default: op
