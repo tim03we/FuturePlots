@@ -48,6 +48,13 @@
             <systemPath>${basedir}/libs/redstone.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>eco</groupId>
+            <artifactId>Llama</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/LlamaEconomy-1.0.0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>ru.nukkit.dblib</groupId>
             <artifactId>DbLib</artifactId>
             <version>1.0-SNAPSHOT</version>
