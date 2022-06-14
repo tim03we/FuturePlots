@@ -37,10 +37,11 @@ public class MergeCommand extends BaseCommand {
                 player.sendMessage(Language.translate(true, "no.permission"));
                 return;
             }
+            String levelName = player.getLevel().getName();
             if(Settings.economy) {
                 if(!new PlotPlayer((Player) sender).bypassEco()) {
-                    if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getMergePrice()) >= 0) {
-                        FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getMergePrice());
+                    if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getMergePrice(levelName)) >= 0) {
+                        FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getMergePrice(levelName));
                     } else {
                         sender.sendMessage(translate(true, "economy.no.money"));
                         return;

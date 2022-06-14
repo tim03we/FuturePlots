@@ -16,6 +16,7 @@ package tim03we.futureplots.provider;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.level.Location;
 import tim03we.futureplots.utils.Plot;
 
@@ -26,6 +27,8 @@ public interface DataProvider {
     void connect();
 
     void save();
+
+    void checkPlayer(Player player);
 
     void claimPlot(String name, Plot plot);
 

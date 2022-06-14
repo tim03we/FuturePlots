@@ -53,16 +53,16 @@ public class PlotGenerator extends Generator {
     public PlotGenerator(Map<String, Object> options) {
         this.options = options;
         try {
-            level = Server.getInstance().getLevelByName((String) options.get("preset"));
-            PlotSettings plotSettings = new PlotSettings((String) options.get("preset"));
-            roadBlock = plotSettings.getRoadBlock();
-            wallBlock = plotSettings.getWallBlockUnClaimed();
-            plotFloorBlock = plotSettings.getPlotFloorBlock();
-            plotFillBlock = plotSettings.getPlotFillBlock();
-            bottomBlock = plotSettings.getBottomBlock();
-            roadWidth = plotSettings.getRoadWidth();
-            plotSize = plotSettings.getPlotSize();
-            groundHeight = plotSettings.getGroundHeight();
+            String levelName = (String) options.get("preset");
+            level = Server.getInstance().getLevelByName(levelName);
+            roadBlock = PlotSettings.getRoadBlock(levelName);
+            wallBlock = PlotSettings.getWallBlockUnClaimed(levelName);
+            plotFloorBlock = PlotSettings.getPlotFloorBlock(levelName);
+            plotFillBlock = PlotSettings.getPlotFillBlock(levelName);
+            bottomBlock = PlotSettings.getBottomBlock(levelName);
+            roadWidth = PlotSettings.getRoadWidth(levelName);
+            plotSize = PlotSettings.getPlotSize(levelName);
+            groundHeight = PlotSettings.getGroundHeight(levelName);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
             Server.getInstance().getLogger().critical("Your world configuration " + options.get("preset") + ".yml is incorrect, check it or the server will not start properly. An example of the config, if it does not match your previous one, can be found at \"https://github.com/tim03we/FuturePlots/wiki/World-Config-Example\".");
             Server.getInstance().shutdown();

@@ -48,13 +48,13 @@ public class RoadFillTask extends Task {
         this.plotBeginPos = plugin.getPlotPosition(start);
         this.level = plotBeginPos.getLevel();
 
-        PlotSettings plotSettings = new PlotSettings(start.getLevelName());
-        int plotSize = plotSettings.getPlotSize();
-        int roadWidth = plotSettings.getRoadWidth();
-        this.height = plotSettings.getGroundHeight();
-        this.roadBlock = plotSettings.getPlotFloorBlock();
-        this.groundBlock = plotSettings.getPlotFillBlock();
-        this.bottomBlock = plotSettings.getBottomBlock();
+        String levelName = start.getLevelName();
+        int plotSize = PlotSettings.getPlotSize(levelName);
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
+        this.height = PlotSettings.getGroundHeight(levelName);
+        this.roadBlock = PlotSettings.getPlotFloorBlock(levelName);
+        this.groundBlock = PlotSettings.getPlotFillBlock(levelName);
+        this.bottomBlock = PlotSettings.getBottomBlock(levelName);
 
         if((start.getZ() - end.getZ()) == 1) {
             this.plotBeginPos = this.plotBeginPos.subtract(0, 0, roadWidth);

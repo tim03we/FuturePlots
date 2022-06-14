@@ -18,8 +18,8 @@ auto-save:
   interval: 180
 
 # NOT COMPLETED!
-# Should the UUID be used to keep the plot when changing the player name
-uuid: false
+# Should the XUID be used to keep the plot when changing the player name
+xuid: false
 
 # MySQL connection data
 mysql:

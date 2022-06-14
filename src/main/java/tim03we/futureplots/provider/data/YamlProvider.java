@@ -16,6 +16,7 @@ package tim03we.futureplots.provider.data;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
@@ -62,6 +63,11 @@ public class YamlProvider implements DataProvider {
     @Override
     public void save() {
         yaml.save();
+    }
+
+    @Override
+    public void checkPlayer(Player player) {
+
     }
 
     @Override

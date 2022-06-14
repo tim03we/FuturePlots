@@ -37,22 +37,24 @@ public class ClaimCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            Player player = (Player) sender;
             PlotPlayer plotPlayer = new PlotPlayer((Player) sender);
             Plot plot = plotPlayer.getPlot();
             if(plot != null) {
                 if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getPlots(sender.getName(), null).size() <= Settings.max_plots) {
                     if (!FuturePlots.provider.hasOwner(plot)) {
+                        String levelName = player.getLevel().getName();
                         if(Settings.economy) {
                             if(!plotPlayer.bypassEco()) {
-                                if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
-                                    FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                                if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
+                                    FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));
                                 } else {
                                     sender.sendMessage(translate(true, "economy.no.money"));
                                     return;
                                 }
                             }
                         }
-                        plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockClaimed());
+                        plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
                         FuturePlots.provider.claimPlot(sender.getName(), plot);
                         if(Settings.claim_tp) {
                             ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));

@@ -37,10 +37,11 @@ public class ErodeCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
+                    String levelName = plot.getLevelName();
                     if(Settings.economy) {
                         if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getErodePrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getErodePrice());
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getErodePrice(levelName)) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getErodePrice(levelName));
                             } else {
                                 sender.sendMessage(translate(true, "economy.no.money"));
                                 return;

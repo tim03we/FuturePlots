@@ -37,6 +37,7 @@ public class SetOwnerCommand extends BaseCommand {
             Player player = (Player) sender;
             Plot plot = new PlotPlayer(player).getPlot();
             if (plot != null) {
+                String levelName = plot.getLevelName();
                 if(args.length > 1) {
                     if (plot.canByPass(player)) {
                         Player target = Server.getInstance().getPlayerExact(args[1]);
@@ -45,7 +46,7 @@ public class SetOwnerCommand extends BaseCommand {
                             if(target != null) target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
                             if(!FuturePlots.provider.hasOwner(plot)) {
                                 FuturePlots.provider.claimPlot(targetName, plot);
-                                plot.changeBorder(new PlotSettings(plot.getLevelName()).getWallBlockClaimed());
+                                plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
                             } else FuturePlots.provider.setOwner(targetName, plot);
                             sender.sendMessage(translate(true, "plot.setowner", targetName));
                         } else {
@@ -54,7 +55,7 @@ public class SetOwnerCommand extends BaseCommand {
                                     target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
                                     if(!FuturePlots.provider.hasOwner(plot)) {
                                         FuturePlots.provider.claimPlot(targetName, plot);
-                                        plot.changeBorder(new PlotSettings(plot.getLevelName()).getWallBlockClaimed());
+                                        plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
                                     } else FuturePlots.provider.setOwner(targetName, plot);
                                     sender.sendMessage(translate(true, "plot.setowner", target.getName()));
                                 } else {

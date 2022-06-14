@@ -200,14 +200,14 @@ public class FuturePlots extends PluginBase {
 
     private void loadWorlds() {
         for (String world : Settings.levels) {
-            new PlotSettings(world).initWorld();
+            new PlotSettings(world);
             getServer().loadLevel(world);
         }
     }
 
     public void generateLevel(String levelName) {
         Settings.levels.add(levelName);
-        new PlotSettings(levelName).initWorld();
+        new PlotSettings(levelName);
         Map<String, Object> options = new HashMap<>();
         options.put("preset", levelName);
         getServer().generateLevel(levelName, 0, Generator.getGenerator("futureplots"), options);
@@ -256,9 +256,10 @@ public class FuturePlots extends PluginBase {
     }
 
     public Position getPlotPosition(Plot plot) {
-        int plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
-        int roadWidth = new PlotSettings(plot.getLevelName()).getRoadWidth();
-        int groundHeight = new PlotSettings(plot.getLevelName()).getGroundHeight();
+        String levelName = plot.getLevelName();
+        int plotSize = PlotSettings.getPlotSize(levelName);
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
+        int groundHeight = PlotSettings.getGroundHeight(levelName);
         int totalSize = plotSize + roadWidth;
         int x = totalSize * plot.getX();
         int z = totalSize * plot.getZ();
@@ -267,9 +268,10 @@ public class FuturePlots extends PluginBase {
     }
 
     public Position getPlotBorderPosition(Plot plot) {
-        int plotSize = new PlotSettings(plot.getLevelName()).getPlotSize();
-        int roadWidth = new PlotSettings(plot.getLevelName()).getRoadWidth();
-        int groundHeight = new PlotSettings(plot.getLevelName()).getGroundHeight();
+        String levelName = plot.getLevelName();
+        int plotSize = PlotSettings.getPlotSize(levelName);
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
+        int groundHeight = PlotSettings.getGroundHeight(levelName);
         int totalSize = plotSize + roadWidth;
         int x = totalSize * plot.getX();
         int z = totalSize * plot.getZ();
@@ -284,8 +286,9 @@ public class FuturePlots extends PluginBase {
         int Z;
         double difX;
         double difZ;
-        int plotSize = new PlotSettings(position.getLevel().getName()).getPlotSize();
-        int roadWidth = new PlotSettings(position.getLevel().getName()).getRoadWidth();
+        String levelName = position.getLevel().getName();
+        int plotSize = PlotSettings.getPlotSize(levelName);
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
         int totalSize = plotSize + roadWidth;
         if(x >= 0) {
             X = (int) Math.floor(x / totalSize);
@@ -500,6 +503,7 @@ public class FuturePlots extends PluginBase {
     }
 
     public void resetMerges(Plot plot, boolean reset) {
+        String levelName = plot.getLevelName();
         List<Plot> merges = new ArrayList<>();
         if(provider.getOriginPlot(plot) == null && !provider.getMerges(plot).isEmpty()) {
             merges = provider.getMerges(plot);
@@ -520,8 +524,8 @@ public class FuturePlots extends PluginBase {
         getServer().getScheduler().scheduleDelayedTask(() -> {
             clearPlot(finalPlot);
             if(reset) {
-                finalPlot.changeBorder(new PlotSettings(finalPlot.getLevelName()).getWallBlockUnClaimed());
-            } else finalPlot.changeBorder(new PlotSettings(finalPlot.getLevelName()).getWallBlockClaimed());
+                finalPlot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
+            } else finalPlot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
         }, 5);
         merges.forEach((merge) -> provider.resetMerges(merge));
         provider.resetMerges(plot);
@@ -538,12 +542,13 @@ public class FuturePlots extends PluginBase {
     }
 
     public Plot isInMerge(Player player, Position position) {
+        String levelName = position.getLevel().getName();
         boolean checkNext = true;
         Plot inPlot = null;
         Position newPos = position;
-        PlotSettings plotSettings = new PlotSettings(position.getLevel().getName());
-        Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, 0));
-        Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, 0));
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
+        Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(roadWidth, 0, 0));
+        Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-roadWidth, 0, 0));
         if(plot1 != null && plot2 != null &&
                 FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
                 FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
@@ -553,8 +558,8 @@ public class FuturePlots extends PluginBase {
         }
         if(checkNext) {
             newPos = position;
-            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, plotSettings.getRoadWidth()));
-            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -plotSettings.getRoadWidth()));
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, roadWidth));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -roadWidth));
             if(plot1 != null && plot2 != null &&
                     FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
                     FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
@@ -565,8 +570,8 @@ public class FuturePlots extends PluginBase {
         }
         if(checkNext) { // SOUTH WEST to NORTH EAST
             newPos = position;
-            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, plotSettings.getRoadWidth()));
-            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, -plotSettings.getRoadWidth()));
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-roadWidth, 0, roadWidth));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(roadWidth, 0, -roadWidth));
             if(plot1 != null && plot2 != null &&
                     FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
                     FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
@@ -582,12 +587,13 @@ public class FuturePlots extends PluginBase {
     }
 
     public Plot isInMergeCheck(Position position) {
+        String levelName = position.getLevel().getName();
         boolean checkNext = true;
         Plot inPlot = null;
         Position newPos = position;
-        PlotSettings plotSettings = new PlotSettings(position.getLevel().getName());
-        Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, 0));
-        Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, 0));
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
+        Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(roadWidth, 0, 0));
+        Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-roadWidth, 0, 0));
         if(plot1 != null && plot2 != null &&
                 FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check X side
             checkNext = false;
@@ -595,8 +601,8 @@ public class FuturePlots extends PluginBase {
         }
         if(checkNext) {
             newPos = position;
-            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, plotSettings.getRoadWidth()));
-            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -plotSettings.getRoadWidth()));
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, roadWidth));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -roadWidth));
             if(plot1 != null && plot2 != null &&
                     FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check Z side
                 checkNext = false;
@@ -605,8 +611,8 @@ public class FuturePlots extends PluginBase {
         }
         if(checkNext) { // SOUTH WEST to NORTH EAST
             newPos = position;
-            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-plotSettings.getRoadWidth(), 0, plotSettings.getRoadWidth()));
-            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(plotSettings.getRoadWidth(), 0, -plotSettings.getRoadWidth()));
+            plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-roadWidth, 0, roadWidth));
+            plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(roadWidth, 0, -roadWidth));
             if(plot1 != null && plot2 != null &&
                     FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.NORTH)) &&
                     FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.SOUTH)) &&

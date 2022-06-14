@@ -16,6 +16,7 @@ package tim03we.futureplots.provider.data;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
@@ -86,6 +87,33 @@ public class SQLiteProvider implements DataProvider {
 
     @Override
     public void save() {
+    }
+
+    @Override
+    public void checkPlayer(Player player) {
+        CompletableFuture.runAsync(() -> {
+            String xuid = player.getLoginChainData().getXUID();
+            String playername = player.getName();
+
+            SQLTable table = database.getTable("player_data");
+            SQLEntity search = new SQLEntity("xuid", xuid);
+            SQLEntity find = table.find(search);
+            if(find == null) {
+                search.append("playername", playername);
+                table.insert(search);
+            } else {
+                if(!find.getString("playername").equalsIgnoreCase(playername)) {
+                    table.update(new SQLEntity("xuid", xuid), new SQLEntity("playername", playername));
+                }
+            }
+
+            SQLTable plotTable = database.getTable("plots");
+            for (SQLEntity entity : plotTable.find()) {
+                if(entity.getString("owner").equalsIgnoreCase(playername)) {
+                    plotTable.update(new SQLEntity("owner", playername), new SQLEntity("owner", xuid));
+                }
+            }
+        });
     }
 
     @Override

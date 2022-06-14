@@ -36,12 +36,14 @@ public class AutoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            Player player = (Player) sender;
             if(Settings.levels.size() == 0) {
                 sender.sendMessage(translate(true, "no.plotworld"));
                 return;
             }
+            String levelName = player.getLevel().getName();
             if(Settings.levels.size() > 1) {
-                if(!Settings.levels.contains(((Player) sender).getLevel().getName())) {
+                if(!Settings.levels.contains(levelName)) {
                     sender.sendMessage(translate(true, "not.in.world"));
                     return;
                 }
@@ -50,16 +52,16 @@ public class AutoCommand extends BaseCommand {
                 if(FuturePlots.provider.getPlots(sender.getName(), null).size() != Settings.max_plots) {
                     if(Settings.economy) {
                         if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClaimPrice());
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));
                             } else {
                                 sender.sendMessage(translate(true, "economy.no.money"));
                                 return;
                             }
                         }
                     }
-                    Plot plot = FuturePlots.provider.getNextFreePlot(Settings.levels.get(0));
-                    plot.changeBorder(new PlotSettings(plot.getLevelName()).getWallBlockClaimed());
+                    Plot plot = FuturePlots.provider.getNextFreePlot(levelName);
+                    plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
                     FuturePlots.provider.claimPlot(sender.getName(), plot);
                     ((Player) sender).teleport(plot.getBorderPosition());
                     sender.sendMessage(translate(true, "plot.claim"));

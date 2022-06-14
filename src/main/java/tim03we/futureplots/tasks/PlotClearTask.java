@@ -42,16 +42,16 @@ public class PlotClearTask extends Task {
     private Vector3 pos;
 
     public PlotClearTask(Plot plot) {
-        PlotSettings plotSettings = new PlotSettings(plot.getLevelName());
+        String levelName = plot.getLevelName();
         this.plotBeginPos = FuturePlots.getInstance().getPlotPosition(plot);
         this.level = plotBeginPos.getLevel();
-        this.plotSize = plotSettings.getPlotSize();
+        this.plotSize = PlotSettings.getPlotSize(levelName);
         this.xMax = (int) (plotBeginPos.x + plotSize);
         this.zMax = (int) (plotBeginPos.z + plotSize);
-        this.height = plotSettings.getGroundHeight();
-        this.bottomBlock = plotSettings.getBottomBlock();
-        this.plotFillBlock = plotSettings.getPlotFillBlock();
-        this.plotFloorBlock = plotSettings.getPlotFloorBlock();
+        this.height = PlotSettings.getGroundHeight(levelName);
+        this.bottomBlock = PlotSettings.getBottomBlock(levelName);
+        this.plotFillBlock = PlotSettings.getPlotFillBlock(levelName);
+        this.plotFloorBlock = PlotSettings.getPlotFloorBlock(levelName);
         this.pos = new Position(plotBeginPos.x, 0, plotBeginPos.z, Server.getInstance().getLevelByName(plot.getLevelName()));
     }
 

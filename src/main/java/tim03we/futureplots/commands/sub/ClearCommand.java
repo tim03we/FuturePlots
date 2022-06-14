@@ -34,13 +34,15 @@ public class ClearCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            Player player = (Player) sender;
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
+                    String levelName = player.getLevel().getName();
                     if(Settings.economy) {
                         if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getClearPrice());
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClearPrice(levelName)) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClearPrice(levelName));
                             } else {
                                 sender.sendMessage(translate(true, "economy.no.money"));
                                 return;

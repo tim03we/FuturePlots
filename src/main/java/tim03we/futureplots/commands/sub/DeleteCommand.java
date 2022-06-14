@@ -38,10 +38,11 @@ public class DeleteCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
+                    String levelName = plot.getLevelName();
                     if(Settings.economy) {
                         if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDeletePrice());
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getDeletePrice(levelName)) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getDeletePrice(levelName));
                             } else {
                                 sender.sendMessage(translate(true, "economy.no.money"));
                                 return;
@@ -52,7 +53,7 @@ public class DeleteCommand extends BaseCommand {
                         FuturePlots.getInstance().resetMerges(plot, true);
                     } else {
                         FuturePlots.provider.deletePlot(plot);
-                        plot.changeBorder(new PlotSettings(player.getLevel().getName()).getWallBlockUnClaimed());
+                        plot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
                     }
                     FuturePlots.getInstance().clearPlot(plot);
                     ((Player) sender).teleport(plot.getBorderPosition());

@@ -54,14 +54,14 @@ public class MergeBorderResetTask extends Task {
         this.plotBeginPos = plugin.getPlotPosition(start);
         this.level = plotBeginPos.getLevel();
 
-        PlotSettings plotSettings = new PlotSettings(start.getLevelName());
-        int plotSize = plotSettings.getPlotSize();
-        int roadWidth = plotSettings.getRoadWidth();
-        this.height = plotSettings.getGroundHeight();
-        this.plotWallBlock = plotSettings.getWallBlockClaimed();
-        this.roadBlock = plotSettings.getRoadBlock();
-        this.groundBlock = plotSettings.getPlotFillBlock();
-        this.bottomBlock = plotSettings.getBottomBlock();
+        String levelName = start.getLevelName();
+        int plotSize = PlotSettings.getPlotSize(levelName);
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
+        this.height = PlotSettings.getGroundHeight(levelName);
+        this.plotWallBlock = PlotSettings.getWallBlockClaimed(levelName);
+        this.roadBlock = PlotSettings.getRoadBlock(levelName);
+        this.groundBlock = PlotSettings.getPlotFillBlock(levelName);
+        this.bottomBlock = PlotSettings.getBottomBlock(levelName);
 
         if((start.getZ() - end.getZ()) == 1) {
             this.plotBeginPos = this.plotBeginPos.subtract(0, 0, roadWidth);
@@ -136,8 +136,8 @@ public class MergeBorderResetTask extends Task {
                 this.pos.x++;
             }
         }
-        PlotSettings plotSettings = new PlotSettings(this.start.getLevelName());
-        if(reset) this.start.changeBorder(plotSettings.getWallBlockUnClaimed());
-        else this.start.changeBorder(plotSettings.getWallBlockClaimed());
+        String levelName = this.start.getLevelName();
+        if(reset) this.start.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
+        else this.start.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
     }
 }

@@ -37,17 +37,18 @@ public class DisposeCommand extends BaseCommand {
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
+                    String levelName = plot.getLevelName();
                     if(Settings.economy) {
                         if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice()) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), new PlotSettings(((Player) sender).getLevel().getName()).getDisposePrice());
+                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getDisposePrice(levelName)) >= 0) {
+                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getDisposePrice(levelName));
                             } else {
                                 sender.sendMessage(translate(true, "economy.no.money"));
                                 return;
                             }
                         }
                     }
-                    plot.changeBorder(new PlotSettings(((Player) sender).getLevel().getName()).getWallBlockUnClaimed());
+                    plot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
                     FuturePlots.provider.deletePlot(plot);
                     sender.sendMessage(translate(true, "plot.dispose"));
                 } else {

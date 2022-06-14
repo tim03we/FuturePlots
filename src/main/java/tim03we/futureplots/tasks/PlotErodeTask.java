@@ -39,10 +39,10 @@ public class PlotErodeTask extends Task {
     private Vector3 pos;
 
     public PlotErodeTask(Plot plot) {
-        PlotSettings plotSettings = new PlotSettings(plot.getLevelName());
+        String levelName = plot.getLevelName();
         this.plotBeginPos = FuturePlots.getInstance().getPlotPosition(plot);
         this.level = plotBeginPos.getLevel();
-        this.plotSize = plotSettings.getPlotSize();
+        this.plotSize = PlotSettings.getPlotSize(levelName);
         this.xMax = (int) (plotBeginPos.x + plotSize);
         this.zMax = (int) (plotBeginPos.z + plotSize);
         this.pos = new Position(plotBeginPos.x, 0, plotBeginPos.z, Server.getInstance().getLevelByName(plot.getLevelName()));

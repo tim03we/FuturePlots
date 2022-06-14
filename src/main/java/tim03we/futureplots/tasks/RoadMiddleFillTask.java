@@ -52,9 +52,9 @@ public class RoadMiddleFillTask extends Task {
         this.fillCorner = fillCorner;
         this.cornerDirection = cornerDirection;
 
-        PlotSettings plotSettings = new PlotSettings(start.getLevelName());
-        int plotSize = plotSettings.getPlotSize();
-        int roadWidth = plotSettings.getRoadWidth();
+        String levelName = start.getLevelName();
+        int plotSize = PlotSettings.getPlotSize(levelName);
+        int roadWidth = PlotSettings.getRoadWidth(levelName);
 
         this.startPos = plugin.getPlotPosition(start);
         this.endPos = plugin.getPlotPosition(end).add(plotSize - 1, 0, plotSize - 1);
@@ -64,10 +64,10 @@ public class RoadMiddleFillTask extends Task {
         this.plotBeginPos = plugin.getPlotPosition(start);
         this.level = plotBeginPos.getLevel();
 
-        this.height = plotSettings.getGroundHeight();
-        this.roadBlock = plotSettings.getPlotFloorBlock();
-        this.groundBlock = plotSettings.getPlotFillBlock();
-        this.bottomBlock = plotSettings.getBottomBlock();
+        this.height = PlotSettings.getGroundHeight(levelName);
+        this.roadBlock = PlotSettings.getPlotFloorBlock(levelName);
+        this.groundBlock = PlotSettings.getPlotFillBlock(levelName);
+        this.bottomBlock = PlotSettings.getBottomBlock(levelName);
 
         this.maxBlocksPerTick = 256;
         this.pos = new Vector3(this.plotBeginPos.x, 0, this.plotBeginPos.z);
