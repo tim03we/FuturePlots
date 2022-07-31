@@ -47,7 +47,15 @@ public class SetOwnerCommand extends BaseCommand {
                             if(!FuturePlots.provider.hasOwner(plot)) {
                                 FuturePlots.provider.claimPlot(targetName, plot);
                                 plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
-                            } else FuturePlots.provider.setOwner(targetName, plot);
+                            } else {
+                                FuturePlots.provider.setOwner(targetName, plot);
+                            }
+                            if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).size() == 0) {
+                                plot = FuturePlots.provider.getOriginPlot(plot);
+                            }
+                            for (Plot mergePlot : FuturePlots.provider.getMerges(plot)) {
+                                FuturePlots.provider.setOwner(targetName, mergePlot);
+                            }
                             sender.sendMessage(translate(true, "plot.setowner", targetName));
                         } else {
                             if(target != null) {
@@ -57,6 +65,12 @@ public class SetOwnerCommand extends BaseCommand {
                                         FuturePlots.provider.claimPlot(targetName, plot);
                                         plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
                                     } else FuturePlots.provider.setOwner(targetName, plot);
+                                    if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).size() == 0) {
+                                        plot = FuturePlots.provider.getOriginPlot(plot);
+                                    }
+                                    for (Plot mergePlot : FuturePlots.provider.getMerges(plot)) {
+                                        FuturePlots.provider.setOwner(targetName, mergePlot);
+                                    }
                                     sender.sendMessage(translate(true, "plot.setowner", target.getName()));
                                 } else {
                                     sender.sendMessage(translate(true, "plot.setowner.target.max"));
