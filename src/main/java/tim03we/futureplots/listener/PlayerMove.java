@@ -42,7 +42,7 @@ public class PlayerMove extends Language implements Listener {
             Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getTo());
             Plot plotFrom = FuturePlots.getInstance().getPlotByPosition(event.getFrom());
             if(plot != null && plotFrom == null) {
-                if(FuturePlots.provider.isDenied(player.getName(), plot) && !FuturePlots.provider.getOwner(plot).equals(player.getName()) && !FuturePlots.provider.isHelper(player.getName(), plot)) {
+                if(!player.hasPermission("plot.deny.bypass") && FuturePlots.provider.isDenied(player.getName(), plot) && !FuturePlots.provider.getOwner(plot).equals(player.getName()) && !FuturePlots.provider.isHelper(player.getName(), plot)) {
                     event.setCancelled(true);
                 } else {
                     new PlotEvent(new PlotEnterEvent(FuturePlots.getInstance(), plot, player));

@@ -33,18 +33,14 @@ public class DenyCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
+            Player player = (Player) sender;
             Plot plot = new PlotPlayer((Player) sender).getPlot();
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     if (args.length > 1) {
                         if (!FuturePlots.provider.isDenied(args[1], plot)) {
-                            Player target = Server.getInstance().getPlayer(args[1]);
-                            if (target.hasPermission("plot.deny.bypass")) {
-                                sender.sendMessage(translate(true, "deny.bypass.notallowed"));
-                            } else {
-                                FuturePlots.provider.addDenied(args[1], plot);
-                                sender.sendMessage(translate(true, "deny.added", args[1].toLowerCase()));
-                            }
+                            FuturePlots.provider.addDenied(args[1], plot);
+                            sender.sendMessage(translate(true, "deny.added", args[1].toLowerCase()));
                         } else {
                             sender.sendMessage(translate(true, "deny.exists"));
                         }
