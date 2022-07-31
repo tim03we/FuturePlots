@@ -1,5 +1,5 @@
 ---
-version: "1.0.4"
+version: "1.1.0"
 
 plot:
   parameters:
@@ -14,109 +14,131 @@ plot:
     usage: "/plot addhelper <player>"
     description: "Add a helper of the plot"
     alias: ["trust"]
+    enable: true
   addmember:
     name: "addmember"
     usage: "/plot addmember <player>"
     description: "Add a member of the plot"
     alias: []
+    enable: true
   auto:
     name: "auto"
     usage: "/plot auto"
     description: "Find a free plot"
     alias: ["a"]
+    enable: true
   claim:
     name: "claim"
     usage: "/plot claim"
     description: "Claim a plot"
     alias: ["c"]
+    enable: true
   clear:
     name: "clear"
     usage: "/plot clear"
     description: "Empty the desired plot"
     alias: ["reset"]
+    enable: true
   delete:
     name: "delete"
     usage: "/plot delete"
     description: "Delete the desired plot"
     alias: ["del"]
+    enable: true
   deny:
     name: "deny"
     usage: "/plot deny <player>"
     description: "Ban a player from the plot"
     alias: []
+    enable: true
   dispose:
     name: "dispose"
     usage: "/plot dispose"
     description: "Unlock the desired plot to claim"
     alias: []
+    enable: true
   generate:
     name: "generate"
     usage: "/plot generate <name>"
     description: "Generate a plot world"
     alias: ["gen"]
+    enable: true
   help:
     name: "help"
     usage: "/plot help [page]"
     description: "List all commands on"
     alias: []
+    enable: true
   home:
     name: "home"
     usage: "/plot home [number] [world]"
     description: "Go to your plots"
     alias: ["h", "visit"]
+    enable: true
   homes:
     name: "homes"
     usage: "/plot homes"
     description: "List your plots on"
     alias: ["list"]
+    enable: true
   info:
     name: "info"
     usage: "/plot info"
     description: "Display plot information"
     alias: ["i"]
+    enable: true
   kick:
     name: "kick"
     usage: "/plot kick <player>"
     description: "Throw a player off the plot"
     alias: []
+    enable: true
   removehelper:
     name: "removehelper"
     usage: "/plot removehelper <player>"
     description: "Remove a helper"
     alias: ["rmhelper"]
+    enable: true
   removemember:
     name: "removemember"
     usage: "/plot removemember <player>"
     description: "Remove a member"
     alias: ["rmmember"]
+    enable: true
   undeny:
     name: "undeny"
     usage: "/plot undeny <player>"
     description: "Pardon a player from the plot"
     alias: []
+    enable: true
   setowner:
     name: "setowner"
     usage: "/plot setowner <player>"
     description: "Give the plot to someone else"
     alias: ["give"]
+    enable: true
   sethome:
     name: "sethome"
     usage: "/plot sethome"
     description: "Set the home of the plot"
     alias: []
+    enable: true
   deletehome:
     name: "deletehome"
     usage: "/plot deletehome"
     description: "Delete the home of the plot"
     alias: ["delhome"]
+    enable: true
   erode:
     name: "erode"
     usage: "/plot erode"
     description: "Fill out your plot"
     alias: []
+    enable: true
   merge:
     name: "merge"
     usage: "/plot merge"
     description: "Merge your plot"
     alias: []
+    enable: true
 ...
