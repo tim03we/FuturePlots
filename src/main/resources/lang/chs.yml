@@ -1,5 +1,5 @@
 ---
-version: "1.2.8"
+version: "1.2.9"
 
 prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
 
@@ -49,7 +49,6 @@ deny.added: "玩家 %1 被禁止进入这个地皮了."
 deny.removed: "玩家 %1 现在可以进入你的地皮了."
 deny.exists: "这个玩家已经禁止进入这个地皮了."
 deny.not.exists: "这个玩家可以进入这个地皮了."
-deny.bypass.notallowed: "这名球员不能被禁止入内。."
 
 member.added: "成员 %1 被添加到了该地皮."
 member.removed: "成员 %1 从该地皮中被移除了."

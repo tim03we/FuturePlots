@@ -1,5 +1,5 @@
 ---
-version: "1.2.8"
+version: "1.2.9"
 
 prefix: "FuturePlots > "
 
@@ -49,7 +49,6 @@ deny.added: "The player %1 was banned from the plot."
 deny.removed: "The player %1 can now enter the plot again."
 deny.exists: "The player is already banned from the plot."
 deny.not.exists: "This player was not banned from the plot."
-deny.bypass.notallowed: "This player cannot be banned from this plot."
 
 member.added: "The member %1 was added to the plot."
 member.removed: "The member %1 was removed to the plot."
