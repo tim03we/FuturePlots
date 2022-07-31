@@ -87,7 +87,7 @@ public class MySQLProvider implements DataProvider {
                     if(Settings.debug) e.printStackTrace();
                 }
                 try {
-                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE player_data ( `id` INT NOT NULL AUTO_INCREMENT , `xuid` VARCHAR NOT NULL , `playername` VARCHAR NOT NULL , PRIMARY KEY (`id`), UNIQUE (`xuid`)) ENGINE = InnoDB;");
+                    PreparedStatement statement = database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS player_data(id INT(255) NOT NULL AUTO_INCREMENT , xuid VARCHAR(255) NOT NULL , playername VARCHAR(255) NOT NULL , UNIQUE (id));");
                     statement.executeUpdate();
                     statement.close();
                 } catch (Exception e) {
@@ -95,6 +95,14 @@ public class MySQLProvider implements DataProvider {
                 }
             }
         });
+    }
+
+    private String getXuid(String name) {
+        SQLTable table = database.getTable("player_data");
+        SQLEntity search = new SQLEntity("playername", name);
+        SQLEntity find = table.find(search, true, "playername");
+        if(find == null) return null;
+        return find.getString("xuid");
     }
 
     @Override
@@ -109,7 +117,7 @@ public class MySQLProvider implements DataProvider {
 
             SQLTable table = database.getTable("player_data");
             SQLEntity search = new SQLEntity("xuid", xuid);
-            SQLEntity find = table.find(search);
+            SQLEntity find = table.find(search, false, null);
             if(find == null) {
                 search.append("playername", playername);
                 table.insert(search);
@@ -129,14 +137,18 @@ public class MySQLProvider implements DataProvider {
     }
 
     @Override
-    public void claimPlot(String name, Plot plot) {
+    public boolean claimPlot(String name, Plot plot) {
+        // TODO: String xuid = getXuid(name);
+        // TODO: if(xuid == null) return false;
         CompletableFuture.runAsync(() -> {
             SQLTable table = database.getTable("plots");
             SQLEntity insertEntity = new SQLEntity("level", plot.getLevelName());
             insertEntity.append("plotid", plot.getFullID());
+            // TODO: insertEntity.append("owner", getXuid(name));
             insertEntity.append("owner", name);
             table.insert(insertEntity);
         });
+        return true;
     }
 
     @Override
@@ -182,7 +194,7 @@ public class MySQLProvider implements DataProvider {
     public String getOwner(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         if(find != null) {
             return find.getString("owner");
         }
@@ -193,7 +205,7 @@ public class MySQLProvider implements DataProvider {
     public List<String> getHelpers(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         if(find != null) {
             if(find.getString("helpers") == null) return new ArrayList<>();
             return new Gson().fromJson(find.getString("helpers"), List.class);
@@ -205,7 +217,7 @@ public class MySQLProvider implements DataProvider {
     public List<String> getMembers(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         if(find != null) {
             if(find.getString("members") == null) return new ArrayList<>();
             return new Gson().fromJson(find.getString("members"), List.class);
@@ -217,7 +229,7 @@ public class MySQLProvider implements DataProvider {
     public List<String> getDenied(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         if(find != null) {
             if(find.getString("denied") == null) return new ArrayList<>();
             return new Gson().fromJson(find.getString("denied"), List.class);
@@ -306,7 +318,7 @@ public class MySQLProvider implements DataProvider {
     public Location getHome(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         if(find != null) {
             String locationString = find.getString("home");
             if(locationString != null) {
@@ -417,7 +429,7 @@ public class MySQLProvider implements DataProvider {
     public List<Plot> getMergeCheck(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         List<Plot> list = new ArrayList<>();
         if(find != null) {
             if(find.getString("merge_check") == null) return new ArrayList<>();
@@ -434,7 +446,7 @@ public class MySQLProvider implements DataProvider {
     public Plot getOriginPlot(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         if(find != null) {
             if(find.getString("merge") == null) return null;
             String[] ex = find.getString("merge").split(";");
@@ -469,7 +481,7 @@ public class MySQLProvider implements DataProvider {
     public List<Plot> getMerges(Plot plot) {
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
-        SQLEntity find = table.find(searchEntity);
+        SQLEntity find = table.find(searchEntity, false, null);
         List<Plot> list = new ArrayList<>();
         if(find != null) {
             if(find.getString("merges") == null) return new ArrayList<>();

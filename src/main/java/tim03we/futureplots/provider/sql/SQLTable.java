@@ -89,14 +89,18 @@ public class SQLTable {
         return null;
     }
 
-    public SQLEntity find(SQLEntity sqlDocument) {
+    public SQLEntity find(SQLEntity sqlDocument, boolean uppercase, String upperColum) {
+        String uppercaseString = "";
+        if(uppercase) {
+            uppercaseString = "UPPER(" + upperColum + ")";
+        }
         try {
             StringBuilder whereBuilder = new StringBuilder();
             for (String where : sqlDocument.getDataMap().keySet()) {
                 whereBuilder.append(where).append(" = ? AND ");
             }
             String whereString = whereBuilder.toString().substring(0, (whereBuilder.toString().length() - 5));
-            PreparedStatement statement = instance.connection.prepareStatement("SELECT * FROM " + this.table + " WHERE " + whereString + ";");
+            PreparedStatement statement = instance.connection.prepareStatement("SELECT * FROM " + this.table + " WHERE " + whereString + " " + uppercaseString + ";");
             int whereInt = 1;
             for (Object value : sqlDocument.getDataMap().values()) {
                 statement.setObject(whereInt, value);

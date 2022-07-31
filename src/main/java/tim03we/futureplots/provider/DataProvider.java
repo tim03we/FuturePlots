@@ -30,7 +30,7 @@ public interface DataProvider {
 
     void checkPlayer(Player player);
 
-    void claimPlot(String name, Plot plot);
+    boolean claimPlot(String name, Plot plot);
 
     void deletePlot(Plot plot);
 

@@ -71,7 +71,7 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public void claimPlot(String username, Plot plot) {
+    public boolean claimPlot(String username, Plot plot) {
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
@@ -81,6 +81,7 @@ public class YamlProvider implements DataProvider {
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", "");
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<String>());
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", new ArrayList<String>());
+        return true;
     }
 
     @Override
