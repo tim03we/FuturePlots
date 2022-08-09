@@ -2,7 +2,7 @@ name: FuturePlots
 main: tim03we.futureplots.FuturePlots
 api: 1.0.9
 author: tim03we
-version: 2.0.2-SNAPSHOT
+version: 2.0.3-SNAPSHOT
 description: A NukkitX based plot plugin
 softdepend:
   - EconomyAPI

@@ -36,6 +36,22 @@ public class PlotSettings {
 
         HashMap<String, Object> levelSettings = new HashMap<>();
 
+        if(!config.exists("settings.wall.unclaimed")) config.set("settings.wall.unclaimed", Settings.wallBlockUnClaimed);
+        if(!config.exists("settings.wall.claimed")) config.set("settings.wall.claimed", Settings.wallBlockClaimed);
+        if(!config.exists("settings.roadBlock")) config.set("settings.roadBlock", Settings.roadBlock);
+        if(!config.exists("settings.roadWidth")) config.set("settings.roadWidth", Settings.roadWidth);
+        if(!config.exists("settings.groundHeight")) config.set("settings.groundHeight", Settings.groundHeight);
+        if(!config.exists("settings.plotSize")) config.set("settings.plotSize", Settings.plotSize);
+        if(!config.exists("settings.bottomBlock")) config.set("settings.bottomBlock", Settings.bottomBlock);
+        if(!config.exists("settings.plotFloorBlock")) config.set("settings.plotFloorBlock", Settings.plotFloorBlock);
+        if(!config.exists("settings.plotFillBlock")) config.set("settings.plotFillBlock", Settings.plotFillBlock);
+        if(!config.exists("settings.price.claim")) config.set("settings.price.claim", Settings.claim_price);
+        if(!config.exists("settings.price.clear")) config.set("settings.price.clear", Settings.clear_price);
+        if(!config.exists("settings.price.delete")) config.set("settings.price.delete", Settings.delete_price);
+        if(!config.exists("settings.price.dispose")) config.set("settings.price.dispose", Settings.dispose_price);
+        if(!config.exists("settings.price.erode")) config.set("settings.price.erode", Settings.erode_price);
+        if(!config.exists("settings.price.merge")) config.set("settings.price.merge", Settings.merge_price);
+
         // WallBlockClaimed
         String[] ex1 = config.getString("settings.wall.claimed").split(":");
         levelSettings.put("wall.claimed", Block.get(Integer.parseInt(ex1[0]), Integer.parseInt(ex1[1])));
@@ -89,22 +105,6 @@ public class PlotSettings {
 
         PlotSettings.settings.put(levelName, levelSettings);
 
-
-        if(!config.exists("settings.wall.unclaimed")) config.set("settings.wall.unclaimed", Settings.wallBlockUnClaimed);
-        if(!config.exists("settings.wall.claimed")) config.set("settings.wall.claimed", Settings.wallBlockClaimed);
-        if(!config.exists("settings.roadBlock")) config.set("settings.roadBlock", Settings.roadBlock);
-        if(!config.exists("settings.roadWidth")) config.set("settings.roadWidth", Settings.roadWidth);
-        if(!config.exists("settings.groundHeight")) config.set("settings.groundHeight", Settings.groundHeight);
-        if(!config.exists("settings.plotSize")) config.set("settings.plotSize", Settings.plotSize);
-        if(!config.exists("settings.bottomBlock")) config.set("settings.bottomBlock", Settings.bottomBlock);
-        if(!config.exists("settings.plotFloorBlock")) config.set("settings.plotFloorBlock", Settings.plotFloorBlock);
-        if(!config.exists("settings.plotFillBlock")) config.set("settings.plotFillBlock", Settings.plotFillBlock);
-        if(!config.exists("settings.price.claim")) config.set("settings.price.claim", Settings.claim_price);
-        if(!config.exists("settings.price.clear")) config.set("settings.price.clear", Settings.clear_price);
-        if(!config.exists("settings.price.delete")) config.set("settings.price.delete", Settings.delete_price);
-        if(!config.exists("settings.price.dispose")) config.set("settings.price.dispose", Settings.dispose_price);
-        if(!config.exists("settings.price.erode")) config.set("settings.price.erode", Settings.erode_price);
-        if(!config.exists("settings.price.merge")) config.set("settings.price.merge", Settings.merge_price);
         config.save();
     }
 
