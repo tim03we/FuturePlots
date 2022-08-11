@@ -67,6 +67,12 @@ public class FuturePlots extends PluginBase {
         providerClass.put("mysql", MySQLProvider.class);
         providerClass.put("sqlite", SQLiteProvider.class);
         registerGenerator();
+
+        File folder = new File(FuturePlots.getInstance().getDataFolder() + "/worlds/");
+        for(File file : folder.listFiles()) {
+            Settings.levels.add(file.getName().replace(".yml", ""));
+        }
+        loadWorldsSettings();
     }
 
     @Override
@@ -200,8 +206,13 @@ public class FuturePlots extends PluginBase {
 
     private void loadWorlds() {
         for (String world : Settings.levels) {
-            new PlotSettings(world);
             getServer().loadLevel(world);
+        }
+    }
+
+    private void loadWorldsSettings() {
+        for (String world : Settings.levels) {
+            new PlotSettings(world);
         }
     }
 

@@ -25,7 +25,9 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.utils.Config;
 import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.Settings;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +67,9 @@ public class PlotGenerator extends Generator {
             groundHeight = PlotSettings.getGroundHeight(levelName);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
             Server.getInstance().getLogger().critical("Your world configuration " + options.get("preset") + ".yml is incorrect, check it or the server will not start properly. An example of the config, if it does not match your previous one, can be found at \"https://github.com/tim03we/FuturePlots/wiki/World-Config-Example\".");
+            if(Settings.debug) {
+                e.printStackTrace();
+            }
             Server.getInstance().shutdown();
         }
     }

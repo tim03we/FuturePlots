@@ -56,9 +56,10 @@ public class Settings {
     public static void init() {
         Config config = FuturePlots.getInstance().getConfig();
         File folder = new File(FuturePlots.getInstance().getDataFolder() + "/worlds/");
-        for(File file : folder.listFiles()) {
+
+        /*for(File file : folder.listFiles()) { // See onLoad()
             levels.add(file.getName().replace(".yml", ""));
-        }
+        }*/
         wallBlockClaimed = config.getString("default-settings.wall.claimed");
         wallBlockUnClaimed = config.getString("default-settings.wall.unclaimed");
         roadBlock = config.getString("default-settings.roadBlock");

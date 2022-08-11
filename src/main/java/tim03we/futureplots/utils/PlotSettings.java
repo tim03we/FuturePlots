@@ -31,6 +31,7 @@ public class PlotSettings {
     private String levelName;
 
     public PlotSettings(String levelName) {
+        Server.getInstance().getLogger().info("Setting up " + levelName + "..");
         this.levelName = levelName;
         Config config = new Config(FuturePlots.getInstance().getDataFolder() + "/worlds/" + levelName + ".yml", Config.YAML);
 
@@ -108,7 +109,7 @@ public class PlotSettings {
         config.save();
     }
 
-    private Config getConfig() {
+    public Config getConfig() {
         return new Config(FuturePlots.getInstance().getDataFolder() + "/worlds/" + levelName + ".yml", Config.YAML);
     }
 
