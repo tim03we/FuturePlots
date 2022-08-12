@@ -391,7 +391,7 @@ public class FuturePlots extends PluginBase {
                 }
                 provider.setOriginPlot(currentPlot, mergePlot);
                 provider.addMerge(mergePlot, currentPlot);
-                provider.deleteMergeList(currentPlot);
+                // ?? provider.deleteMergeList(currentPlot);
             }
         }
         provider.setMergeCheck(plot, nextPlot);
