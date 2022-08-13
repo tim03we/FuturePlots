@@ -68,9 +68,12 @@ public class FuturePlots extends PluginBase {
         providerClass.put("sqlite", SQLiteProvider.class);
         registerGenerator();
 
-        File folder = new File(FuturePlots.getInstance().getDataFolder() + "/worlds/");
-        for(File file : folder.listFiles()) {
-            Settings.levels.add(file.getName().replace(".yml", ""));
+        File folder = new File(getDataFolder() + "/worlds/");
+        File[] files = folder.listFiles();
+        if(files != null) {
+            for(File file : files) {
+                Settings.levels.add(file.getName().replace(".yml", ""));
+            }
         }
         loadWorldsSettings();
     }
