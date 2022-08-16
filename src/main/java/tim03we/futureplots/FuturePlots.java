@@ -249,14 +249,14 @@ public class FuturePlots extends PluginBase {
         getServer().getScheduler().scheduleDelayedTask(this, new PlotErodeTask(plot), 1, true);
     }
 
-    public int claimAvailable(Player player) {
-        if (player.isOp()) return -1;
+    public boolean canClaim(Player player) {
+        if (player.isOp()) return true;
         int max_plots = Settings.max_plots;
         for (String perm : player.getEffectivePermissions().keySet()) {
             if (perm.contains("futureplots.plot.")) {
                 String max = perm.replace("futureplots.plot.", "");
                 if (max.equalsIgnoreCase("unlimited")) {
-                    return -1;
+                    return true;
                 } else {
                     try {
                         int num = Integer.parseInt(max);
@@ -266,7 +266,16 @@ public class FuturePlots extends PluginBase {
                 }
             }
         }
-        return max_plots;
+        String levelName = Settings.levels.get(0);
+        if(Settings.levels.size() > 0) {
+            levelName = player.getLevel().getName();
+            if(!Settings.levels.contains(levelName)) {
+                getLogger().error("Error when claiming the plot. An error occurred while retrieving the world. Contact the owner of the plugin about this error.");
+                return false;
+            }
+        }
+        int plotCount = provider.getPlots(player.getName(), levelName).size();
+        return plotCount < max_plots;
     }
 
     public Position getPlotPosition(Plot plot) {

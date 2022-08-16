@@ -41,7 +41,7 @@ public class ClaimCommand extends BaseCommand {
             PlotPlayer plotPlayer = new PlotPlayer((Player) sender);
             Plot plot = plotPlayer.getPlot();
             if(plot != null) {
-                if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getPlots(sender.getName(), null).size() <= Settings.max_plots) {
+                if(FuturePlots.getInstance().canClaim(player)) {
                     if (!FuturePlots.provider.hasOwner(plot)) {
                         String levelName = player.getLevel().getName();
                         if(Settings.economy) {

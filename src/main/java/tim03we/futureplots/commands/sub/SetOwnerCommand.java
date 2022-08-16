@@ -59,7 +59,7 @@ public class SetOwnerCommand extends BaseCommand {
                             sender.sendMessage(translate(true, "plot.setowner", targetName));
                         } else {
                             if(target != null) {
-                                if(FuturePlots.provider.getPlots(targetName, null).size() < FuturePlots.getInstance().claimAvailable(target) || FuturePlots.getInstance().claimAvailable(target) == -1) {
+                                if(FuturePlots.getInstance().canClaim(target)) {
                                     target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
                                     if(!FuturePlots.provider.hasOwner(plot)) {
                                         FuturePlots.provider.claimPlot(targetName, plot);

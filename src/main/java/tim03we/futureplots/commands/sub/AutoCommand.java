@@ -48,26 +48,22 @@ public class AutoCommand extends BaseCommand {
                     return;
                 }
             }
-            if(FuturePlots.getInstance().claimAvailable((Player) sender) == -1 || FuturePlots.provider.getPlots(sender.getName(), null).size() <= Settings.max_plots) {
-                if(FuturePlots.provider.getPlots(sender.getName(), null).size() != Settings.max_plots) {
-                    if(Settings.economy) {
-                        if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));
-                            } else {
-                                sender.sendMessage(translate(true, "economy.no.money"));
-                                return;
-                            }
+            if(FuturePlots.getInstance().canClaim(player)) {
+                if(Settings.economy) {
+                    if(!new PlotPlayer((Player) sender).bypassEco()) {
+                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
+                            FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));
+                        } else {
+                            sender.sendMessage(translate(true, "economy.no.money"));
+                            return;
                         }
                     }
-                    Plot plot = FuturePlots.provider.getNextFreePlot(levelName);
-                    plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
-                    FuturePlots.provider.claimPlot(sender.getName(), plot);
-                    ((Player) sender).teleport(plot.getBorderPosition());
-                    sender.sendMessage(translate(true, "plot.claim"));
-                } else {
-                    sender.sendMessage(translate(true, "plot.max"));
                 }
+                Plot plot = FuturePlots.provider.getNextFreePlot(levelName);
+                plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
+                FuturePlots.provider.claimPlot(sender.getName(), plot);
+                ((Player) sender).teleport(plot.getBorderPosition());
+                sender.sendMessage(translate(true, "plot.claim"));
             } else {
                 sender.sendMessage(translate(true, "plot.max"));
             }
