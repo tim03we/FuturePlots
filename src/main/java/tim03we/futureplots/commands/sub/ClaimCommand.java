@@ -44,7 +44,7 @@ public class ClaimCommand extends BaseCommand {
                 if(FuturePlots.getInstance().canClaim(player)) {
                     if (!FuturePlots.provider.hasOwner(plot)) {
                         String levelName = player.getLevel().getName();
-                        if(Settings.economy) {
+                        if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
                             if(!plotPlayer.bypassEco()) {
                                 if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
                                     FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));

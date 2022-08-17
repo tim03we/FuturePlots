@@ -49,7 +49,7 @@ public class AutoCommand extends BaseCommand {
                 }
             }
             if(FuturePlots.getInstance().canClaim(player)) {
-                if(Settings.economy) {
+                if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
                     if(!new PlotPlayer((Player) sender).bypassEco()) {
                         if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
                             FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));

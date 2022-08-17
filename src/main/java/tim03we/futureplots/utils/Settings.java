@@ -21,6 +21,7 @@ import tim03we.futureplots.FuturePlots;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Settings {
 
@@ -47,7 +48,8 @@ public class Settings {
     public static boolean xuid;
     public static boolean popup;
     public static boolean debug;
-    public static boolean economy;
+    public static boolean economyUse;
+    public static List<String> economyWorlds;
     public static boolean claim_tp;
 
     public static boolean use_auto_save;
@@ -76,7 +78,8 @@ public class Settings {
         popup = config.getBoolean("show-popup");
         debug = config.getBoolean("debug");
         claim_tp = config.getBoolean("teleport-on-claim");
-        economy = config.getBoolean("economy");
+        economyUse = config.getBoolean("economy.enable");
+        economyWorlds = config.getStringList("economy.worlds");
         claim_price = config.getInt("default-settings.price.claim");
         clear_price = config.getInt("default-settings.price.clear");
         delete_price = config.getInt("default-settings.price.delete");

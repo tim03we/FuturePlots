@@ -39,7 +39,7 @@ public class ClearCommand extends BaseCommand {
             if(plot != null) {
                 if(plot.canByPass((Player) sender)) {
                     String levelName = player.getLevel().getName();
-                    if(Settings.economy) {
+                    if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
                         if(!new PlotPlayer((Player) sender).bypassEco()) {
                             if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClearPrice(levelName)) >= 0) {
                                 FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClearPrice(levelName));

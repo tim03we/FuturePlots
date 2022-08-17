@@ -68,6 +68,7 @@ public class FuturePlots extends PluginBase {
         providerClass.put("sqlite", SQLiteProvider.class);
         registerGenerator();
 
+
         File folder = new File(getDataFolder() + "/worlds/");
         File[] files = folder.listFiles();
         if(files != null) {
@@ -116,7 +117,7 @@ public class FuturePlots extends PluginBase {
                 Language.init();
             }
         }
-        if(!getConfig().getString("version").equals("1.2.3")) {
+        if(!getConfig().getString("version").equals("1.3.0")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
@@ -150,7 +151,7 @@ public class FuturePlots extends PluginBase {
             return;
         }
         provider.connect();
-        if(Settings.economy) {
+        if(Settings.economyUse) {
             try {
                 if(getServer().getPluginManager().getPlugin("EconomyAPI") != null) {
                     economyProvider = EconomyAPIProvider.class.newInstance();
@@ -159,12 +160,12 @@ public class FuturePlots extends PluginBase {
                     economyProvider = LlamaEconomyProvider.class.newInstance();
                     getLogger().warning("Economy provider was set to LlamaEconomy.");
                 } else {
-                    Settings.economy = false;
+                    Settings.economyUse = false;
                     getLogger().critical("A Economy provider could not be found.");
                     getLogger().critical("The Economy function has been deactivated.");
                 }
             } catch (InstantiationException | IllegalAccessException e) {
-                Settings.economy = false;
+                Settings.economyUse = false;
                 getLogger().critical("A Economy provider could not be found.");
                 getLogger().critical("The Economy function has been deactivated.");
             }
