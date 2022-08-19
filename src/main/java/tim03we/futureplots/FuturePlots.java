@@ -44,6 +44,7 @@ import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotSettings;
 import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.bstats.Metrics;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,6 +94,11 @@ public class FuturePlots extends PluginBase {
         registerEvents();
         loadWorlds();
         initProvider();
+
+        if(Settings.metrics) {
+            int pluginId = 16194;
+            Metrics metrics = new Metrics(this, pluginId);
+        }
     }
 
     private void registerEvents() {
@@ -117,7 +123,7 @@ public class FuturePlots extends PluginBase {
                 Language.init();
             }
         }
-        if(!getConfig().getString("version").equals("1.3.0")) {
+        if(!getConfig().getString("version").equals("1.3.1")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");
