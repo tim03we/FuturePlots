@@ -51,6 +51,9 @@ public class Settings {
     public static boolean economyUse;
     public static List<String> economyWorlds;
     public static boolean claim_tp;
+    public static boolean interaction_confirmation;
+    public static boolean formsUse;
+    public static boolean metrics;
 
     public static boolean use_auto_save;
     public static int auto_save_interval;
@@ -74,10 +77,13 @@ public class Settings {
         provider = config.getString("provider").toLowerCase();
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");
+        metrics = config.getBoolean("metrics");
         xuid = config.getBoolean("xuid");
         popup = config.getBoolean("show-popup");
         debug = config.getBoolean("debug");
         claim_tp = config.getBoolean("teleport-on-claim");
+        formsUse = config.getBoolean("forms");
+        interaction_confirmation = config.getBoolean("confirmations");
         economyUse = config.getBoolean("economy.enable");
         economyWorlds = config.getStringList("economy.worlds");
         claim_price = config.getInt("default-settings.price.claim");

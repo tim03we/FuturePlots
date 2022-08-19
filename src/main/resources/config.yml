@@ -1,10 +1,13 @@
 ---
 # Do not change the version, this can lead to deletion of the file
-version: "1.3.0"
+version: "1.3.1"
 
 # Available languages:
 # eng (English), deu (German), kor (Korean), chs (Chinese)
 lang: "eng"
+
+# Allow tracking statistics on how the plugin is used
+metrics: true
 
 # Available providers: yaml, mysql, sqlite
 # Default: yaml
@@ -53,9 +56,11 @@ economy:
   #  - "citybuild"
   worlds: []
 
-# NOT COMPLETED!
+# Before an interaction can be executed, it must be confirmed again.
+confirmations: true
+
 # Decide if you want to use UIs for plot interactions.
-# forms: false
+forms: false
 
 # Here you find the plot configurations,
 # how the plot world should look like later, when the world is generated for the first time
