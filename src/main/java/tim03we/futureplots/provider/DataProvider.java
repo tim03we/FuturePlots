@@ -34,6 +34,8 @@ public interface DataProvider {
 
     void deletePlot(Plot plot);
 
+    void disposePlot(Plot plot);
+
     boolean isHelper(String name, Plot plot);
 
     boolean isMember(String name, Plot plot);

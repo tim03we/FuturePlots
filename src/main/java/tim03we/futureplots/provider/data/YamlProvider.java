@@ -72,21 +72,35 @@ public class YamlProvider implements DataProvider {
 
     @Override
     public boolean claimPlot(String username, Plot plot) {
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", "");
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", "");
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<String>());
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", new ArrayList<String>());
+        if(getMerges(plot).size() > 0) {
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
+        } else {
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", "");
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge", "");
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merges", new ArrayList<String>());
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".merge_check", new ArrayList<String>());
+        }
         return true;
     }
 
     @Override
     public void deletePlot(Plot plot) {
         yaml.remove(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ());
+    }
+
+    @Override
+    public void disposePlot(Plot plot) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", "none");
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".flags", new ArrayList<String>());
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".home", "");
     }
 
     @Override

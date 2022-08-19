@@ -138,15 +138,16 @@ public class MySQLProvider implements DataProvider {
 
     @Override
     public boolean claimPlot(String name, Plot plot) {
-        // TODO: String xuid = getXuid(name);
-        // TODO: if(xuid == null) return false;
         CompletableFuture.runAsync(() -> {
             SQLTable table = database.getTable("plots");
             SQLEntity insertEntity = new SQLEntity("level", plot.getLevelName());
             insertEntity.append("plotid", plot.getFullID());
-            // TODO: insertEntity.append("owner", getXuid(name));
-            insertEntity.append("owner", name);
-            table.insert(insertEntity);
+            if(getMerges(plot).size() > 0) {
+                table.update(insertEntity, new SQLEntity("owner", name));
+            } else {
+                insertEntity.append("owner", name);
+                table.insert(insertEntity);
+            }
         });
         return true;
     }
@@ -159,6 +160,18 @@ public class MySQLProvider implements DataProvider {
             deleteEntity.append("plotid", plot.getFullID());
             table.delete(deleteEntity);
         });
+    }
+
+    @Override
+    public void disposePlot(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity disposeEntity = new SQLEntity("level", plot.getLevelName());
+        table.update(disposeEntity, new SQLEntity("owner", "none")
+                .append("helpers", "")
+                .append("members", "")
+                .append("denied", "")
+                .append("flags", "")
+                .append("home", ""));
     }
 
     @Override

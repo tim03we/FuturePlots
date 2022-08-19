@@ -122,8 +122,12 @@ public class SQLiteProvider implements DataProvider {
             SQLTable table = database.getTable("plots");
             SQLEntity insertEntity = new SQLEntity("level", plot.getLevelName());
             insertEntity.append("plotid", plot.getFullID());
-            insertEntity.append("owner", name);
-            table.insert(insertEntity);
+            if(getMerges(plot).size() > 0) {
+                table.update(insertEntity, new SQLEntity("owner", name));
+            } else {
+                insertEntity.append("owner", name);
+                table.insert(insertEntity);
+            }
         });
         return true;
     }
@@ -136,6 +140,18 @@ public class SQLiteProvider implements DataProvider {
             deleteEntity.append("plotid", plot.getFullID());
             table.delete(deleteEntity);
         });
+    }
+
+    @Override
+    public void disposePlot(Plot plot) {
+        SQLTable table = database.getTable("plots");
+        SQLEntity disposeEntity = new SQLEntity("level", plot.getLevelName());
+        table.update(disposeEntity, new SQLEntity("owner", "none")
+                .append("helpers", "")
+                .append("members", "")
+                .append("denied", "")
+                .append("flags", "")
+                .append("home", ""));
     }
 
     @Override
