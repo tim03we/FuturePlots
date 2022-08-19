@@ -20,9 +20,14 @@ auto-save:
   # In seconds
   interval: 180
 
-# NOT COMPLETED!
 # Should the XUID be used to keep the plot when changing the player name
-# xuid: false
+xuid:
+  # If you set this from 'false' to 'true' and start the server, wait a moment until the server gives the info that all checks have been completed.
+  # During the check phase the server cannot be entered.
+  enable: true
+  # Don't change this unless there was an info from the plugin developer itself!
+  # This domain is used for communications with our servers to ensure 100% XUID support.
+  url: "ovisdevelopment.de"
 
 # MySQL connection data
 mysql:
