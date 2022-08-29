@@ -42,7 +42,7 @@ public class MySQLProvider implements DataProvider {
     @Override
     public void connect() {
         if(Server.getInstance().getPluginManager().getPlugin("DbLib") == null) {
-            Server.getInstance().getLogger().error("[FuturePlots] The plugin DbLib could not be found.");
+            FuturePlots.getInstance().getLogger().error("[FuturePlots] The plugin DbLib could not be found.");
             Server.getInstance().getPluginManager().disablePlugin(Server.getInstance().getPluginManager().getPlugin("FuturePlots"));
             return;
         }
@@ -57,9 +57,9 @@ public class MySQLProvider implements DataProvider {
             );
             database = sqlConnection.getDatabase("mysql", config.getString("mysql.database"));
             checkAndRun();
-            Server.getInstance().getLogger().info("[FuturePlots] Connection to MySQL database successful.");
+            FuturePlots.getInstance().getLogger().info("[FuturePlots] Connection to MySQL database successful.");
         } catch (ClassNotFoundException ex) {
-            Server.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
+            FuturePlots.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
             ex.printStackTrace();
         }
     }
