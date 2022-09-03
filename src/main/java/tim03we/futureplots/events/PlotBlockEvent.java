@@ -20,16 +20,19 @@ import cn.nukkit.event.Event;
 import cn.nukkit.event.plugin.PluginEvent;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.Types;
 
 public class PlotBlockEvent extends PluginEvent {
 
     private Event event;
     private Plot plot;
+    private Types type;
 
-    public PlotBlockEvent(FuturePlots plugin, Event event, Plot plot) {
+    public PlotBlockEvent(FuturePlots plugin, Event event, Plot plot, Types type) {
         super(plugin);
         this.event = event;
         this.plot = plot;
+        this.type = type;
     }
 
     public Event getEvent() {
@@ -38,5 +41,9 @@ public class PlotBlockEvent extends PluginEvent {
 
     public Plot getPlot() {
         return plot;
+    }
+
+    public Types getType() {
+        return type;
     }
 }
