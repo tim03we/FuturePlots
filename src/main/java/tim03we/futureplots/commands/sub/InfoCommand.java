@@ -22,6 +22,10 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InfoCommand extends BaseCommand {
 
@@ -32,17 +36,24 @@ public class InfoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                sender.sendMessage(translate(false, "plot.info.title"));
-                if(FuturePlots.provider.hasOwner(plot)) {
-                    sender.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getOwner(plot), plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getHelpers(plot).toString(), FuturePlots.provider.getDenied(plot).toString(), FuturePlots.provider.getMembers(plot).toString()));
-                } else {
-                    sender.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));
-
-                }
+            Player player = (Player) sender;
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
+            }
+            player.sendMessage(translate(false, "plot.info.title"));
+            if(FuturePlots.provider.hasOwner(plot)) {
+                List<String> convHelper = new ArrayList<>();
+                List<String> convMember = new ArrayList<>();
+                List<String> convDenied = new ArrayList<>();
+                FuturePlots.provider.getHelpers(plot).forEach(k -> convHelper.add(Utils.getPlayerName(k)));
+                FuturePlots.provider.getMembers(plot).forEach(k -> convMember.add(Utils.getPlayerName(k)));
+                FuturePlots.provider.getDenied(plot).forEach(k -> convDenied.add(Utils.getPlayerName(k)));
+                player.sendMessage(translate(false, "plot.info.text", Utils.getPlayerName(FuturePlots.provider.getOwner(plot)), plot.getX() + ";" + plot.getZ(), convHelper.toString(), convDenied.toString(), convMember.toString()));
             } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+                player.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));
+
             }
         }
     }

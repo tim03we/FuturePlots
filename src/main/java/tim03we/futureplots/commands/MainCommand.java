@@ -16,12 +16,17 @@ package tim03we.futureplots.commands;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.handler.CommandHandler;
+import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.forms.data.FormWindows;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,15 +49,24 @@ public class MainCommand extends Command {
             return false;
         }
         if(args.length > 0) {
-            if(CommandHandler.commmands.get(args[0]) != null ) {
-                CommandHandler.commmands.get(args[0]).execute(sender, args[0], args);
-            } else if (CommandHandler.aliases.get(args[0]) != null){
-                CommandHandler.aliases.get(args[0]).execute(sender, args[0], args);
-            } else {
+            if(!CommandHandler.runCmd(sender, args[0], args)) {
                 sender.sendMessage(getUsage());
             }
         } else {
-            sender.sendMessage(getUsage());
+            if(Settings.formsUse) {
+                if(sender instanceof Player) {
+                    Player player = (Player) sender;
+                    PlotPlayer plotPlayer = new PlotPlayer(player);
+                    Plot plot = plotPlayer.getPlot();
+                    if(plot == null) {
+                        FormWindows.openNoPlotForm(player);
+                    } else {
+                        FormWindows.openPlotForm(player, plot);
+                    }
+                }
+            } else {
+                sender.sendMessage(getUsage());
+            }
         }
         return false;
     }

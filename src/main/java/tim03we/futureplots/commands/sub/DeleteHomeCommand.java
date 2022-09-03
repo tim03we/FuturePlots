@@ -33,17 +33,17 @@ public class DeleteHomeCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    FuturePlots.provider.deleteHome(plot);
-                    sender.sendMessage(translate(true, "plot.home.delete"));
-                } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
-                }
-            } else {
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
                 sender.sendMessage(translate(true, "not.in.plot"));
+                return;
             }
+            if(!plot.canByPass(player)) {
+                sender.sendMessage(translate(true, "not.a.owner"));
+                return;
+            }
+            FuturePlots.provider.deleteHome(plot);
+            sender.sendMessage(translate(true, "plot.home.delete"));
         }
     }
 }

@@ -20,12 +20,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
-import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.utils.Settings;
-
-import static tim03we.futureplots.utils.Settings.max_plots;
+import tim03we.futureplots.utils.*;
 
 public class AutoCommand extends BaseCommand {
 
@@ -38,35 +33,36 @@ public class AutoCommand extends BaseCommand {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             if(Settings.levels.size() == 0) {
-                sender.sendMessage(translate(true, "no.plotworld"));
+                player.sendMessage(translate(true, "no.plotworld"));
                 return;
             }
             String levelName = player.getLevel().getName();
             if(Settings.levels.size() > 1) {
                 if(!Settings.levels.contains(levelName)) {
-                    sender.sendMessage(translate(true, "not.in.world"));
+                    player.sendMessage(translate(true, "not.in.world"));
                     return;
                 }
             }
-            if(FuturePlots.getInstance().canClaim(player)) {
-                if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
-                    if(!new PlotPlayer((Player) sender).bypassEco()) {
-                        if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
-                            FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));
-                        } else {
-                            sender.sendMessage(translate(true, "economy.no.money"));
-                            return;
-                        }
+            if(!FuturePlots.getInstance().canClaim(player)) {
+                player.sendMessage(translate(true, "plot.max"));
+                return;
+            }
+            if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
+                if(!new PlotPlayer(player).bypassEco()) {
+                    if((FuturePlots.economyProvider.getMoney(player.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
+                        FuturePlots.economyProvider.reduceMoney(player.getName(), PlotSettings.getClaimPrice(levelName));
+                    } else {
+                        player.sendMessage(translate(true, "economy.no.money"));
+                        return;
                     }
                 }
-                Plot plot = FuturePlots.provider.getNextFreePlot(levelName);
-                plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
-                FuturePlots.provider.claimPlot(sender.getName(), plot);
-                ((Player) sender).teleport(plot.getBorderPosition());
-                sender.sendMessage(translate(true, "plot.claim"));
-            } else {
-                sender.sendMessage(translate(true, "plot.max"));
             }
+            String playerId = Utils.getPlayerId(player.getName());
+            Plot plot = FuturePlots.provider.getNextFreePlot(levelName);
+            plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
+            FuturePlots.provider.claimPlot(playerId, plot);
+            player.teleport(plot.getBorderPosition());
+            player.sendMessage(translate(true, "plot.claim"));
         }
     }
 }

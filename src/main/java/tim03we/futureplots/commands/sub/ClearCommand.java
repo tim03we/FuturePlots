@@ -35,32 +35,36 @@ public class ClearCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    String levelName = player.getLevel().getName();
-                    if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
-                        if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClearPrice(levelName)) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClearPrice(levelName));
-                            } else {
-                                sender.sendMessage(translate(true, "economy.no.money"));
-                                return;
-                            }
-                        }
-                    }
-                    if(FuturePlots.getInstance().isMerge(plot)) {
-                        FuturePlots.getInstance().resetMerges(plot, false);
-                    }
-                    ((Player) sender).teleport(plot.getBorderPosition());
-                    FuturePlots.getInstance().clearPlot(plot);
-                    sender.sendMessage(translate(true, "plot.clear"));
-                } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
-                }
-            } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
             }
+            if(!plot.canByPass(player)) {
+                player.sendMessage(translate(true, "not.a.owner"));
+                return;
+            }
+            String levelName = player.getLevel().getName();
+            if(Settings.interaction_confirmation && args.length < 1) {
+                player.sendMessage("Bestätige deine Interaktion mit " + getUsage() + " confirm");
+                return;
+            }
+            if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
+                if(!new PlotPlayer(player).bypassEco()) {
+                    if((FuturePlots.economyProvider.getMoney(player.getName()) - PlotSettings.getClearPrice(levelName)) >= 0) {
+                        FuturePlots.economyProvider.reduceMoney(player.getName(), PlotSettings.getClearPrice(levelName));
+                    } else {
+                        player.sendMessage(translate(true, "economy.no.money"));
+                        return;
+                    }
+                }
+            }
+            if(FuturePlots.getInstance().isMerge(plot)) {
+                FuturePlots.getInstance().resetMerges(plot, false);
+            }
+            player.teleport(plot.getBorderPosition());
+            FuturePlots.getInstance().clearPlot(plot);
+            player.sendMessage(translate(true, "plot.clear"));
         }
     }
 }

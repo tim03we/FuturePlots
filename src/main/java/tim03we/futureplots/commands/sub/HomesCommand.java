@@ -35,22 +35,22 @@ public class HomesCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            if (FuturePlots.provider.getPlots(sender.getName(), null).size() > 0) {
-                List<String> show = new ArrayList<>();
-                sender.sendMessage(translate(true, "plot.homes.title"));
-                for (String home : FuturePlots.provider.getPlots(player.getName(), null)) {
-                    String[] ex = home.split(";");
-                    Plot plot = new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]);
-                    if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {
-                        plot = FuturePlots.provider.getOriginPlot(plot);
-                    }
-                    if(!show.contains(plot.getFullID())) {
-                        show.add(plot.getFullID());
-                        player.sendMessage(translate(false, "plot.homes.text", plot.getLevelName(), plot.getFullID()));
-                    }
-                }
-            } else {
+            if(FuturePlots.provider.getPlots(sender.getName(), null).size() == 0) {
                 player.sendMessage(translate(true, "has.no.plot"));
+                return;
+            }
+            List<String> show = new ArrayList<>();
+            sender.sendMessage(translate(true, "plot.homes.title"));
+            for (String home : FuturePlots.provider.getPlots(player.getName(), null)) {
+                String[] ex = home.split(";");
+                Plot plot = new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]);
+                if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {
+                    plot = FuturePlots.provider.getOriginPlot(plot);
+                }
+                if(!show.contains(plot.getFullID())) {
+                    show.add(plot.getFullID());
+                    player.sendMessage(translate(false, "plot.homes.text", plot.getLevelName(), plot.getFullID()));
+                }
             }
         }
     }

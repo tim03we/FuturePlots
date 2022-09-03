@@ -22,6 +22,7 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.PlotPlayer;
+import tim03we.futureplots.utils.Utils;
 
 public class AddMemberCommand extends BaseCommand {
 
@@ -33,24 +34,29 @@ public class AddMemberCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    if (args.length > 1) {
-                        if (!FuturePlots.provider.isMember(args[1], plot)) {
-                            FuturePlots.provider.addMember(args[1], plot);
-                            sender.sendMessage(translate(true, "member.added", args[1].toLowerCase()));
-                        } else {
-                            sender.sendMessage(translate(true, "member.exists"));
-                        }
-                    } else {
-                        sender.sendMessage(getUsage());
-                    }
-                } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
+            }
+            if(!plot.canByPass(player)) {
+                player.sendMessage(translate(true, "not.a.owner"));
+                return;
+            }
+            if(args.length > 1) {
+                if (!FuturePlots.xuidProvider.exists(args[1])) {
+                    player.sendMessage(translate(true, "player.not.found"));
+                    return;
                 }
+                String playerId = Utils.getPlayerId(args[1]);
+                if(FuturePlots.provider.isMember(playerId, plot)) {
+                    player.sendMessage(translate(true, "member.exists"));
+                    return;
+                }
+                FuturePlots.provider.addMember(playerId, plot);
+                player.sendMessage(translate(true, "member.added", args[1].toLowerCase()));
             } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+                player.sendMessage(getUsage());
             }
         }
     }

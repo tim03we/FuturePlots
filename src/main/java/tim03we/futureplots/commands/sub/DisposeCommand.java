@@ -35,29 +35,34 @@ public class DisposeCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    String levelName = plot.getLevelName();
-                    if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
-                        if(!new PlotPlayer((Player) sender).bypassEco()) {
-                            if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getDisposePrice(levelName)) >= 0) {
-                                FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getDisposePrice(levelName));
-                            } else {
-                                sender.sendMessage(translate(true, "economy.no.money"));
-                                return;
-                            }
-                        }
-                    }
-                    plot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
-                    FuturePlots.provider.deletePlot(plot);
-                    sender.sendMessage(translate(true, "plot.dispose"));
-                } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
-                }
-            } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
             }
+            if(!plot.canByPass(player)) {
+                player.sendMessage(translate(true, "not.a.owner"));
+                return;
+            }
+            String levelName = plot.getLevelName();
+            if(Settings.interaction_confirmation && args.length < 1) {
+                player.sendMessage("Bestätige deine Interaktion mit " + getUsage() + " confirm");
+                return;
+            }
+
+            if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
+                if(!new PlotPlayer(player).bypassEco()) {
+                    if((FuturePlots.economyProvider.getMoney(player.getName()) - PlotSettings.getDisposePrice(levelName)) >= 0) {
+                        FuturePlots.economyProvider.reduceMoney(player.getName(), PlotSettings.getDisposePrice(levelName));
+                    } else {
+                        player.sendMessage(translate(true, "economy.no.money"));
+                        return;
+                    }
+                }
+            }
+            plot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
+            FuturePlots.provider.disposePlot(plot);
+            player.sendMessage(translate(true, "plot.dispose"));
         }
     }
 }

@@ -39,11 +39,11 @@ public class MergeCommand extends BaseCommand {
             }
             String levelName = player.getLevel().getName();
             if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
-                if(!new PlotPlayer((Player) sender).bypassEco()) {
-                    if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getMergePrice(levelName)) >= 0) {
-                        FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getMergePrice(levelName));
+                if(!new PlotPlayer(player).bypassEco()) {
+                    if((FuturePlots.economyProvider.getMoney(player.getName()) - PlotSettings.getMergePrice(levelName)) >= 0) {
+                        FuturePlots.economyProvider.reduceMoney(player.getName(), PlotSettings.getMergePrice(levelName));
                     } else {
-                        sender.sendMessage(translate(true, "economy.no.money"));
+                        player.sendMessage(translate(true, "economy.no.money"));
                         return;
                     }
                 }
@@ -53,7 +53,7 @@ public class MergeCommand extends BaseCommand {
                 player.sendMessage(Language.translate(true, "not.in.plot"));
                 return;
             }
-            if(!FuturePlots.provider.getOwner(plot).equals(player.getName())) {
+            if(!FuturePlots.provider.getOwner(plot).equals(Utils.getPlayerId(player.getName()))) {
                 player.sendMessage(Language.translate(true, "not.a.owner"));
                 return;
             }

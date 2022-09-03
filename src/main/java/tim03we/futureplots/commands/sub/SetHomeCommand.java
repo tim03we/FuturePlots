@@ -32,17 +32,18 @@ public class SetHomeCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    FuturePlots.provider.setHome(plot, ((Player) sender).getLocation());
-                    sender.sendMessage(translate(true, "plot.home.set"));
-                } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
-                }
-            } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+            Player player = (Player) sender;
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
             }
+            if(!plot.canByPass(player)) {
+                player.sendMessage(translate(true, "not.a.owner"));
+                return;
+            }
+            FuturePlots.provider.setHome(plot, player.getLocation());
+            player.sendMessage(translate(true, "plot.home.set"));
         }
     }
 }

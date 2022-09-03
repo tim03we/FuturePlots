@@ -32,35 +32,36 @@ public class KickCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
-            Plot plot = new PlotPlayer((Player) sender).getPlot();
-            if(plot != null) {
-                if(plot.canByPass((Player) sender)) {
-                    if(args.length > 1) {
-                        Player target = Server.getInstance().getPlayer(args[1]);
-                        if(target != null) {
-                            Plot tpp = new PlotPlayer(target).getPlot();
-                            if(tpp != null && tpp.getX() == plot.getX() && tpp.getZ() == plot.getZ() && tpp.getLevelName().equals(plot.getLevelName())) {
-                                if (target.hasPermission("plot.kick.bypass")) {
-                                    sender.sendMessage(translate(true, "plot.kick.notallowed"));
-                                } else {
-                                    sender.sendMessage(translate(true, "plot.kick", target.getName()));
-                                    target.sendMessage(translate(true, "plot.kick.target"));
-                                    target.teleport(Server.getInstance().getDefaultLevel().getSafeSpawn());
-                                }
-                            } else {
-                                sender.sendMessage(translate(true, "plot.kick.error"));
-                            }
-                        } else {
-                            sender.sendMessage(translate(true, "player.not.found"));
-                        }
+            Player player = (Player) sender;
+            Plot plot = new PlotPlayer(player).getPlot();
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
+            }
+            if(!plot.canByPass(player)) {
+                player.sendMessage(translate(true, "not.a.owner"));
+                return;
+            }
+            if(args.length > 1) {
+                Player target = Server.getInstance().getPlayer(args[1]);
+                if(target == null) {
+                    player.sendMessage(translate(true, "player.not.found"));
+                    return;
+                }
+                Plot tpp = new PlotPlayer(target).getPlot();
+                if(tpp != null && tpp.getX() == plot.getX() && tpp.getZ() == plot.getZ() && tpp.getLevelName().equals(plot.getLevelName())) {
+                    if (target.hasPermission("plot.kick.bypass")) {
+                        player.sendMessage(translate(true, "plot.kick.notallowed"));
                     } else {
-                        sender.sendMessage(getUsage());
+                        player.sendMessage(translate(true, "plot.kick", target.getName()));
+                        target.sendMessage(translate(true, "plot.kick.target"));
+                        target.teleport(Server.getInstance().getDefaultLevel().getSafeSpawn());
                     }
                 } else {
-                    sender.sendMessage(translate(true, "not.a.owner"));
+                    player.sendMessage(translate(true, "plot.kick.error"));
                 }
             } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+                player.sendMessage(getUsage());
             }
         }
     }

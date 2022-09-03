@@ -21,9 +21,7 @@ import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
-import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.PlotSettings;
+import tim03we.futureplots.utils.*;
 
 public class SetOwnerCommand extends BaseCommand {
 
@@ -42,19 +40,24 @@ public class SetOwnerCommand extends BaseCommand {
                     if (plot.canByPass(player)) {
                         Player target = Server.getInstance().getPlayerExact(args[1]);
                         String targetName = target == null ? args[1] : target.getName();
+                        if(!FuturePlots.xuidProvider.exists(targetName)) {
+                            player.sendMessage("Dieser Spieler existiert nicht§c!");
+                            return;
+                        }
+                        String targetPlayerId = Utils.getPlayerId(targetName);
                         if(sender.isOp()) {
                             if(target != null) target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
                             if(!FuturePlots.provider.hasOwner(plot)) {
-                                FuturePlots.provider.claimPlot(targetName, plot);
+                                FuturePlots.provider.claimPlot(targetPlayerId, plot);
                                 plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
                             } else {
-                                FuturePlots.provider.setOwner(targetName, plot);
+                                FuturePlots.provider.setOwner(targetPlayerId, plot);
                             }
                             if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).size() == 0) {
                                 plot = FuturePlots.provider.getOriginPlot(plot);
                             }
                             for (Plot mergePlot : FuturePlots.provider.getMerges(plot)) {
-                                FuturePlots.provider.setOwner(targetName, mergePlot);
+                                FuturePlots.provider.setOwner(targetPlayerId, mergePlot);
                             }
                             sender.sendMessage(translate(true, "plot.setowner", targetName));
                         } else {

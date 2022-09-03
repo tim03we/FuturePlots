@@ -21,10 +21,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
-import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.PlotPlayer;
-import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.*;
 
 import static tim03we.futureplots.utils.Settings.plotSize;
 
@@ -38,37 +35,39 @@ public class ClaimCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            PlotPlayer plotPlayer = new PlotPlayer((Player) sender);
+            PlotPlayer plotPlayer = new PlotPlayer(player);
             Plot plot = plotPlayer.getPlot();
-            if(plot != null) {
-                if(FuturePlots.getInstance().canClaim(player)) {
-                    if (!FuturePlots.provider.hasOwner(plot)) {
-                        String levelName = player.getLevel().getName();
-                        if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
-                            if(!plotPlayer.bypassEco()) {
-                                if((FuturePlots.economyProvider.getMoney(sender.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
-                                    FuturePlots.economyProvider.reduceMoney(sender.getName(), PlotSettings.getClaimPrice(levelName));
-                                } else {
-                                    sender.sendMessage(translate(true, "economy.no.money"));
-                                    return;
-                                }
-                            }
-                        }
-                        plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
-                        FuturePlots.provider.claimPlot(sender.getName(), plot);
-                        if(Settings.claim_tp) {
-                            ((Player) sender).teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
-                        }
-                        sender.sendMessage(translate(true, "plot.claim"));
-                    } else {
-                        sender.sendMessage(translate(true, "plot.claim.already"));
-                    }
-                } else {
-                    sender.sendMessage(translate(true, "plot.max"));
-                }
-            } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
             }
+            if(!FuturePlots.getInstance().canClaim(player)) {
+                player.sendMessage(translate(true, "plot.max"));
+                return;
+            }
+            if (FuturePlots.provider.hasOwner(plot)) {
+                player.sendMessage(translate(true, "plot.claim.already"));
+                return;
+            }
+            String levelName = player.getLevel().getName();
+            if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
+                if(!plotPlayer.bypassEco()) {
+                    if((FuturePlots.economyProvider.getMoney(player.getName()) - PlotSettings.getClaimPrice(levelName)) >= 0) {
+                        FuturePlots.economyProvider.reduceMoney(player.getName(), PlotSettings.getClaimPrice(levelName));
+                    } else {
+                        player.sendMessage(translate(true, "economy.no.money"));
+                        return;
+                    }
+                }
+            }
+            String playerId = Utils.getPlayerId(player.getName());
+            plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
+            FuturePlots.provider.claimPlot(playerId, plot);
+            if(Settings.claim_tp) {
+                player.teleport(new Position(plot.getPosition().x += Math.floor(plotSize / 2), plot.getPosition().y += 1.5, plot.getPosition().z -= 1,  plot.getPosition().getLevel()));
+            }
+            player.sendMessage(translate(true, "plot.claim"));
         }
     }
 }
