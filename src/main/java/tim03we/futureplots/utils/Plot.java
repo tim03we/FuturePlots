@@ -76,14 +76,18 @@ public class Plot {
     }
 
     public boolean canInteract(Player player) {
+        return canInteract(Utils.getPlayerId(player.getName()));
+    }
+
+    public boolean canInteract(String playerId) {
         if(FuturePlots.provider.hasOwner(getPlot())) {
-            if(FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) {
+            if(FuturePlots.provider.getOwner(getPlot()).equals(playerId)) {
                 return true;
-            } else if(FuturePlots.provider.isHelper(player.getName(), getPlot())) {
+            } else if(FuturePlots.provider.isHelper(playerId, getPlot())) {
                 return true;
             } else {
-                if(FuturePlots.provider.isMember(player.getName(), getPlot())) {
-                    Player target = Server.getInstance().getPlayer(FuturePlots.provider.getOwner(getPlot()));
+                if(FuturePlots.provider.isMember(playerId, getPlot())) {
+                    Player target = Server.getInstance().getPlayer(Utils.getPlayerName(FuturePlots.provider.getOwner(getPlot())));
                     return target != null;
                 }
             }

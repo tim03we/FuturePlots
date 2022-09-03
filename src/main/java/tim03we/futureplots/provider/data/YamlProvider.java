@@ -24,6 +24,8 @@ import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.Utils;
+import tim03we.futureplots.utils.xuid.web.RequestXUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,69 @@ public class YamlProvider implements DataProvider {
             if(!yaml.exists(key + ".merges")) yaml.set(key + ".merges", new ArrayList<String>());
             if(!yaml.exists(key + ".merge_check")) yaml.set(key + ".merge_check", new ArrayList<String>());
         }
+
+        FuturePlots.getInstance().getLogger().warning("[XUID] Start checking for missing XUIDs... During this check, no players can enter the server.");
+        int missingXuid = 0;
+        for (String key : yaml.getAll().keySet()) {
+            String owner = yaml.getString(key + ".owner");
+            if(!Utils.isLong(owner) && owner.length() != 16 && !owner.equals("none")) {
+                RequestXUID requestXUID = new RequestXUID(owner);
+                String xuid = requestXUID.sendAndGetXuid();
+                yaml.set(key + ".owner", xuid);
+                missingXuid++;
+                FuturePlots.getInstance().getLogger().info("[XUID] " + owner + " has been converted to an XUID..");
+                FuturePlots.xuidProvider.updateEntry(owner, xuid);
+            }
+            List<String> newList = yaml.getStringList(key + ".helpers");
+            for (String key2 : newList) {
+                if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
+                    RequestXUID requestXUID = new RequestXUID(owner);
+                    String xuid = requestXUID.sendAndGetXuid();
+                    if(xuid != null) {
+                        newList.remove(key2);
+                        newList.add(xuid);
+                        missingXuid++;
+                        FuturePlots.getInstance().getLogger().info("[XUID] " + key2 + " has been converted to an XUID..");
+                        FuturePlots.xuidProvider.updateEntry(key2, xuid);
+                    }
+                }
+            }
+            yaml.set(key + ".helpers", newList);
+
+            newList = yaml.getStringList(key + ".members");
+            for (String key2 : newList) {
+                if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
+                    RequestXUID requestXUID = new RequestXUID(owner);
+                    String xuid = requestXUID.sendAndGetXuid();
+                    if(xuid != null) {
+                        newList.remove(key2);
+                        newList.add(xuid);
+                        missingXuid++;
+                        FuturePlots.getInstance().getLogger().info("[XUID] " + key2 + " has been converted to an XUID..");
+                        FuturePlots.xuidProvider.updateEntry(key2, xuid);
+                    }
+                }
+            }
+            yaml.set(key + ".members", newList);
+
+            newList = yaml.getStringList(key + ".denied");
+            for (String key2 : newList) {
+                if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
+                    RequestXUID requestXUID = new RequestXUID(owner);
+                    String xuid = requestXUID.sendAndGetXuid();
+                    if(xuid != null) {
+                        newList.remove(key2);
+                        newList.add(xuid);
+                        missingXuid++;
+                        FuturePlots.getInstance().getLogger().info("[XUID] " + key2 + " has been converted to an XUID..");
+                        FuturePlots.xuidProvider.updateEntry(key2, xuid);
+                    }
+                }
+            }
+            yaml.set(key + ".denied", newList);
+        }
+        FuturePlots.getInstance().getLogger().warning("[XUID] " + missingXuid + " names were converted to XUID. The server can now be accessed.");
+        Settings.joinServer = true;
     }
 
     @Override
@@ -71,11 +136,11 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public boolean claimPlot(String username, Plot plot) {
+    public boolean claimPlot(String playerId, Plot plot) {
         if(getMerges(plot).size() > 0) {
-            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", playerId);
         } else {
-            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", username);
+            yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", playerId);
             yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", new ArrayList<String>());
             yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", new ArrayList<String>());
             yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", new ArrayList<String>());
@@ -119,18 +184,18 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public boolean isHelper(String name, Plot plot) {
-        return getHelpers(plot).contains(name.toLowerCase());
+    public boolean isHelper(String playerId, Plot plot) {
+        return getHelpers(plot).contains(playerId);
     }
 
     @Override
-    public boolean isDenied(String name, Plot plot) {
-        return getDenied(plot).contains(name.toLowerCase());
+    public boolean isDenied(String playerId, Plot plot) {
+        return getDenied(plot).contains(playerId);
     }
 
     @Override
-    public boolean isMember(String name, Plot plot) {
-        return getMembers(plot).contains(name.toLowerCase());
+    public boolean isMember(String playerId, Plot plot) {
+        return getMembers(plot).contains(playerId);
     }
 
     @Override
@@ -139,57 +204,58 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public void setOwner(String name, Plot plot) {
-        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", name);
+    public void setOwner(String playerId, Plot plot) {
+        yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner", playerId);
     }
 
     @Override
     public String getOwner(Plot plot) {
         if(yaml.exists(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ())) {
-            return yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
+            String owner = yaml.getString(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".owner");
+            return owner;
         }
         return "none";
     }
 
     @Override
-    public void addHelper(String name, Plot plot) {
+    public void addHelper(String playerId, Plot plot) {
         List<String> helpers = getHelpers(plot);
-        helpers.add(name.toLowerCase());
+        helpers.add(playerId);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
     }
 
     @Override
-    public void addMember(String name, Plot plot) {
+    public void addMember(String playerId, Plot plot) {
         List<String> members = getMembers(plot);
-        members.add(name.toLowerCase());
+        members.add(playerId);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", members);
     }
 
     @Override
-    public void addDenied(String name, Plot plot) {
+    public void addDenied(String playerId, Plot plot) {
         List<String> denied = getDenied(plot);
-        denied.add(name.toLowerCase());
+        denied.add(playerId);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
     }
 
     @Override
-    public void removeMember(String name, Plot plot) {
+    public void removeMember(String playerId, Plot plot) {
         List<String> members = getMembers(plot);
-        members.remove(name.toLowerCase());
+        members.remove(playerId);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".members", members);
     }
 
     @Override
-    public void removeHelper(String name, Plot plot) {
+    public void removeHelper(String playerId, Plot plot) {
         List<String> helpers = getHelpers(plot);
-        helpers.remove(name.toLowerCase());
+        helpers.remove(playerId);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".helpers", helpers);
     }
 
     @Override
-    public void removeDenied(String name, Plot plot) {
+    public void removeDenied(String playerId, Plot plot) {
         List<String> denied = getDenied(plot);
-        denied.remove(name.toLowerCase());
+        denied.remove(playerId);
         yaml.set(plot.getLevelName() + ";" + plot.getX() + ";" + plot.getZ() + ".denied", denied);
     }
 
@@ -216,7 +282,7 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public Plot getPlot(String name, Object number, Object level) {
+    public Plot getPlot(String playerId, Object number, Object level) {
         int i = 1;
         if(number != null && (int) number > 0) {
             i = (int) number;
@@ -225,11 +291,11 @@ public class YamlProvider implements DataProvider {
         if(level != null) {
             for (String plot : yaml.getAll().keySet()) {
                 String[] ex = plot.split(";");
-                if(ex[0].equals(level) && yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
+                if(ex[0].equals(level) && yaml.getString(plot + ".owner").equals(playerId)) plots.add(plot);
             }
         } else {
             for (String plot : yaml.getAll().keySet()) {
-                if(yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
+                if(yaml.getString(plot + ".owner").equals(playerId)) plots.add(plot);
             }
         }
         if((i - 1) >= plots.size()) return null;
@@ -241,16 +307,16 @@ public class YamlProvider implements DataProvider {
     }
 
     @Override
-    public List<String> getPlots(String name, Object level) {
+    public List<String> getPlots(String playerId, Object level) {
         List<String> plots = new ArrayList<>();
         if(level != null) {
             for (String plot : yaml.getAll().keySet()) {
                 String[] ex = plot.split(";");
-                if(ex[0].equals(level) && yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
+                if(ex[0].equals(level) && yaml.getString(plot + ".owner").equals(playerId)) plots.add(plot);
             }
         } else {
             for (String plot : yaml.getAll().keySet()) {
-                if(yaml.getString(plot + ".owner").equals(name)) plots.add(plot);
+                if(yaml.getString(plot + ".owner").equals(playerId)) plots.add(plot);
             }
         }
         return plots;

@@ -21,6 +21,7 @@ import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.FuturePlots;
 import tim03we.futureplots.commands.BaseCommand;
 import tim03we.futureplots.utils.Plot;
+import tim03we.futureplots.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +36,14 @@ public class HomesCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            if(FuturePlots.provider.getPlots(sender.getName(), null).size() == 0) {
+            String playerId = Utils.getPlayerId(player.getName());
+            if(FuturePlots.provider.getPlots(playerId, null).size() == 0) {
                 player.sendMessage(translate(true, "has.no.plot"));
                 return;
             }
             List<String> show = new ArrayList<>();
             sender.sendMessage(translate(true, "plot.homes.title"));
-            for (String home : FuturePlots.provider.getPlots(player.getName(), null)) {
+            for (String home : FuturePlots.provider.getPlots(playerId, null)) {
                 String[] ex = home.split(";");
                 Plot plot = new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]);
                 if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {

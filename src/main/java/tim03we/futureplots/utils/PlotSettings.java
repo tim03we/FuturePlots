@@ -18,7 +18,6 @@ package tim03we.futureplots.utils;
 
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
-import cn.nukkit.level.Level;
 import cn.nukkit.utils.Config;
 import tim03we.futureplots.FuturePlots;
 

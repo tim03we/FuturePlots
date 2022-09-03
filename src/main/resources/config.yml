@@ -20,11 +20,8 @@ auto-save:
   # In seconds
   interval: 180
 
-# Should the XUID be used to keep the plot when changing the player name
+# To keep the plot when changing the player name
 xuid:
-  # If you set this from 'false' to 'true' and start the server, wait a moment until the server gives the info that all checks have been completed.
-  # During the check phase the server cannot be entered.
-  enable: true
   # Don't change this unless there was an info from the plugin developer itself!
   # This domain is used for communications with our servers to ensure 100% XUID support.
   url: "ovisdevelopment.de"
@@ -40,7 +37,7 @@ mysql:
 # To be able to locate an error correction more precisely
 debug: false
 
-# How many plots a player can own
+# How many plots a default player without permissions can own
 max-plots: 2
 
 # Determine if you should be teleported to the plot border when the plot is claimed
@@ -62,6 +59,7 @@ economy:
   worlds: []
 
 # Before an interaction can be executed, it must be confirmed again.
+# Supported commands: delete, clear, dispose, erode
 confirmations: true
 
 # Decide if you want to use UIs for plot interactions.

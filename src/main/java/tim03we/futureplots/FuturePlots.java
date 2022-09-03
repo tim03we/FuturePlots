@@ -40,11 +40,10 @@ import tim03we.futureplots.provider.economy.EconomyAPIProvider;
 import tim03we.futureplots.provider.EconomyProvider;
 import tim03we.futureplots.provider.economy.LlamaEconomyProvider;
 import tim03we.futureplots.tasks.*;
-import tim03we.futureplots.utils.Language;
-import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.PlotSettings;
-import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.*;
 import tim03we.futureplots.utils.bstats.Metrics;
+import tim03we.futureplots.utils.forms.FormAPI;
+import tim03we.futureplots.utils.xuid.web.Web;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,6 +58,7 @@ public class FuturePlots extends PluginBase {
     private static FuturePlots instance;
     public static EconomyProvider economyProvider;
     public static DataProvider provider;
+    public static tim03we.futureplots.utils.xuid.provider.SQLiteProvider xuidProvider;
     public static Config cmds;
 
     @Override
@@ -93,11 +93,30 @@ public class FuturePlots extends PluginBase {
         registerCommands();
         registerEvents();
         loadWorlds();
+
+        if(Settings.formsUse) {
+            FormAPI.load(this);
+            getLogger().info("Forms are loaded..");
+        }
+
+        getLogger().info("[XUID] Check if there is communication with the web server.");
+        if(Web.online()) {
+            Settings.websiteActive = true;
+            getLogger().info("[XUID] Communication with the web server was successful.");
+            xuidProvider = new tim03we.futureplots.utils.xuid.provider.SQLiteProvider();
+            xuidProvider.connect();
+        } else {
+            getLogger().error("[XUID] Communication with the server was not successful.");
+            getLogger().warning("[XUID] Please disable plugin. Currently there is no connection to our servers.");
+            getLogger().warning("[XUID] If a conversion to XUID support has already taken place, you do not need to pay attention to this message.");
+        }
+
         initProvider();
 
         if(Settings.metrics) {
             int pluginId = 16194;
             Metrics metrics = new Metrics(this, pluginId);
+            getLogger().info("Metrics have been started.");
         }
     }
 
@@ -112,10 +131,15 @@ public class FuturePlots extends PluginBase {
         pm.registerEvents(new ItemFrameDropItem(), this);
         pm.registerEvents(new LiquidFlow(), this);
         pm.registerEvents(new PlayerInteract(), this);
+        pm.registerEvents(new PlayerJoin(), this);
+        pm.registerEvents(new PlayerLogin(), this);
         pm.registerEvents(new PlayerMove(), this);
+        pm.registerEvents(new StructureGrow(), this);
+        getLogger().info("Listeners have been loaded.");
     }
 
     private void checkVersion() {
+        getLogger().info("Check " + Settings.language + ".yml version..");
         if(!Language.getNoPrefix("version").equals("1.2.9")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
@@ -123,6 +147,7 @@ public class FuturePlots extends PluginBase {
                 Language.init();
             }
         }
+        getLogger().info("Check config.yml version..");
         if(!getConfig().getString("version").equals("1.3.1")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
@@ -130,6 +155,7 @@ public class FuturePlots extends PluginBase {
                 saveDefaultConfig();
             }
         }
+        getLogger().info("Check commands.yml version..");
         if(!cmds.getString("version").equals("1.1.0")) {
             new File(getDataFolder() + "/commands_old.yml").delete();
             if(new File(getDataFolder() + "/commands.yml").renameTo(new File(getDataFolder() + "/commands_old.yml"))) {
@@ -145,26 +171,30 @@ public class FuturePlots extends PluginBase {
     }
 
     private void initProvider() {
+        getLogger().info("Loading Provider..");
         Class<?> providerClass = this.providerClass.get(this.getConfig().getString("provider"));
         if (providerClass == null) {
             this.getLogger().critical("The specified provider could not be found.");
             Server.getInstance().getPluginManager().disablePlugin(Server.getInstance().getPluginManager().getPlugin("FuturePlots"));
             return;
         }
-        try { provider = (DataProvider) providerClass.newInstance();
+        try {
+            provider = (DataProvider) providerClass.newInstance();
+
         } catch (InstantiationException | IllegalAccessException e) { this.getLogger().critical("The specified provider could not be found.");
             getServer().getPluginManager().disablePlugin(getServer().getPluginManager().getPlugin("FuturePlots"));
             return;
         }
         provider.connect();
+        getLogger().info("Data provider was selected: " + Settings.provider);
         if(Settings.economyUse) {
             try {
                 if(getServer().getPluginManager().getPlugin("EconomyAPI") != null) {
                     economyProvider = EconomyAPIProvider.class.newInstance();
-                    getLogger().warning("Economy provider was set to EconomyAPI.");
+                    getLogger().info("Data provider was selected: EconomyAPI");
                 } else if(getServer().getPluginManager().getPlugin("LlamaEconomy") != null) {
                     economyProvider = LlamaEconomyProvider.class.newInstance();
-                    getLogger().warning("Economy provider was set to LlamaEconomy.");
+                    getLogger().info("Data provider was selected: LlamaEconomy");
                 } else {
                     Settings.economyUse = false;
                     getLogger().critical("A Economy provider could not be found.");
@@ -203,6 +233,7 @@ public class FuturePlots extends PluginBase {
         if(cmds.getBoolean("plot.erode.enable")) commandHandler.registerCommand(cmds.getString("plot.erode.name"), new ErodeCommand(cmds.getString("plot.erode.name"), cmds.getString("plot.erode.description"), cmds.getString("plot.erode.usage")), cmds.getStringList("plot.erode.alias").toArray(new String[0]));
         if(cmds.getBoolean("plot.merge.enable")) commandHandler.registerCommand(cmds.getString("plot.merge.name"), new MergeCommand(cmds.getString("plot.merge.name"), cmds.getString("plot.merge.description"), cmds.getString("plot.merge.usage")), cmds.getStringList("plot.merge.alias").toArray(new String[0]));
         FuturePlots.getInstance().getServer().getCommandMap().register(cmds.getString("plot.name"), new MainCommand());
+        getLogger().info("All commands have been loaded...");
     }
 
     public static FuturePlots getInstance() {
@@ -281,8 +312,44 @@ public class FuturePlots extends PluginBase {
                 return false;
             }
         }
-        int plotCount = provider.getPlots(player.getName(), levelName).size();
+        String playerId = Utils.getPlayerId(player.getName());
+        int plotCount = provider.getPlots(playerId, levelName).size();
         return plotCount < max_plots;
+    }
+
+    public Plot getPlot(Position position) {
+        if(Settings.levels.contains(position.getLevel().getName())) {
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(position);
+            if(plot == null) {
+                Plot merge = FuturePlots.getInstance().isInMergeCheck(position);
+                if(merge != null) {
+                    plot = merge;
+                }
+            }
+            if(plot != null && FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {
+                plot = FuturePlots.provider.getOriginPlot(plot);
+            }
+            return plot;
+        }
+        return null;
+    }
+
+    public Plot getPlot(String levelName, double x, double y, double z) {
+        if(Settings.levels.contains(levelName)) {
+            Position position = new Position(x, y, z, getServer().getLevelByName(levelName));
+            Plot plot = FuturePlots.getInstance().getPlotByPosition(position);
+            if(plot == null) {
+                Plot merge = FuturePlots.getInstance().isInMergeCheck(position);
+                if(merge != null) {
+                    plot = merge;
+                }
+            }
+            if(plot != null && FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).isEmpty()) {
+                plot = FuturePlots.provider.getOriginPlot(plot);
+            }
+            return plot;
+        }
+        return null;
     }
 
     public Position getPlotPosition(Plot plot) {
@@ -341,6 +408,7 @@ public class FuturePlots extends PluginBase {
     }
 
     public void mergePlots(Player player, Plot plot, BlockFace direction) {
+        String playerId = Utils.getPlayerId(player.getName());
         Plot nextPlot;
         int x = plot.getX();
         int z = plot.getZ();
@@ -354,7 +422,7 @@ public class FuturePlots extends PluginBase {
             x++;
         }
         nextPlot = new Plot(x, z, plot.getLevelName());
-        if (!provider.getOwner(nextPlot).equalsIgnoreCase(player.getName())) {
+        if (!provider.getOwner(nextPlot).equalsIgnoreCase(playerId)) {
             player.sendMessage(Language.translate(true, "merge.not.a.owner"));
             return;
         }
@@ -424,11 +492,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX() + 1, plot.getZ(), plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() + 1, plot.getZ() - 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, plot, leftUpPlot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, rightPlot, upPlot, false, direction, 256), 5);
             }
         } else if (direction == BlockFace.SOUTH) {
@@ -438,11 +506,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX() - 1, plot.getZ(), plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() - 1, plot.getZ() + 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, leftUpPlot, plot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, upPlot, rightPlot, false, direction, 256), 5);
             }
         } else if (direction == BlockFace.WEST) {
@@ -452,11 +520,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX(), plot.getZ() - 1, plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() - 1, plot.getZ() - 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, leftPlot, upPlot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, plot, rightUpPlot, false, direction, 256), 5);
             }
         } else if (direction == BlockFace.EAST) {
@@ -466,11 +534,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX(), plot.getZ() + 1, plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() + 1, plot.getZ() + 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(leftUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, upPlot, leftPlot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(rightUpPlot).equalsIgnoreCase(player.getName()) && provider.getOwner(upPlot).equalsIgnoreCase(player.getName())) {
+                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, rightUpPlot, plot, false, direction, 256), 5);
             }
         }
@@ -572,6 +640,7 @@ public class FuturePlots extends PluginBase {
     }
 
     public Plot isInMerge(Player player, Position position) {
+        String playerId = Utils.getPlayerId(player.getName());
         String levelName = position.getLevel().getName();
         boolean checkNext = true;
         Plot inPlot = null;
@@ -580,8 +649,8 @@ public class FuturePlots extends PluginBase {
         Plot plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(roadWidth, 0, 0));
         Plot plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-roadWidth, 0, 0));
         if(plot1 != null && plot2 != null &&
-                FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
-                FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
+                FuturePlots.provider.getOwner(plot1).equals(playerId) &&
+                FuturePlots.provider.getOwner(plot2).equals(playerId) &&
                 FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check X side
             checkNext = false;
             inPlot = plot1;
@@ -591,8 +660,8 @@ public class FuturePlots extends PluginBase {
             plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, roadWidth));
             plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(0, 0, -roadWidth));
             if(plot1 != null && plot2 != null &&
-                    FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
-                    FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
+                    FuturePlots.provider.getOwner(plot1).equals(playerId) &&
+                    FuturePlots.provider.getOwner(plot2).equals(playerId) &&
                     FuturePlots.getInstance().isMergeCheck(plot1, plot2)) { // Check Z side
                 checkNext = false;
                 inPlot = plot1;
@@ -603,8 +672,8 @@ public class FuturePlots extends PluginBase {
             plot1 = FuturePlots.getInstance().getPlotByPosition(newPos.add(-roadWidth, 0, roadWidth));
             plot2 = FuturePlots.getInstance().getPlotByPosition(newPos.add(roadWidth, 0, -roadWidth));
             if(plot1 != null && plot2 != null &&
-                    FuturePlots.provider.getOwner(plot1).equalsIgnoreCase(player.getName()) &&
-                    FuturePlots.provider.getOwner(plot2).equalsIgnoreCase(player.getName()) &&
+                    FuturePlots.provider.getOwner(plot1).equals(playerId) &&
+                    FuturePlots.provider.getOwner(plot2).equals(playerId) &&
                     FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.NORTH)) &&
                     FuturePlots.getInstance().isMergeCheck(plot2, FuturePlots.getInstance().getMergeByBlockFace(plot2, BlockFace.SOUTH)) &&
                     FuturePlots.getInstance().isMergeCheck(plot1, FuturePlots.getInstance().getMergeByBlockFace(plot1, BlockFace.EAST)) &&

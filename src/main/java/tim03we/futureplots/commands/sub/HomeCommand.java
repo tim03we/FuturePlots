@@ -25,6 +25,7 @@ import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.utils.Language;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.Utils;
 
 public class HomeCommand extends BaseCommand {
 
@@ -36,9 +37,10 @@ public class HomeCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
+            String playerId = Utils.getPlayerId(player.getName());
             DataProvider provider = FuturePlots.provider;
             int homeNumber = 1;
-            if(provider.getPlots(sender.getName(), null).size() == 0) {
+            if(provider.getPlots(playerId, null).size() == 0) {
                 sender.sendMessage(translate(true, "has.no.plot"));
                 return;
             }
@@ -66,11 +68,11 @@ public class HomeCommand extends BaseCommand {
                     }
                 }
             }
-            if(provider.getPlots(sender.getName(), levelName).size() == 0) {
+            if(provider.getPlots(playerId, levelName).size() == 0) {
                 player.sendMessage(Language.translate(true, "has.no.plot"));
                 return;
             }
-            Plot plot = provider.getPlot(sender.getName(), homeNumber, levelName);
+            Plot plot = provider.getPlot(playerId, homeNumber, levelName);
             if(plot == null) {
                 player.sendMessage(translate(true, "has.no.plot.number", args[1]));
                 return;

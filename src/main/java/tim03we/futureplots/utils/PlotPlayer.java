@@ -17,6 +17,7 @@ package tim03we.futureplots.utils;
  */
 
 import cn.nukkit.Player;
+import cn.nukkit.level.Position;
 import tim03we.futureplots.FuturePlots;
 
 public class PlotPlayer {
@@ -45,7 +46,7 @@ public class PlotPlayer {
     }
 
     public boolean canByPass() {
-        return (FuturePlots.provider.getOwner(getPlot()) != null && FuturePlots.provider.getOwner(getPlot()).equals(player.getName())) || player.isOp() || player.hasPermission("plot.bypass");
+        return (FuturePlots.provider.getOwner(getPlot()) != null && FuturePlots.provider.getOwner(getPlot()).equals(Utils.getPlayerId(player.getName()))) || player.isOp() || player.hasPermission("plot.bypass");
     }
 
     public boolean bypassEco() {
