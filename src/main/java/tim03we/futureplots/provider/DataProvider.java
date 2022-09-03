@@ -28,8 +28,6 @@ public interface DataProvider {
 
     void save();
 
-    void checkPlayer(Player player);
-
     boolean claimPlot(String name, Plot plot);
 
     void deletePlot(Plot plot);

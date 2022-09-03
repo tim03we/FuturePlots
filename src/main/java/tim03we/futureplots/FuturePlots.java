@@ -33,6 +33,7 @@ import tim03we.futureplots.generator.PlotGenerator;
 import tim03we.futureplots.handler.CommandHandler;
 import tim03we.futureplots.listener.*;
 import tim03we.futureplots.provider.*;
+import tim03we.futureplots.provider.data.MongoDBProvider;
 import tim03we.futureplots.provider.data.MySQLProvider;
 import tim03we.futureplots.provider.data.SQLiteProvider;
 import tim03we.futureplots.provider.data.YamlProvider;
@@ -67,6 +68,7 @@ public class FuturePlots extends PluginBase {
         providerClass.put("yaml", YamlProvider.class);
         providerClass.put("mysql", MySQLProvider.class);
         providerClass.put("sqlite", SQLiteProvider.class);
+        providerClass.put("mongodb", MongoDBProvider.class);
         registerGenerator();
 
 

@@ -76,7 +76,7 @@ public class YamlProvider implements DataProvider {
             List<String> newList = yaml.getStringList(key + ".helpers");
             for (String key2 : newList) {
                 if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(owner);
+                    RequestXUID requestXUID = new RequestXUID(key2);
                     String xuid = requestXUID.sendAndGetXuid();
                     if(xuid != null) {
                         newList.remove(key2);
@@ -92,7 +92,7 @@ public class YamlProvider implements DataProvider {
             newList = yaml.getStringList(key + ".members");
             for (String key2 : newList) {
                 if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(owner);
+                    RequestXUID requestXUID = new RequestXUID(key2);
                     String xuid = requestXUID.sendAndGetXuid();
                     if(xuid != null) {
                         newList.remove(key2);
@@ -108,7 +108,7 @@ public class YamlProvider implements DataProvider {
             newList = yaml.getStringList(key + ".denied");
             for (String key2 : newList) {
                 if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(owner);
+                    RequestXUID requestXUID = new RequestXUID(key2);
                     String xuid = requestXUID.sendAndGetXuid();
                     if(xuid != null) {
                         newList.remove(key2);
@@ -128,11 +128,6 @@ public class YamlProvider implements DataProvider {
     @Override
     public void save() {
         yaml.save();
-    }
-
-    @Override
-    public void checkPlayer(Player player) {
-
     }
 
     @Override

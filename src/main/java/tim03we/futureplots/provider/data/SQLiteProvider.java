@@ -29,6 +29,8 @@ import tim03we.futureplots.provider.sql.SQLEntity;
 import tim03we.futureplots.provider.sql.SQLTable;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.Utils;
+import tim03we.futureplots.utils.xuid.web.RequestXUID;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -52,9 +54,9 @@ public class SQLiteProvider implements DataProvider {
             SQLConnection sqlConnection = new SQLConnection();
             database = sqlConnection.getDatabase("sqlite", config.getString("mysql.database"));
             checkAndRun();
-            Server.getInstance().getLogger().info("[FuturePlots] Connection to SQLite database successful.");
+            FuturePlots.getInstance().getLogger().info("[FuturePlots] Connection to SQLite database successful.");
         } catch (ClassNotFoundException ex) {
-            Server.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
+            FuturePlots.getInstance().getLogger().error("[FuturePlots] No connection to the database could be established.");
             ex.printStackTrace();
         }
     }
@@ -83,6 +85,74 @@ public class SQLiteProvider implements DataProvider {
                 }
             }
         });
+        checkData();
+    }
+
+    private void checkData() {
+        FuturePlots.getInstance().getLogger().warning("[XUID] Start checking for missing XUIDs... During this check, no players can enter the server.");
+        int missingXuid = 0;
+
+        SQLTable table = database.getTable("plots");
+        for (SQLEntity sqlEntity : table.find()) {
+            String owner = sqlEntity.getString("owner");
+            if(!Utils.isLong(owner) && owner.length() != 16 && !owner.equals("none")) {
+                RequestXUID requestXUID = new RequestXUID(owner);
+                String xuid = requestXUID.sendAndGetXuid();
+                table.update(sqlEntity, new SQLEntity("owner", xuid));
+                missingXuid++;
+                FuturePlots.getInstance().getLogger().info("[XUID] " + owner + " has been converted to an XUID..");
+                FuturePlots.xuidProvider.updateEntry(owner, xuid);
+            }
+            List<String> newList = new Gson().fromJson(sqlEntity.getString("helpers"), List.class);
+            for (String key : newList) {
+                 if(!Utils.isLong(key) && key.length() != 16 && !owner.equals("none")) {
+                     RequestXUID requestXUID = new RequestXUID(key);
+                     String xuid = requestXUID.sendAndGetXuid();
+                     if(xuid != null) {
+                         newList.remove(key);
+                         newList.add(xuid);
+                         missingXuid++;
+                         FuturePlots.getInstance().getLogger().info("[XUID] " + key + " has been converted to an XUID..");
+                         FuturePlots.xuidProvider.updateEntry(key, xuid);
+                     }
+                 }
+            }
+            table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("helpers", new Gson().toJson(newList)));
+
+            newList = new Gson().fromJson(sqlEntity.getString("members"), List.class);
+            for (String key : newList) {
+                if(!Utils.isLong(key) && key.length() != 16 && !owner.equals("none")) {
+                    RequestXUID requestXUID = new RequestXUID(key);
+                    String xuid = requestXUID.sendAndGetXuid();
+                    if(xuid != null) {
+                        newList.remove(key);
+                        newList.add(xuid);
+                        missingXuid++;
+                        FuturePlots.getInstance().getLogger().info("[XUID] " + key + " has been converted to an XUID..");
+                        FuturePlots.xuidProvider.updateEntry(key, xuid);
+                    }
+                }
+            }
+            table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("members", new Gson().toJson(newList)));
+
+            newList = new Gson().fromJson(sqlEntity.getString("denied"), List.class);
+            for (String key : newList) {
+                if(!Utils.isLong(key) && key.length() != 16 && !owner.equals("none")) {
+                    RequestXUID requestXUID = new RequestXUID(key);
+                    String xuid = requestXUID.sendAndGetXuid();
+                    if(xuid != null) {
+                        newList.remove(key);
+                        newList.add(xuid);
+                        missingXuid++;
+                        FuturePlots.getInstance().getLogger().info("[XUID] " + key + " has been converted to an XUID..");
+                        FuturePlots.xuidProvider.updateEntry(key, xuid);
+                    }
+                }
+            }
+            table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("denied", new Gson().toJson(newList)));
+        }
+        FuturePlots.getInstance().getLogger().warning("[XUID] " + missingXuid + " names were converted to XUID. The server can now be accessed.");
+        Settings.joinServer = true;
     }
 
     @Override
@@ -90,42 +160,15 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void checkPlayer(Player player) {
-        CompletableFuture.runAsync(() -> {
-            String xuid = player.getLoginChainData().getXUID();
-            String playername = player.getName();
-
-            SQLTable table = database.getTable("player_data");
-            SQLEntity search = new SQLEntity("xuid", xuid);
-            SQLEntity find = table.find(search, false, null);
-            if(find == null) {
-                search.append("playername", playername);
-                table.insert(search);
-            } else {
-                if(!find.getString("playername").equalsIgnoreCase(playername)) {
-                    table.update(new SQLEntity("xuid", xuid), new SQLEntity("playername", playername));
-                }
-            }
-
-            SQLTable plotTable = database.getTable("plots");
-            for (SQLEntity entity : plotTable.find()) {
-                if(entity.getString("owner").equalsIgnoreCase(playername)) {
-                    plotTable.update(new SQLEntity("owner", playername), new SQLEntity("owner", xuid));
-                }
-            }
-        });
-    }
-
-    @Override
-    public boolean claimPlot(String name, Plot plot) {
+    public boolean claimPlot(String playerId, Plot plot) {
         CompletableFuture.runAsync(() -> {
             SQLTable table = database.getTable("plots");
             SQLEntity insertEntity = new SQLEntity("level", plot.getLevelName());
             insertEntity.append("plotid", plot.getFullID());
             if(getMerges(plot).size() > 0) {
-                table.update(insertEntity, new SQLEntity("owner", name));
+                table.update(insertEntity, new SQLEntity("owner", playerId));
             } else {
-                insertEntity.append("owner", name);
+                insertEntity.append("owner", playerId);
                 table.insert(insertEntity);
             }
         });
@@ -145,7 +188,7 @@ public class SQLiteProvider implements DataProvider {
     @Override
     public void disposePlot(Plot plot) {
         SQLTable table = database.getTable("plots");
-        SQLEntity disposeEntity = new SQLEntity("level", plot.getLevelName());
+        SQLEntity disposeEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         table.update(disposeEntity, new SQLEntity("owner", "none")
                 .append("helpers", "")
                 .append("members", "")
@@ -155,18 +198,18 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public boolean isHelper(String name, Plot plot) {
-        return getHelpers(plot) != null && getHelpers(plot).contains(name.toLowerCase());
+    public boolean isHelper(String playerId, Plot plot) {
+        return getHelpers(plot) != null && getHelpers(plot).contains(playerId);
     }
 
     @Override
-    public boolean isDenied(String name, Plot plot) {
-        return getDenied(plot) != null && getDenied(plot).contains(name.toLowerCase());
+    public boolean isDenied(String playerId, Plot plot) {
+        return getDenied(plot) != null && getDenied(plot).contains(playerId);
     }
 
     @Override
-    public boolean isMember(String name, Plot plot) {
-        return getMembers(plot) != null && getMembers(plot).contains(name.toLowerCase());
+    public boolean isMember(String playerId, Plot plot) {
+        return getMembers(plot) != null && getMembers(plot).contains(playerId);
     }
 
     @Override
@@ -175,10 +218,10 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void setOwner(String name, Plot plot) {
+    public void setOwner(String playerId, Plot plot) {
         CompletableFuture.runAsync(() -> {
             SQLTable table = database.getTable("plots");
-            SQLEntity updateEntity = new SQLEntity("owner", name);
+            SQLEntity updateEntity = new SQLEntity("owner", playerId);
             table.update(new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID()), updateEntity);
         });
     }
@@ -231,9 +274,9 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void addHelper(String name, Plot plot) {
+    public void addHelper(String playerId, Plot plot) {
         List<String> helpers = getHelpers(plot);
-        helpers.add(name.toLowerCase());
+        helpers.add(playerId.toLowerCase());
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity updateEntity = new SQLEntity("helpers", new Gson().toJson(helpers));
@@ -241,9 +284,9 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void addMember(String name, Plot plot) {
+    public void addMember(String playerId, Plot plot) {
         List<String> members = getMembers(plot);
-        members.add(name.toLowerCase());
+        members.add(playerId.toLowerCase());
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity updateEntity = new SQLEntity("members", new Gson().toJson(members));
@@ -251,9 +294,9 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void addDenied(String name, Plot plot) {
+    public void addDenied(String playerId, Plot plot) {
         List<String> denied = getDenied(plot);
-        denied.add(name.toLowerCase());
+        denied.add(playerId.toLowerCase());
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity updateEntity = new SQLEntity("denied", new Gson().toJson(denied));
@@ -261,9 +304,9 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void removeHelper(String name, Plot plot) {
+    public void removeHelper(String playerId, Plot plot) {
         List<String> helpers = getHelpers(plot);
-        helpers.remove(name.toLowerCase());
+        helpers.remove(playerId.toLowerCase());
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity updateEntity = new SQLEntity("helpers", new Gson().toJson(helpers));
@@ -271,9 +314,9 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void removeMember(String name, Plot plot) {
+    public void removeMember(String playerId, Plot plot) {
         List<String> members = getMembers(plot);
-        members.remove(name.toLowerCase());
+        members.remove(playerId.toLowerCase());
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity updateEntity = new SQLEntity("members", new Gson().toJson(members));
@@ -281,9 +324,9 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public void removeDenied(String name, Plot plot) {
+    public void removeDenied(String playerId, Plot plot) {
         List<String> denied = getDenied(plot);
-        denied.remove(name.toLowerCase());
+        denied.remove(playerId.toLowerCase());
         SQLTable table = database.getTable("plots");
         SQLEntity searchEntity = new SQLEntity("level", plot.getLevelName()).append("plotid", plot.getFullID());
         SQLEntity updateEntity = new SQLEntity("denied", new Gson().toJson(denied));
@@ -323,20 +366,20 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public Plot getPlot(String name, Object number, Object level) {
+    public Plot getPlot(String playerId, Object number, Object level) {
         int i = 1;
         if(number != null && (int) number > 0) {
             i = (int) number;
         }
         List<Plot> plots = new ArrayList<>();
         if(level != null) {
-            for (String plot : getPlots(name, level)) {
+            for (String plot : getPlots(playerId, level)) {
                 String[] ex = plot.split(";");
                 plots.add(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
             }
 
         } else {
-            for (String plot : getPlots(name, null)) {
+            for (String plot : getPlots(playerId, null)) {
                 String[] ex = plot.split(";");
                 plots.add(new Plot(Integer.parseInt(ex[1]), Integer.parseInt(ex[2]), ex[0]));
             }
@@ -350,12 +393,12 @@ public class SQLiteProvider implements DataProvider {
     }
 
     @Override
-    public List<String> getPlots(String name, Object level) {
+    public List<String> getPlots(String playerId, Object level) {
         List<String> plots = new ArrayList<>();
         if(level != null) {
             SQLTable table = database.getTable("plots");
             for (SQLEntity resultSet : table.find()) {
-                if(resultSet.getString("level").equals(level)) {
+                if(resultSet.getString("level").equals(level) && resultSet.getString("owner").equals(playerId)) {
                     String[] plotid = resultSet.getString("plotid").split(";");
                     plots.add(level + ";" + plotid[0] + ";" + plotid[1]);
                 }
@@ -363,8 +406,10 @@ public class SQLiteProvider implements DataProvider {
         } else {
             SQLTable table = database.getTable("plots");
             for (SQLEntity resultSet : table.find()) {
-                String[] plotid = resultSet.getString("plotid").split(";");
-                plots.add(resultSet.getString("level") + ";" + plotid[0] + ";" + plotid[1]);
+                if(resultSet.getString("owner").equals(playerId)) {
+                    String[] plotid = resultSet.getString("plotid").split(";");
+                    plots.add(resultSet.getString("level") + ";" + plotid[0] + ";" + plotid[1]);
+                }
             }
         }
         return plots;
