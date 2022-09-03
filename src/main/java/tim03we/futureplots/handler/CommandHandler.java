@@ -16,6 +16,7 @@ package tim03we.futureplots.handler;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.command.CommandSender;
 import tim03we.futureplots.commands.BaseCommand;
 
 import java.util.HashMap;
@@ -32,5 +33,25 @@ public class CommandHandler {
                 aliases.put(alias, command);
             }
         }
+    }
+
+    public static boolean runCmd(CommandSender sender, String cmd, String[] args) {
+        if(CommandHandler.commmands.get(cmd) != null ) {
+            CommandHandler.commmands.get(cmd).execute(sender, cmd, args);
+            return true;
+        } else if (CommandHandler.aliases.get(cmd) != null){
+            CommandHandler.aliases.get(cmd).execute(sender, cmd, args);
+            return true;
+        }
+        return false;
+    }
+
+    public static BaseCommand getCommand(String cmd) {
+        if(commmands.get(cmd) != null) {
+            return commmands.get(cmd);
+        } else if(aliases.get(cmd) != null) {
+            return aliases.get(cmd);
+        }
+        return null;
     }
 }
