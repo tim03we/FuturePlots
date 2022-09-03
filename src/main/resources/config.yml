@@ -9,7 +9,7 @@ lang: "eng"
 # Allow tracking statistics on how the plugin is used
 metrics: true
 
-# Available providers: yaml, mysql, sqlite
+# Available providers: yaml, mysql, sqlite, mongodb
 # Default: yaml
 provider: "yaml"
 
@@ -33,6 +33,11 @@ mysql:
   user: "root"
   password: "ThisIsMyStrongPassword"
   database: "futureplots"
+
+# MongoDB connection data
+mongodb:
+  database: "futureplots"
+  uri: ""
 
 # To be able to locate an error correction more precisely
 debug: false
