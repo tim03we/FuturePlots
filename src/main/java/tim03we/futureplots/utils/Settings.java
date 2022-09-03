@@ -17,13 +17,15 @@ package tim03we.futureplots.utils;
  */
 
 import cn.nukkit.utils.Config;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import tim03we.futureplots.FuturePlots;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Settings {
+
+    public static Object2ObjectOpenHashMap<String, String> playerXuids = new Object2ObjectOpenHashMap<>();
 
     public static ArrayList<String> levels = new ArrayList<>();
     public static String wallBlockClaimed;
@@ -45,7 +47,6 @@ public class Settings {
     public static String provider;
     public static String language;
     public static int max_plots;
-    public static boolean xuid;
     public static boolean popup;
     public static boolean debug;
     public static boolean economyUse;
@@ -54,17 +55,17 @@ public class Settings {
     public static boolean interaction_confirmation;
     public static boolean formsUse;
     public static boolean metrics;
+    public static String xuidWebUrl;
+
+    public static boolean websiteActive = false;
+    public static boolean joinServer = false;
 
     public static boolean use_auto_save;
     public static int auto_save_interval;
 
     public static void init() {
         Config config = FuturePlots.getInstance().getConfig();
-        File folder = new File(FuturePlots.getInstance().getDataFolder() + "/worlds/");
 
-        /*for(File file : folder.listFiles()) { // See onLoad()
-            levels.add(file.getName().replace(".yml", ""));
-        }*/
         wallBlockClaimed = config.getString("default-settings.wall.claimed");
         wallBlockUnClaimed = config.getString("default-settings.wall.unclaimed");
         roadBlock = config.getString("default-settings.roadBlock");
@@ -78,7 +79,7 @@ public class Settings {
         language = config.getString("lang").toLowerCase();
         max_plots = config.getInt("max-plots");
         metrics = config.getBoolean("metrics");
-        xuid = config.getBoolean("xuid");
+        xuidWebUrl = config.getString("xuid.url");
         popup = config.getBoolean("show-popup");
         debug = config.getBoolean("debug");
         claim_tp = config.getBoolean("teleport-on-claim");
