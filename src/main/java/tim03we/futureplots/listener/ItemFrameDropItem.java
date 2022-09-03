@@ -11,16 +11,16 @@ import tim03we.futureplots.utils.Settings;
 public class ItemFrameDropItem implements Listener {
 
     @EventHandler
-    public void on(ItemFrameDropItemEvent event) {
+    public void onItemFrameDropItem(ItemFrameDropItemEvent event) {
         Player player = event.getPlayer();
         if(Settings.levels.contains(player.getLevel().getName())) {
-            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getItemFrame().getLocation());
+            Plot plot = FuturePlots.getInstance().getPlot(event.getItemFrame().getLocation());
             if(!player.isOp()) {
-                if(plot != null) {
-                    if(!plot.canInteract(player)) {
-                        event.setCancelled(true);
-                    }
-                } else {
+                if(plot == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if(!plot.canInteract(player)) {
                     event.setCancelled(true);
                 }
             }

@@ -30,10 +30,11 @@ public class BlockPiston implements Listener {
 
     @EventHandler
     public void onPiston(BlockPistonEvent event) {
-        if(Settings.levels.contains(event.getBlock().getLevel().getName())) {
+        Block block = event.getBlock();
+        if(Settings.levels.contains(block.getLevel().getName())) {
             List<Block> blocks = event.getBlocks();
-            for (Block block : blocks) {
-                Plot plot = FuturePlots.getInstance().getPlotByPosition(block.getLocation());
+            for (Block exBlock : blocks) {
+                Plot plot = FuturePlots.getInstance().getPlot(exBlock.getLocation());
                 if(plot == null) {
                     event.setCancelled(true);
                 }

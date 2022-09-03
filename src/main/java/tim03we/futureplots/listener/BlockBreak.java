@@ -17,7 +17,6 @@ package tim03we.futureplots.listener;
  */
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -27,6 +26,7 @@ import tim03we.futureplots.events.PlotBlockEvent;
 import tim03we.futureplots.events.PlotEvent;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
+import tim03we.futureplots.utils.Types;
 
 public class BlockBreak implements Listener {
 
@@ -35,25 +35,15 @@ public class BlockBreak implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if(Settings.levels.contains(player.getLevel().getName())) {
-            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
-            new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot));
+            Plot plot = FuturePlots.getInstance().getPlot(block.getLocation());
             if(!player.isOp()) {
-                if(plot != null) {
-                    if(!plot.canInteract(player)) {
-                        event.setCancelled(true);
-                    }
-                } else {
-                    Plot merge = FuturePlots.getInstance().isInMergeCheck(block.getLocation());
-                    if(merge == null) {
-                        event.setCancelled(true);
-                    } else {
-                        if(FuturePlots.provider.getOriginPlot(merge) != null && FuturePlots.provider.getMerges(merge).isEmpty()) {
-                            merge = FuturePlots.provider.getOriginPlot(merge);
-                        }
-                        if(!merge.canInteract(player)) {
-                            event.setCancelled(true);
-                        }
-                    }
+                if(plot == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot, Types.BLOCK_BREAK));
+                if(!plot.canInteract(player)) {
+                    event.setCancelled(true);
                 }
             }
         }

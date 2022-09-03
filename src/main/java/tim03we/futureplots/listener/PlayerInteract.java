@@ -38,49 +38,12 @@ public class PlayerInteract implements Listener {
                 if(event.getItem() instanceof ItemEdible && event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
                     return;
                 }
-                if(plot != null) {
-                    if(!plot.canInteract(player)) {
-                        if(event.getAction() == PlayerInteractEvent.Action.PHYSICAL) {
-                            event.setCancelled(true);
-                            return;
-                        }
-                        if(event.getItem().canBeActivated() || event.getBlock().canBeActivated()) {
-                            event.setCancelled(true);
-                        } else {
-                            plot = new PlotPlayer(player).getPlot();
-                            if(plot == null || !plot.canInteract(player)) {
-                                Plot merge = FuturePlots.getInstance().isInMergeCheck(event.getBlock().getLocation());
-                                if(merge == null) {
-                                    event.setCancelled(true);
-                                } else {
-                                    if(FuturePlots.provider.getOriginPlot(merge) != null && FuturePlots.provider.getMerges(merge).isEmpty()) {
-                                        merge = FuturePlots.provider.getOriginPlot(merge);
-                                    }
-                                    if(!merge.canInteract(player)) {
-                                        event.setCancelled(true);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-                            if(event.getBlock() instanceof BlockDragonEgg) {
-                                event.setCancelled(true);
-                            }
-                        }
-                    }
-                } else {
-                    Plot merge = FuturePlots.getInstance().isInMergeCheck(event.getBlock().getLocation());
-                    if(merge == null) {
-                        event.setCancelled(true);
-                    } else {
-                        if(FuturePlots.provider.getOriginPlot(merge) != null && FuturePlots.provider.getMerges(merge).isEmpty()) {
-                            merge = FuturePlots.provider.getOriginPlot(merge);
-                        }
-                        if(!merge.canInteract(player)) {
-                            event.setCancelled(true);
-                        }
-                    }
+                if(plot == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if(!plot.canInteract(player)) {
+                    event.setCancelled(true);
                 }
             }
         }

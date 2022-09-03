@@ -31,12 +31,9 @@ public class LiquidFlow implements Listener {
         if (event.isCancelled()) return;
         Block block = event.getBlock();
         if(Settings.levels.contains(block.getLevel().getName())) {
-            Plot plot = FuturePlots.getInstance().getPlotByPosition(block.getLocation());
+            Plot plot = FuturePlots.getInstance().getPlot(block.getLocation());
             if(plot == null) {
-                Plot merge = FuturePlots.getInstance().isInMergeCheck(block.getLocation());
-                if(merge == null) {
-                    event.setCancelled(true);
-                }
+                event.setCancelled(true);
             }
         }
     }

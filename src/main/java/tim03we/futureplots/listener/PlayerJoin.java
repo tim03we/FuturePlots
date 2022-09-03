@@ -16,32 +16,17 @@ package tim03we.futureplots.listener;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
-import cn.nukkit.block.Block;
-import cn.nukkit.entity.Entity;
+import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
-import cn.nukkit.event.entity.EntityExplodeEvent;
+import cn.nukkit.event.player.PlayerJoinEvent;
 import tim03we.futureplots.FuturePlots;
-import tim03we.futureplots.utils.Plot;
-import tim03we.futureplots.utils.Settings;
 
-import java.util.ArrayList;
-
-public class EntityExplode implements Listener {
+public class PlayerJoin implements Listener {
 
     @EventHandler
-    public void onExplosion(EntityExplodeEvent event) {
-        Entity entity = event.getEntity();
-        if(event.isCancelled()) return;
-        if(Settings.levels.contains(entity.getLevel().getName())) {
-            ArrayList<Block> allowedBlocks = new ArrayList<>();
-            for (Block block : event.getBlockList()) {
-                Plot plot = FuturePlots.getInstance().getPlot(block.getLocation());
-                if(plot != null) {
-                    allowedBlocks.add(block);
-                }
-            }
-            event.setBlockList(allowedBlocks);
-        }
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        FuturePlots.xuidProvider.updateEntry(player.getName(), player.getLoginChainData().getXUID());
     }
 }

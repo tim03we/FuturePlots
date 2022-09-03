@@ -16,6 +16,7 @@ package tim03we.futureplots.listener;
  * <https://opensource.org/licenses/GPL-3.0>.
  */
 
+import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBurnEvent;
@@ -27,8 +28,9 @@ public class BlockBurn implements Listener {
 
     @EventHandler
     public void onBurn(BlockBurnEvent event) {
-        if(Settings.levels.contains(event.getBlock().getLevel().getName())) {
-            Plot plot = FuturePlots.getInstance().getPlotByPosition(event.getBlock().getLocation());
+        Block block = event.getBlock();
+        if(Settings.levels.contains(block.getLevel().getName())) {
+            Plot plot = FuturePlots.getInstance().getPlot(block.getLocation());
             if(plot == null) {
                 event.setCancelled(true);
             }
