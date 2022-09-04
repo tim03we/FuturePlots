@@ -61,7 +61,11 @@ public class MainCommand extends Command {
                     if(plot == null) {
                         FormWindows.openNoPlotForm(player);
                     } else {
-                        FormWindows.openPlotForm(player, plot);
+                        if(FuturePlots.provider.hasOwner(plot)) {
+                            FormWindows.openPlotForm(player, plot);
+                        } else {
+                            FormWindows.openNoPlotForm(player);
+                        }
                     }
                 }
             } else {

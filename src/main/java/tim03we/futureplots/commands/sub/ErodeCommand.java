@@ -45,9 +45,16 @@ public class ErodeCommand extends BaseCommand {
                 return;
             }
             String levelName = plot.getLevelName();
-            if(Settings.interaction_confirmation && args.length < 1) {
-                player.sendMessage("Bestätige deine Interaktion mit " + getUsage() + " confirm");
-                return;
+            if(!player.isOp()) {
+                if(Settings.interaction_confirmation && args.length < 2) {
+                    player.sendMessage(translate(true, "interaction.confirmation", getUsage()));
+                    return;
+                } else {
+                    if(!args[1].equalsIgnoreCase("confirm")) {
+                        player.sendMessage(translate(true, "interaction.confirmation", getUsage()));
+                        return;
+                    }
+                }
             }
 
             if(Settings.economyUse && Settings.economyWorlds.contains(levelName)) {
