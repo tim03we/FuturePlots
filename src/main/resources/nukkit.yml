@@ -4,10 +4,11 @@ api: 1.0.9
 author: tim03we
 version: 3.0.0.1-SNAPSHOT
 description: A NukkitX based plot plugin
+depend:
+  - DbLib
 softdepend:
   - EconomyAPI
   - LlamaEconomy
-  - DbLib
 
 permissions:
   futureplots.command.generate:
