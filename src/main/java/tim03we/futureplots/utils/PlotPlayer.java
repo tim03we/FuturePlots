@@ -46,7 +46,15 @@ public class PlotPlayer {
     }
 
     public boolean canByPass() {
-        return (FuturePlots.provider.getOwner(getPlot()) != null && FuturePlots.provider.getOwner(getPlot()).equals(Utils.getPlayerId(player.getName()))) || player.isOp() || player.hasPermission("plot.bypass");
+        String playerId = Utils.getPlayerId(player.getName());
+        Plot plot = getPlot();
+        if(player.isOp() || player.hasPermission("plot.bypass")) {
+            return true;
+        }
+        if(FuturePlots.provider.hasOwner(plot) && FuturePlots.provider.getOwner(plot).equals(playerId)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean bypassEco() {

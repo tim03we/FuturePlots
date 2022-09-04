@@ -67,7 +67,7 @@ public class DisposeCommand extends BaseCommand {
                     }
                 }
             }
-            plot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
+            //plot.changeBorder(PlotSettings.getWallBlockUnClaimed(levelName));
             FuturePlots.provider.disposePlot(plot);
             player.sendMessage(translate(true, "plot.dispose"));
         }
