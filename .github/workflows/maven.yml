@@ -23,4 +23,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B package -DskipTests=false -Darguments="-Dmaven.javadoc.skip=true"
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v1
+      if: success()
+      with:
+        name: FuturePlots
+        path: target/FuturePlots.jar
