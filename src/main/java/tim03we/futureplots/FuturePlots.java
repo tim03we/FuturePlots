@@ -409,8 +409,8 @@ public class FuturePlots extends PluginBase {
         return new Plot(X, Z, position.getLevel().getName());
     }
 
-    public void mergePlots(Player player, Plot plot, BlockFace direction) {
-        String playerId = Utils.getPlayerId(player.getName());
+    public void mergePlots(Player player, Plot plot, BlockFace direction, String targetPlotPlayerId) {
+        //String playerId = Utils.getPlayerId(player.getName());
         Plot nextPlot;
         int x = plot.getX();
         int z = plot.getZ();
@@ -424,7 +424,7 @@ public class FuturePlots extends PluginBase {
             x++;
         }
         nextPlot = new Plot(x, z, plot.getLevelName());
-        if (!provider.getOwner(nextPlot).equalsIgnoreCase(playerId)) {
+        if (!provider.getOwner(nextPlot).equalsIgnoreCase(targetPlotPlayerId)) {
             player.sendMessage(Language.translate(true, "merge.not.a.owner"));
             return;
         }
@@ -494,11 +494,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX() + 1, plot.getZ(), plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() + 1, plot.getZ() - 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(leftPlot).equals(targetPlotPlayerId) && provider.getOwner(leftUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, plot, leftUpPlot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(rightPlot).equals(targetPlotPlayerId) && provider.getOwner(rightUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, rightPlot, upPlot, false, direction, 256), 5);
             }
         } else if (direction == BlockFace.SOUTH) {
@@ -508,11 +508,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX() - 1, plot.getZ(), plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() - 1, plot.getZ() + 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(leftPlot).equals(targetPlotPlayerId) && provider.getOwner(leftUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, leftUpPlot, plot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(rightPlot).equals(targetPlotPlayerId) && provider.getOwner(rightUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, upPlot, rightPlot, false, direction, 256), 5);
             }
         } else if (direction == BlockFace.WEST) {
@@ -522,11 +522,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX(), plot.getZ() - 1, plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() - 1, plot.getZ() - 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(leftPlot).equals(targetPlotPlayerId) && provider.getOwner(leftUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, leftPlot, upPlot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(rightPlot).equals(targetPlotPlayerId) && provider.getOwner(rightUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, plot, rightUpPlot, false, direction, 256), 5);
             }
         } else if (direction == BlockFace.EAST) {
@@ -536,11 +536,11 @@ public class FuturePlots extends PluginBase {
             Plot rightPlot = new Plot(plot.getX(), plot.getZ() + 1, plot.getLevelName());
             Plot rightUpPlot = new Plot(plot.getX() + 1, plot.getZ() + 1, plot.getLevelName());
             if (isMergeCheck(plot, leftPlot) && isMergeCheck(leftPlot, leftUpPlot) && isMergeCheck(leftUpPlot, upPlot)
-                    && provider.getOwner(leftPlot).equals(playerId) && provider.getOwner(leftUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(leftPlot).equals(targetPlotPlayerId) && provider.getOwner(leftUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, upPlot, leftPlot, false, direction, 256), 5);
             }
             if (isMergeCheck(plot, rightPlot) && isMergeCheck(rightPlot, rightUpPlot) && isMergeCheck(rightUpPlot, upPlot)
-                    && provider.getOwner(rightPlot).equals(playerId) && provider.getOwner(rightUpPlot).equals(playerId) && provider.getOwner(upPlot).equals(playerId)) {
+                    && provider.getOwner(rightPlot).equals(targetPlotPlayerId) && provider.getOwner(rightUpPlot).equals(targetPlotPlayerId) && provider.getOwner(upPlot).equals(targetPlotPlayerId)) {
                 getServer().getScheduler().scheduleDelayedTask(new RoadMiddleFillTask(this, rightUpPlot, plot, false, direction, 256), 5);
             }
         }

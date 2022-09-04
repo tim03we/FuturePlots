@@ -53,12 +53,13 @@ public class MergeCommand extends BaseCommand {
                 player.sendMessage(Language.translate(true, "not.in.plot"));
                 return;
             }
-            if(!FuturePlots.provider.getOwner(plot).equals(Utils.getPlayerId(player.getName()))) {
+            if(!plot.canByPass(player)) {
                 player.sendMessage(Language.translate(true, "not.a.owner"));
                 return;
             }
+            String targetPlotPlayerId = FuturePlots.provider.getOwner(plot);
             BlockFace direction = player.getDirection();
-            FuturePlots.getInstance().mergePlots(player, plot, direction);
+            FuturePlots.getInstance().mergePlots(player, plot, direction, targetPlotPlayerId);
         }
     }
 }
