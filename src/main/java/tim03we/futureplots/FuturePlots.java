@@ -142,7 +142,7 @@ public class FuturePlots extends PluginBase {
 
     private void checkVersion() {
         getLogger().info("Check " + Settings.language + ".yml version..");
-        if(!Language.getNoPrefix("version").equals("1.2.9")) {
+        if(!Language.getNoPrefix("version").equals("1.3.0")) {
             new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml").delete();
             if(new File(getDataFolder() + "/lang/" + Settings.language + ".yml").renameTo(new File(getDataFolder() + "/lang/" + Settings.language + "_old.yml"))) {
                 getLogger().critical("The version of the language configuration does not match. You will find the old file marked \"" + Settings.language + "_old.yml\" in the same language directory.");

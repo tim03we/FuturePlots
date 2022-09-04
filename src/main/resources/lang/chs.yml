@@ -1,5 +1,5 @@
 ---
-version: "1.2.9"
+version: "1.3.0"
 
 prefix: "FuturePlots >汉化by从不咕咕的鸽纸 "
 
@@ -70,4 +70,14 @@ merge.not.a.owner: "您不是對面房產的擁有者。"
 economy.no.money: "你没有足够的金钱执行此操作."
 
 player.not.found: "找不到该玩家."
+
+interaction.confirmation: "要执行此操作，请用%1确认。"
+form.interaction.confirmation: "你确定你要执行这个动作吗？你不能撤消这一行动。"
+form.interaction.button.confirm: "明白了!"
+
+forms.button.clear: "阴谋\n§e空白"
+forms.button.delete: "阴谋\n§cDELETE"
+forms.button.dispose: "阴谋\n§6释放"
+forms.button.search.plot: "搜索情节"
+forms.content.no.plot: "你不在一个情节上。在这里，你可以选择是否自动为你搜索免费地块。\n\n为了能够管理一个小区，你必须在一个小区里。"
 ...

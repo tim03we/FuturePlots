@@ -1,5 +1,5 @@
 ---
-version: "1.2.9"
+version: "1.3.0"
 
 prefix: "FuturePlots > "
 
@@ -70,4 +70,14 @@ merge.not.a.owner: "Du bist nicht der Besitzer des gegenüberliegenden Grundstü
 economy.no.money: "Du besitzt nicht genügend Geld für diese Aktion."
 
 player.not.found: "Dieser Spieler wurde nicht gefunden."
+
+interaction.confirmation: "Um diese Aktion durchführen zu können, bestätige dies bitte mit %1 confirm."
+form.interaction.confirmation: "Bist du dir sicher, das du diese Aktion durchführen möchtest? Du kannst diese Aktion nicht mehr Rückgängig machen."
+form.interaction.button.confirm: "Verstanden!"
+
+forms.button.clear: "Plot\n§eLEEREN"
+forms.button.delete: "Plot\n§cLÖSCHEN"
+forms.button.dispose: "Plot\n§6FREIGEBEN"
+forms.button.search.plot: "Suche Plot"
+forms.content.no.plot: "Du befindest dich auf keinem Plot. Hier kannst du auswählen, ob für dich automatisch ein freies Plot gesucht wird. \n\nUm ein Plot verwalten zu können, musst du dich auf einem Plot befinden."
 ...
