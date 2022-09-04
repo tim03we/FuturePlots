@@ -34,62 +34,55 @@ public class SetOwnerCommand extends BaseCommand {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             Plot plot = new PlotPlayer(player).getPlot();
-            if (plot != null) {
-                String levelName = plot.getLevelName();
-                if(args.length > 1) {
-                    if (plot.canByPass(player)) {
-                        Player target = Server.getInstance().getPlayerExact(args[1]);
-                        String targetName = target == null ? args[1] : target.getName();
-                        if(!FuturePlots.xuidProvider.exists(targetName)) {
-                            player.sendMessage("Dieser Spieler existiert nicht§c!");
+            if(plot == null) {
+                player.sendMessage(translate(true, "not.in.plot"));
+                return;
+            }
+            if(args.length > 1) {
+                if(!plot.canByPass(player)) {
+                    player.sendMessage(translate(true, "not.a.owner"));
+                    return;
+                }
+                Player target = Server.getInstance().getPlayerExact(args[1]);
+                String targetName = target == null ? args[1].toLowerCase() : target.getName();
+                String targetPlayerId = Utils.getPlayerId(targetName);
+                if(targetPlayerId == null) {
+                    player.sendMessage(translate(true, "player.not.found"));
+                    return;
+                }
+
+                if(player.isOp()) {
+                    if(!FuturePlots.provider.hasOwner(plot)) {
+                        player.sendMessage(translate(true, "not.a.owner"));
+                        return;
+                    }
+                }
+
+                if(!player.isOp()) {
+                    if(target == null) {
+                        player.sendMessage(translate(true, "plot.setowner.target.not.online"));
+                        return;
+                    }
+                }
+
+                if(target != null) {
+                    if(!player.isOp()) {
+                        if(!FuturePlots.getInstance().canClaim(target)) {
+                            player.sendMessage(translate(true, "plot.setowner.target.max"));
                             return;
                         }
-                        String targetPlayerId = Utils.getPlayerId(targetName);
-                        if(sender.isOp()) {
-                            if(target != null) target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
-                            if(!FuturePlots.provider.hasOwner(plot)) {
-                                FuturePlots.provider.claimPlot(targetPlayerId, plot);
-                                plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
-                            } else {
-                                FuturePlots.provider.setOwner(targetPlayerId, plot);
-                            }
-                            if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).size() == 0) {
-                                plot = FuturePlots.provider.getOriginPlot(plot);
-                            }
-                            for (Plot mergePlot : FuturePlots.provider.getMerges(plot)) {
-                                FuturePlots.provider.setOwner(targetPlayerId, mergePlot);
-                            }
-                            sender.sendMessage(translate(true, "plot.setowner", targetName));
-                        } else {
-                            if(target != null) {
-                                if(FuturePlots.getInstance().canClaim(target)) {
-                                    target.sendMessage(translate(true, "plot.setowner.target", plot.getX() + ";" + plot.getZ()));
-                                    if(!FuturePlots.provider.hasOwner(plot)) {
-                                        FuturePlots.provider.claimPlot(targetName, plot);
-                                        plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
-                                    } else FuturePlots.provider.setOwner(targetName, plot);
-                                    if(FuturePlots.provider.getOriginPlot(plot) != null && FuturePlots.provider.getMerges(plot).size() == 0) {
-                                        plot = FuturePlots.provider.getOriginPlot(plot);
-                                    }
-                                    for (Plot mergePlot : FuturePlots.provider.getMerges(plot)) {
-                                        FuturePlots.provider.setOwner(targetName, mergePlot);
-                                    }
-                                    sender.sendMessage(translate(true, "plot.setowner", target.getName()));
-                                } else {
-                                    sender.sendMessage(translate(true, "plot.setowner.target.max"));
-                                }
-                            } else {
-                                sender.sendMessage(translate(true, "plot.setowner.target.not.online"));
-                            }
-                        }
-                    } else {
-                        sender.sendMessage(translate(true, "not.a.owner"));
                     }
-                } else {
-                    sender.sendMessage(getUsage());
+                    target.sendMessage(translate(true, "plot.setowner.target", plot.getFullID()));
                 }
+
+                FuturePlots.provider.setOwner(targetPlayerId, plot);
+                for (Plot mergePlot : FuturePlots.provider.getMerges(plot)) {
+                    FuturePlots.provider.setOwner(targetPlayerId, mergePlot);
+                }
+
+                player.sendMessage(translate(true, "plot.setowner", targetName));
             } else {
-                sender.sendMessage(translate(true, "not.in.plot"));
+                sender.sendMessage(getUsage());
             }
         }
     }
