@@ -31,9 +31,11 @@ import java.util.function.Consumer;
 public class FormWindows {
 
     public static void openNoPlotForm(Player player) {
+        String autoCmd = FuturePlots.cmds.getString("plot.auto.name");
+
         SimpleForm.Builder form = new SimpleForm.Builder("Plot", Language.translate(false, "forms.content.no.plot") + "\n\n");
         form.addButton(new ElementButton(Language.translate(false, "forms.button.search.plot")), (player1 -> {
-            CommandHandler.runCmd(player, "auto", new String[]{"auto"});
+            CommandHandler.runCmd(player, autoCmd, new String[]{autoCmd});
         }));
         form.build().send(player);
     }
@@ -54,37 +56,40 @@ public class FormWindows {
         form.addButton(new ElementButton("Blockiert"));
          */
         if(owner) {
-            if(CommandHandler.getCommand("clear") != null) form.addButton(new ElementButton(Language.translate(false, "forms.button.clear")), (player1 -> {
+            String clearCmd = FuturePlots.cmds.getString("plot.clear.name");
+            String disposeCmd = FuturePlots.cmds.getString("plot.dispose.name");
+            String deleteCmd = FuturePlots.cmds.getString("plot.delete.name");
+            if(CommandHandler.getCommand(clearCmd) != null) form.addButton(new ElementButton(Language.translate(false, "forms.button.clear")), (player1 -> {
                 if(Settings.interaction_confirmation) {
                     confirm(player, cb -> {
                         if(cb) {
-                            CommandHandler.runCmd(player, "clear", new String[]{"clear", "confirm"});
+                            CommandHandler.runCmd(player, clearCmd, new String[]{clearCmd, "confirm"});
                         }
                     });
                 } else {
-                    CommandHandler.runCmd(player, "clear", new String[]{"clear"});
+                    CommandHandler.runCmd(player, clearCmd, new String[]{clearCmd});
                 }
             }));
-            if(CommandHandler.getCommand("dispose") != null) form.addButton(new ElementButton(Language.translate(false, "forms.button.dispose")), (player1 -> {
+            if(CommandHandler.getCommand(disposeCmd) != null) form.addButton(new ElementButton(Language.translate(false, "forms.button.dispose")), (player1 -> {
                 if(Settings.interaction_confirmation) {
                     confirm(player, cb -> {
                         if(cb) {
-                            CommandHandler.runCmd(player, "dispose", new String[]{"dispose", "confirm"});
+                            CommandHandler.runCmd(player, disposeCmd, new String[]{disposeCmd, "confirm"});
                         }
                     });
                 } else {
-                    CommandHandler.runCmd(player, "dispose", new String[]{"dispose"});
+                    CommandHandler.runCmd(player, disposeCmd, new String[]{disposeCmd});
                 }
             }));
-            if(CommandHandler.getCommand("delete") != null) form.addButton(new ElementButton(Language.translate(false, "forms.button.delete")), player1 -> {
+            if(CommandHandler.getCommand(deleteCmd) != null) form.addButton(new ElementButton(Language.translate(false, "forms.button.delete")), player1 -> {
                 if(Settings.interaction_confirmation) {
                     confirm(player, cb -> {
                         if(cb) {
-                            CommandHandler.runCmd(player, "delete", new String[]{"delete", "confirm"});
+                            CommandHandler.runCmd(player, deleteCmd, new String[]{deleteCmd, "confirm"});
                         }
                     });
                 } else {
-                    CommandHandler.runCmd(player, "delete", new String[]{"delete"});
+                    CommandHandler.runCmd(player, deleteCmd, new String[]{deleteCmd});
                 }
             });
         }
