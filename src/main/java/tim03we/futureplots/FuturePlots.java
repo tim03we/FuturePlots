@@ -150,7 +150,7 @@ public class FuturePlots extends PluginBase {
             }
         }
         getLogger().info("Check config.yml version..");
-        if(!getConfig().getString("version").equals("1.3.1")) {
+        if(!getConfig().getString("version").equals("1.3.2")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");

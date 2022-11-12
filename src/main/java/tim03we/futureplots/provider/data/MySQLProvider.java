@@ -154,9 +154,9 @@ public class MySQLProvider implements DataProvider {
                 }
             }
             table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("denied", new Gson().toJson(newList)));
-            FuturePlots.getInstance().getLogger().warning("[XUID] " + missingXuid + " names were converted to XUID. The server can now be accessed.");
-            Settings.joinServer = true;
         }
+        FuturePlots.getInstance().getLogger().warning("[XUID] " + missingXuid + " names were converted to XUID. The server can now be accessed.");
+        Settings.joinServer = true;
     }
 
     @Override
