@@ -234,6 +234,8 @@ public class FuturePlots extends PluginBase {
         if(cmds.getBoolean("plot.deletehome.enable")) commandHandler.registerCommand(cmds.getString("plot.deletehome.name"), new DeleteHomeCommand(cmds.getString("plot.deletehome.name"), cmds.getString("plot.deletehome.description"), cmds.getString("plot.deletehome.usage")), cmds.getStringList("plot.deletehome.alias").toArray(new String[0]));
         if(cmds.getBoolean("plot.erode.enable")) commandHandler.registerCommand(cmds.getString("plot.erode.name"), new ErodeCommand(cmds.getString("plot.erode.name"), cmds.getString("plot.erode.description"), cmds.getString("plot.erode.usage")), cmds.getStringList("plot.erode.alias").toArray(new String[0]));
         if(cmds.getBoolean("plot.merge.enable")) commandHandler.registerCommand(cmds.getString("plot.merge.name"), new MergeCommand(cmds.getString("plot.merge.name"), cmds.getString("plot.merge.description"), cmds.getString("plot.merge.usage")), cmds.getStringList("plot.merge.alias").toArray(new String[0]));
+        if(cmds.getBoolean("plot.teleport.enable")) commandHandler.registerCommand(cmds.getString("plot.teleport.name"), new TeleportCommand(cmds.getString("plot.teleport.name"), cmds.getString("plot.teleport.description"), cmds.getString("plot.teleport.usage")), cmds.getStringList("plot.teleport.alias").toArray(new String[0]));
+
         FuturePlots.getInstance().getServer().getCommandMap().register(cmds.getString("plot.name"), new MainCommand());
         getLogger().info("All commands have been loaded...");
     }
