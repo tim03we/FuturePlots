@@ -30,12 +30,8 @@
   </build>
   <repositories>
     <repository>
-      <id>nukkitx-repo</id>
-      <url>https://repo.nukkitx.com/snapshot</url>
-    </repository>
-    <repository>
-      <id>nukkit-repo</id>
-      <url>https://repo.nukkitx.com/maven-snapshots</url>
+      <id>opencollab-repo-snapshot</id>
+      <url>https://repo.opencollab.dev/maven-snapshots/</url>
     </repository>
     <repository>
       <id>waterdog-repo</id>
