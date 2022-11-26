@@ -158,7 +158,7 @@ public class FuturePlots extends PluginBase {
             }
         }
         getLogger().info("Check commands.yml version..");
-        if(!cmds.getString("version").equals("1.1.0")) {
+        if(!cmds.getString("version").equals("1.1.1")) {
             new File(getDataFolder() + "/commands_old.yml").delete();
             if(new File(getDataFolder() + "/commands.yml").renameTo(new File(getDataFolder() + "/commands_old.yml"))) {
                 getLogger().critical("The version of the commands file does not match. You will find the old file marked \"commands_old.yml\" in the same directory.");

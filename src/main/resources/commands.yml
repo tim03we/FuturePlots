@@ -1,5 +1,5 @@
 ---
-version: "1.1.0"
+version: "1.1.1"
 
 plot:
   parameters:
@@ -73,7 +73,7 @@ plot:
     name: "home"
     usage: "/plot home [number] [world]"
     description: "Go to your plots"
-    alias: ["h", "visit"]
+    alias: ["h"]
     enable: true
   homes:
     name: "homes"
@@ -145,6 +145,6 @@ plot:
     name: "teleport"
     usage: "/plot tp <player> [number] [world]"
     description: "Teleports to a plot, claimed by the specified player."
-    alias: ["tp"]
+    alias: ["tp", "visit"]
     enable: true
 ...
