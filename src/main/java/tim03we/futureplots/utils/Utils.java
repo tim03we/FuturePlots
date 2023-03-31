@@ -28,12 +28,4 @@ public class Utils {
             return false;
         }
     }
-
-    public static String getPlayerName(String playerId) {
-        return FuturePlots.xuidProvider.getGamertag(playerId);
-    }
-
-    public static String getPlayerId(String str) {
-        return FuturePlots.xuidProvider.getXuid(str);
-    }
 }

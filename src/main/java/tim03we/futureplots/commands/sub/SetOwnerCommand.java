@@ -45,7 +45,7 @@ public class SetOwnerCommand extends BaseCommand {
                 }
                 Player target = Server.getInstance().getPlayerExact(args[1]);
                 String targetName = target == null ? args[1].toLowerCase() : target.getName();
-                String targetPlayerId = Utils.getPlayerId(targetName);
+                String targetPlayerId = args[1];
                 if(targetPlayerId == null) {
                     player.sendMessage(translate(true, "player.not.found"));
                     return;

@@ -47,10 +47,10 @@ public class InfoCommand extends BaseCommand {
                 List<String> convHelper = new ArrayList<>();
                 List<String> convMember = new ArrayList<>();
                 List<String> convDenied = new ArrayList<>();
-                FuturePlots.provider.getHelpers(plot).forEach(k -> convHelper.add(Utils.getPlayerName(k)));
-                FuturePlots.provider.getMembers(plot).forEach(k -> convMember.add(Utils.getPlayerName(k)));
-                FuturePlots.provider.getDenied(plot).forEach(k -> convDenied.add(Utils.getPlayerName(k)));
-                player.sendMessage(translate(false, "plot.info.text", Utils.getPlayerName(FuturePlots.provider.getOwner(plot)), plot.getX() + ";" + plot.getZ(), convHelper.toString(), convDenied.toString(), convMember.toString()));
+                FuturePlots.provider.getHelpers(plot).forEach(k -> convHelper.add(k));
+                FuturePlots.provider.getMembers(plot).forEach(k -> convMember.add(k));
+                FuturePlots.provider.getDenied(plot).forEach(k -> convDenied.add(k));
+                player.sendMessage(translate(false, "plot.info.text", FuturePlots.provider.getOwner(plot), plot.getX() + ";" + plot.getZ(), convHelper.toString(), convDenied.toString(), convMember.toString()));
             } else {
                 player.sendMessage(translate(false, "plot.info.text", "[]", "[]", "[]", "[]", "[]"));
 

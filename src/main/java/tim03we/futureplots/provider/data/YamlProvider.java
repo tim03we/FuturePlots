@@ -25,7 +25,6 @@ import tim03we.futureplots.provider.DataProvider;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
 import tim03we.futureplots.utils.Utils;
-import tim03we.futureplots.utils.xuid.web.RequestXUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,69 +59,6 @@ public class YamlProvider implements DataProvider {
             if(!yaml.exists(key + ".merges")) yaml.set(key + ".merges", new ArrayList<String>());
             if(!yaml.exists(key + ".merge_check")) yaml.set(key + ".merge_check", new ArrayList<String>());
         }
-
-        FuturePlots.getInstance().getLogger().warning("[XUID] Start checking for missing XUIDs... During this check, no players can enter the server.");
-        int missingXuid = 0;
-        for (String key : yaml.getAll().keySet()) {
-            String owner = yaml.getString(key + ".owner");
-            if(!Utils.isLong(owner) && owner.length() != 16 && !owner.equals("none")) {
-                RequestXUID requestXUID = new RequestXUID(owner);
-                String xuid = requestXUID.sendAndGetXuid();
-                yaml.set(key + ".owner", xuid);
-                missingXuid++;
-                FuturePlots.getInstance().getLogger().info("[XUID] " + owner + " has been converted to an XUID..");
-                FuturePlots.xuidProvider.updateEntry(owner, xuid);
-            }
-            List<String> newList = yaml.getStringList(key + ".helpers");
-            for (String key2 : newList) {
-                if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(key2);
-                    String xuid = requestXUID.sendAndGetXuid();
-                    if(xuid != null) {
-                        newList.remove(key2);
-                        newList.add(xuid);
-                        missingXuid++;
-                        FuturePlots.getInstance().getLogger().info("[XUID] " + key2 + " has been converted to an XUID..");
-                        FuturePlots.xuidProvider.updateEntry(key2, xuid);
-                    }
-                }
-            }
-            yaml.set(key + ".helpers", newList);
-
-            newList = yaml.getStringList(key + ".members");
-            for (String key2 : newList) {
-                if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(key2);
-                    String xuid = requestXUID.sendAndGetXuid();
-                    if(xuid != null) {
-                        newList.remove(key2);
-                        newList.add(xuid);
-                        missingXuid++;
-                        FuturePlots.getInstance().getLogger().info("[XUID] " + key2 + " has been converted to an XUID..");
-                        FuturePlots.xuidProvider.updateEntry(key2, xuid);
-                    }
-                }
-            }
-            yaml.set(key + ".members", newList);
-
-            newList = yaml.getStringList(key + ".denied");
-            for (String key2 : newList) {
-                if(!Utils.isLong(key2) && key2.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(key2);
-                    String xuid = requestXUID.sendAndGetXuid();
-                    if(xuid != null) {
-                        newList.remove(key2);
-                        newList.add(xuid);
-                        missingXuid++;
-                        FuturePlots.getInstance().getLogger().info("[XUID] " + key2 + " has been converted to an XUID..");
-                        FuturePlots.xuidProvider.updateEntry(key2, xuid);
-                    }
-                }
-            }
-            yaml.set(key + ".denied", newList);
-        }
-        FuturePlots.getInstance().getLogger().warning("[XUID] " + missingXuid + " names were converted to XUID. The server can now be accessed.");
-        Settings.joinServer = true;
     }
 
     @Override

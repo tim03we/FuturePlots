@@ -46,7 +46,7 @@ public class PlotPlayer {
     }
 
     public boolean canByPass() {
-        String playerId = Utils.getPlayerId(player.getName());
+        String playerId = player.getName();
         Plot plot = getPlot();
         if(player.isOp() || player.hasPermission("plot.bypass")) {
             return true;

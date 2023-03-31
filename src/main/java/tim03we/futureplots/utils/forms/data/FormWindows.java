@@ -41,7 +41,7 @@ public class FormWindows {
     }
 
     public static void openPlotForm(Player player, Plot plot) {
-        String ownerName = Utils.getPlayerName(FuturePlots.provider.getOwner(plot));
+        String ownerName = FuturePlots.provider.getOwner(plot);
         boolean owner = false;
         if(ownerName.equalsIgnoreCase(player.getName())) {
             owner = true;

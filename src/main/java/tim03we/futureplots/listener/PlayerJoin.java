@@ -27,6 +27,5 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        FuturePlots.xuidProvider.updateEntry(player.getName(), player.getLoginChainData().getXUID());
     }
 }

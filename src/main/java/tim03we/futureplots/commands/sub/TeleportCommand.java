@@ -35,7 +35,7 @@ public class TeleportCommand extends BaseCommand {
                 return;
             }
 
-            String targetId = Utils.getPlayerId(args[1]);
+            String targetId = args[1];
 
             int homeNumber = 1;
             if(provider.getPlots(targetId, null).size() == 0) {

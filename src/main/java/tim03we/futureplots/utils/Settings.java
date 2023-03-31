@@ -17,15 +17,12 @@ package tim03we.futureplots.utils;
  */
 
 import cn.nukkit.utils.Config;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import tim03we.futureplots.FuturePlots;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Settings {
-
-    public static Object2ObjectOpenHashMap<String, String> playerXuids = new Object2ObjectOpenHashMap<>();
 
     public static ArrayList<String> levels = new ArrayList<>();
     public static String wallBlockClaimed;

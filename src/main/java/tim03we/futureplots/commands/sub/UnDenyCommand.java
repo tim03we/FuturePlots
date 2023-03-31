@@ -44,16 +44,11 @@ public class UnDenyCommand extends BaseCommand {
                 return;
             }
             if (args.length > 1) {
-                String targetPlayerId = Utils.getPlayerId(args[1]);
-                if(targetPlayerId == null) {
-                    player.sendMessage(translate(true, "player.not.found"));
-                    return;
-                }
-                if (!FuturePlots.provider.isDenied(targetPlayerId, plot)) {
+                if (!FuturePlots.provider.isDenied(args[1], plot)) {
                     player.sendMessage(translate(true, "deny.not.exists"));
                     return;
                 }
-                FuturePlots.provider.removeDenied(targetPlayerId, plot);
+                FuturePlots.provider.removeDenied(args[1], plot);
                 player.sendMessage(translate(true, "deny.removed", args[1].toLowerCase()));
             } else {
                 player.sendMessage(getUsage());

@@ -44,16 +44,12 @@ public class RemoveMemberCommand extends BaseCommand {
                 return;
             }
             if (args.length > 1) {
-                String targetPlayerId = Utils.getPlayerId(args[1]);
-                if(targetPlayerId == null) {
-                    player.sendMessage(translate(true, "player.not.found"));
-                    return;
-                }
-                if(!FuturePlots.provider.isMember(targetPlayerId, plot)) {
+
+                if(!FuturePlots.provider.isMember(args[1], plot)) {
                     player.sendMessage(translate(true, "member.not.exists"));
                     return;
                 }
-                FuturePlots.provider.removeMember(targetPlayerId, plot);
+                FuturePlots.provider.removeMember(args[1], plot);
                 player.sendMessage(translate(true, "member.removed", args[1]));
             } else {
                 player.sendMessage(getUsage());

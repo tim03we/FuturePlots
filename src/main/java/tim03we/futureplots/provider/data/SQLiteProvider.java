@@ -30,7 +30,6 @@ import tim03we.futureplots.provider.sql.SQLTable;
 import tim03we.futureplots.utils.Plot;
 import tim03we.futureplots.utils.Settings;
 import tim03we.futureplots.utils.Utils;
-import tim03we.futureplots.utils.xuid.web.RequestXUID;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -89,70 +88,6 @@ public class SQLiteProvider implements DataProvider {
     }
 
     private void checkData() {
-        FuturePlots.getInstance().getLogger().warning("[XUID] Start checking for missing XUIDs... During this check, no players can enter the server.");
-        int missingXuid = 0;
-
-        SQLTable table = database.getTable("plots");
-        for (SQLEntity sqlEntity : table.find()) {
-            String owner = sqlEntity.getString("owner");
-            if(!Utils.isLong(owner) && owner.length() != 16 && !owner.equals("none")) {
-                RequestXUID requestXUID = new RequestXUID(owner);
-                String xuid = requestXUID.sendAndGetXuid();
-                table.update(sqlEntity, new SQLEntity("owner", xuid));
-                missingXuid++;
-                FuturePlots.getInstance().getLogger().info("[XUID] " + owner + " has been converted to an XUID..");
-                FuturePlots.xuidProvider.updateEntry(owner, xuid);
-            }
-            List<String> newList = new Gson().fromJson(sqlEntity.getString("helpers"), List.class);
-            for (String key : newList) {
-                 if(!Utils.isLong(key) && key.length() != 16 && !owner.equals("none")) {
-                     RequestXUID requestXUID = new RequestXUID(key);
-                     String xuid = requestXUID.sendAndGetXuid();
-                     if(xuid != null) {
-                         newList.remove(key);
-                         newList.add(xuid);
-                         missingXuid++;
-                         FuturePlots.getInstance().getLogger().info("[XUID] " + key + " has been converted to an XUID..");
-                         FuturePlots.xuidProvider.updateEntry(key, xuid);
-                     }
-                 }
-            }
-            table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("helpers", new Gson().toJson(newList)));
-
-            newList = new Gson().fromJson(sqlEntity.getString("members"), List.class);
-            for (String key : newList) {
-                if(!Utils.isLong(key) && key.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(key);
-                    String xuid = requestXUID.sendAndGetXuid();
-                    if(xuid != null) {
-                        newList.remove(key);
-                        newList.add(xuid);
-                        missingXuid++;
-                        FuturePlots.getInstance().getLogger().info("[XUID] " + key + " has been converted to an XUID..");
-                        FuturePlots.xuidProvider.updateEntry(key, xuid);
-                    }
-                }
-            }
-            table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("members", new Gson().toJson(newList)));
-
-            newList = new Gson().fromJson(sqlEntity.getString("denied"), List.class);
-            for (String key : newList) {
-                if(!Utils.isLong(key) && key.length() != 16 && !owner.equals("none")) {
-                    RequestXUID requestXUID = new RequestXUID(key);
-                    String xuid = requestXUID.sendAndGetXuid();
-                    if(xuid != null) {
-                        newList.remove(key);
-                        newList.add(xuid);
-                        missingXuid++;
-                        FuturePlots.getInstance().getLogger().info("[XUID] " + key + " has been converted to an XUID..");
-                        FuturePlots.xuidProvider.updateEntry(key, xuid);
-                    }
-                }
-            }
-            table.update(new SQLEntity("level", sqlEntity.getString("level")).append("plotid", sqlEntity.getString("plotid")), new SQLEntity("denied", new Gson().toJson(newList)));
-        }
-        FuturePlots.getInstance().getLogger().warning("[XUID] " + missingXuid + " names were converted to XUID. The server can now be accessed.");
-        Settings.joinServer = true;
     }
 
     @Override

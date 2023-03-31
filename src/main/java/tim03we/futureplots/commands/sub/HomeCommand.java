@@ -37,7 +37,7 @@ public class HomeCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            String playerId = Utils.getPlayerId(player.getName());
+            String playerId = player.getName();
             DataProvider provider = FuturePlots.provider;
             int homeNumber = 1;
             if(provider.getPlots(playerId, null).size() == 0) {

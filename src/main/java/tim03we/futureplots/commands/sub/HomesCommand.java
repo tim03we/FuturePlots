@@ -36,7 +36,7 @@ public class HomesCommand extends BaseCommand {
     public void execute(CommandSender sender, String command, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            String playerId = Utils.getPlayerId(player.getName());
+            String playerId = player.getName();
             if(FuturePlots.provider.getPlots(playerId, null).size() == 0) {
                 player.sendMessage(translate(true, "has.no.plot"));
                 return;

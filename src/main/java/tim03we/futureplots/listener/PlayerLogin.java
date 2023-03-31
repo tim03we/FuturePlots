@@ -27,8 +27,5 @@ public class PlayerLogin implements Listener {
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        if(!Settings.joinServer) {
-            player.kick("§c[FuturePlots] Just a moment, it's checking for missing XUIDs..", false);
-        }
     }
 }

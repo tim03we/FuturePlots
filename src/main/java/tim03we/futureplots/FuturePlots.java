@@ -21,9 +21,11 @@ import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.network.protocol.StructureBlockUpdatePacket;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.utils.Config;
@@ -44,7 +46,6 @@ import tim03we.futureplots.tasks.*;
 import tim03we.futureplots.utils.*;
 import tim03we.futureplots.utils.bstats.Metrics;
 import tim03we.futureplots.utils.forms.FormAPI;
-import tim03we.futureplots.utils.xuid.web.Web;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +60,6 @@ public class FuturePlots extends PluginBase {
     private static FuturePlots instance;
     public static EconomyProvider economyProvider;
     public static DataProvider provider;
-    public static tim03we.futureplots.utils.xuid.provider.SQLiteProvider xuidProvider;
     public static Config cmds;
 
     @Override
@@ -99,18 +99,6 @@ public class FuturePlots extends PluginBase {
         if(Settings.formsUse) {
             FormAPI.load(this);
             getLogger().info("Forms are loaded..");
-        }
-
-        getLogger().info("[XUID] Check if there is communication with the web server.");
-        if(Web.online()) {
-            Settings.websiteActive = true;
-            getLogger().info("[XUID] Communication with the web server was successful.");
-            xuidProvider = new tim03we.futureplots.utils.xuid.provider.SQLiteProvider();
-            xuidProvider.connect();
-        } else {
-            getLogger().error("[XUID] Communication with the server was not successful.");
-            getLogger().warning("[XUID] Please disable plugin. Currently there is no connection to our servers.");
-            getLogger().warning("[XUID] If a conversion to XUID support has already taken place, you do not need to pay attention to this message.");
         }
 
         initProvider();
@@ -316,7 +304,7 @@ public class FuturePlots extends PluginBase {
                 return false;
             }
         }
-        String playerId = Utils.getPlayerId(player.getName());
+        String playerId = player.getName();
         int plotCount = provider.getPlots(playerId, levelName).size();
         return plotCount < max_plots;
     }
@@ -644,7 +632,7 @@ public class FuturePlots extends PluginBase {
     }
 
     public Plot isInMerge(Player player, Position position) {
-        String playerId = Utils.getPlayerId(player.getName());
+        String playerId = player.getName();
         String levelName = position.getLevel().getName();
         boolean checkNext = true;
         Plot inPlot = null;

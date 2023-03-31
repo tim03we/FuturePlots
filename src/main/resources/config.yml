@@ -22,12 +22,6 @@ auto-save:
   # In seconds
   interval: 180
 
-# To keep the plot when changing the player name
-xuid:
-  # Don't change this unless there was an info from the plugin developer itself!
-  # This domain is used for communications with our servers to ensure 100% XUID support.
-  url: "ovisdevelopment.de"
-
 # MySQL connection data
 mysql:
   host: "127.0.0.1"

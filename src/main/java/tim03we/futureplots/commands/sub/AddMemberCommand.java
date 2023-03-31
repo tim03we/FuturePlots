@@ -44,11 +44,7 @@ public class AddMemberCommand extends BaseCommand {
                 return;
             }
             if(args.length > 1) {
-                if (!FuturePlots.xuidProvider.exists(args[1])) {
-                    player.sendMessage(translate(true, "player.not.found"));
-                    return;
-                }
-                String playerId = Utils.getPlayerId(args[1]);
+                String playerId = args[1];
                 if(FuturePlots.provider.isMember(playerId, plot)) {
                     player.sendMessage(translate(true, "member.exists"));
                     return;

@@ -57,7 +57,7 @@ public class AutoCommand extends BaseCommand {
                     }
                 }
             }
-            String playerId = Utils.getPlayerId(player.getName());
+            String playerId = player.getName();
             Plot plot = FuturePlots.provider.getNextFreePlot(levelName);
             plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
             FuturePlots.provider.claimPlot(playerId, plot);

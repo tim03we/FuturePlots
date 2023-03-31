@@ -76,7 +76,7 @@ public class Plot {
     }
 
     public boolean canInteract(Player player) {
-        return canInteract(Utils.getPlayerId(player.getName()));
+        return canInteract(player.getName());
     }
 
     public boolean canInteract(String playerId) {
@@ -87,7 +87,7 @@ public class Plot {
                 return true;
             } else {
                 if(FuturePlots.provider.isMember(playerId, getPlot())) {
-                    Player target = Server.getInstance().getPlayer(Utils.getPlayerName(FuturePlots.provider.getOwner(getPlot())));
+                    Player target = Server.getInstance().getPlayer(FuturePlots.provider.getOwner(getPlot()));
                     return target != null;
                 }
             }

@@ -56,7 +56,7 @@ public class PlayerMove extends Language implements Listener {
                         if(plotId.get(player.getName()) == null || !plotId.get(player.getName()).equalsIgnoreCase(plot.getFullID())) {
                             plotId.put(player.getName(), plot.getFullID());
                             if(FuturePlots.provider.hasOwner(plot)) {
-                                player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), Utils.getPlayerName(FuturePlots.provider.getOwner(plot))));
+                                player.sendPopup(translate(false, "plot.enter.owned", plot.getX() + ";" + plot.getZ(), FuturePlots.provider.getOwner(plot)));
                             } else {
                                 player.sendPopup(translate(false, "plot.enter.free", plot.getX() + ";" + plot.getZ()));
                             }

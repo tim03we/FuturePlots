@@ -61,7 +61,7 @@ public class ClaimCommand extends BaseCommand {
                     }
                 }
             }
-            String playerId = Utils.getPlayerId(player.getName());
+            String playerId = player.getName();
             plot.changeBorder(PlotSettings.getWallBlockClaimed(levelName));
             FuturePlots.provider.claimPlot(playerId, plot);
             if(Settings.claim_tp) {

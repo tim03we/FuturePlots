@@ -44,7 +44,7 @@ public class RemoveHelperCommand extends BaseCommand {
                 return;
             }
             if (args.length > 1) {
-                String targetPlayerId = Utils.getPlayerId(args[1]);
+                String targetPlayerId = args[1];
                 if(targetPlayerId == null) {
                     player.sendMessage(translate(true, "player.not.found"));
                     return;
