@@ -34,15 +34,10 @@ FuturePlots is a plot plugin that will be further developed in the future. This 
 | ~       | merge        | futureplots.command.merge    | -        |
 
 # Permissions
-| Permission       | Description                                                           |
-|------------------|-----------------------------------------------------------------------|
-| plot.kick.bypass | Players with this permission cannot be kicked from any plot.          |
-| plot.deny.bypass | Players with this permission cannot be denied (banned) from any plot. |
-
-# Permissions
-Permission | Description | 
-------- | ----------- | 
-plot.kick.bypass | Players with this permission cannot be kicked from any plot. |
+Permission | Description                                                           | 
+------- |-----------------------------------------------------------------------| 
+plot.bypass | With this permission you can build, place and much more on the plot.  |
+plot.kick.bypass | Players with this permission cannot be kicked from any plot.          |
 plot.deny.bypass | Players with this permission cannot be denied (banned) from any plot. |
 
 # ToDo

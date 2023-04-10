@@ -116,6 +116,8 @@ public class FuturePlots extends PluginBase {
         pm.registerEvents(new BlockBurn(), this);
         pm.registerEvents(new BlockPiston(), this);
         pm.registerEvents(new BlockPlace(), this);
+        pm.registerEvents(new EntityDamage(), this);
+        pm.registerEvents(new EntityDamageByEntity(), this);
         pm.registerEvents(new EntityExplode(), this);
         pm.registerEvents(new EntityShootBow(), this);
         pm.registerEvents(new ItemFrameDropItem(), this);
@@ -138,7 +140,7 @@ public class FuturePlots extends PluginBase {
             }
         }
         getLogger().info("Check config.yml version..");
-        if(!getConfig().getString("version").equals("1.3.2")) {
+        if(!getConfig().getString("version").equals("1.3.3")) {
             new File(getDataFolder() + "/config_old.yml").delete();
             if(new File(getDataFolder() + "/config.yml").renameTo(new File(getDataFolder() + "/config_old.yml"))) {
                 getLogger().critical("The version of the configuration does not match. You will find the old file marked \"config_old.yml\" in the same directory.");

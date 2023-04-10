@@ -2,14 +2,14 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
-      <option name="id" value="onebone" />
-      <option name="name" value="onebone" />
-      <option name="url" value="http://jenkins.onebone.me/plugin/repository/everything/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="nukkitx-repo" />
       <option name="name" value="nukkitx-repo" />
       <option name="url" value="https://repo.nukkitx.com/snapshot" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="onebone" />
+      <option name="name" value="onebone" />
+      <option name="url" value="http://jenkins.onebone.me/plugin/repository/everything/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -22,19 +22,29 @@
       <option name="url" value="https://repo.nukkitx.com/maven-snapshots" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="opencollab-repository-maven-releases" />
+      <option name="name" value="Opencollab Repository" />
+      <option name="url" value="https://repo.opencollab.dev/maven-releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="opencollab-repo-snapshot" />
       <option name="name" value="opencollab-repo-snapshot" />
       <option name="url" value="https://repo.opencollab.dev/maven-snapshots/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="central" />
-      <option name="name" value="Maven Central repository" />
-      <option name="url" value="https://repo1.maven.org/maven2" />
+      <option name="id" value="opencollab-repo-snapshot" />
+      <option name="name" value="opencollab-repo-snapshot" />
+      <option name="url" value="https://repo.opencollab.dev/main" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="waterdog-repo" />
       <option name="name" value="waterdog-repo" />
       <option name="url" value="https://repo.waterdog.dev/artifactory/main" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="jboss.community" />
