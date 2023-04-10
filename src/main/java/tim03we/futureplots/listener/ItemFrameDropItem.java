@@ -21,7 +21,9 @@ public class ItemFrameDropItem implements Listener {
                     return;
                 }
                 if(!plot.canInteract(player)) {
-                    event.setCancelled(true);
+                    if(!plot.canByPass(player)) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
