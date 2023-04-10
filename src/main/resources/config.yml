@@ -1,6 +1,6 @@
 ---
 # Do not change the version, this can lead to deletion of the file
-version: "1.3.2"
+version: "1.3.3"
 
 # Available languages:
 # eng (English), deu (German), kor (Korean), chs (Chinese)
@@ -65,6 +65,15 @@ confirmations: true
 
 # Decide if you want to use UIs for plot interactions.
 forms: false
+
+# Damage
+damage:
+  # Set whether players can be harmed by other players.
+  player: false
+  # Set whether players can be harmed by other entities.
+  entity: false
+  # Decide whether to get fall damage
+  fall: true
 
 # Here you find the plot configurations,
 # how the plot world should look like later, when the world is generated for the first time
