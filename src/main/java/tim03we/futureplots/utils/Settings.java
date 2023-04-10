@@ -60,6 +60,10 @@ public class Settings {
     public static boolean use_auto_save;
     public static int auto_save_interval;
 
+    public static boolean damage_from_players;
+    public static boolean damage_from_entitys;
+    public static boolean damage_fall;
+
     public static void init() {
         Config config = FuturePlots.getInstance().getConfig();
 
@@ -92,6 +96,9 @@ public class Settings {
         merge_price = config.getInt("default-settings.price.merge");
         use_auto_save = config.getBoolean("auto-save.use");
         auto_save_interval = config.getInt("auto-save.interval");
+        damage_from_players = config.getBoolean("damage.player");
+        damage_from_entitys = config.getBoolean("damage.entity");
+        damage_fall = config.getBoolean("damage.fall");
     }
 
 }
