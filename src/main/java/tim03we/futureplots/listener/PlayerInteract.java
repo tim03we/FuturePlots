@@ -43,7 +43,7 @@ public class PlayerInteract implements Listener {
                     return;
                 }
                 if(!plot.canInteract(player)) {
-                    if(!plot.canByPass(player)) {
+                    if(!plot.canByPass(player, plot)) {
                         event.setCancelled(true);
                     }
                 }

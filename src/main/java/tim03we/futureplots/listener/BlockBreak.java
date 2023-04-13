@@ -43,7 +43,7 @@ public class BlockBreak implements Listener {
                 }
                 new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot, Types.BLOCK_BREAK));
                 if(!plot.canInteract(player)) {
-                    if(!plot.canByPass(player)) {
+                    if(!plot.canByPass(player, plot)) {
                         event.setCancelled(true);
                     }
                 }

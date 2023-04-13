@@ -43,7 +43,7 @@ public class BlockPlace implements Listener {
                 }
                 new PlotEvent(new PlotBlockEvent(FuturePlots.getInstance(), event, plot, Types.BLOCK_PLACE));
                 if(!plot.canInteract(player)) {
-                    if(!plot.canByPass(player)) {
+                    if(!plot.canByPass(player, plot)) {
                         event.setCancelled(true);
                     }
                 }
