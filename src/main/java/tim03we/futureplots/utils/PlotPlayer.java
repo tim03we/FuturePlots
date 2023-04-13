@@ -57,6 +57,17 @@ public class PlotPlayer {
         return false;
     }
 
+    public boolean canByPass(Plot plot) {
+        String playerId = player.getName();
+        if(player.isOp() || player.hasPermission("plot.bypass")) {
+            return true;
+        }
+        if(FuturePlots.provider.hasOwner(plot) && FuturePlots.provider.getOwner(plot).equals(playerId)) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean bypassEco() {
         return player.isOp() || player.hasPermission("futureplots.economy.bypass");
     }
