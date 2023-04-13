@@ -71,6 +71,10 @@ public class Plot {
         Server.getInstance().getScheduler().scheduleDelayedTask(FuturePlots.getInstance(), new PlotSetBorderTask(getPlot(x, z, levelName), block), 1, true);
     }
 
+    public boolean canByPass(Player player) {
+        return new PlotPlayer(player).canByPass();
+    }
+
     public boolean canByPass(Player player, Plot plot) {
         return new PlotPlayer(player).canByPass(plot);
     }
