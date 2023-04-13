@@ -14,15 +14,17 @@ public class EntityDamageByEntity implements Listener {
         Entity entity = event.getEntity();
         if(entity instanceof Player) {
             Player player = (Player) entity;
-            Entity damager = event.getDamager();
-            if(damager instanceof Player) {
-                Player killer = (Player) damager;
-                if(Settings.damage_from_players) {
-                    event.setCancelled(true);
-                }
-            } else {
-                if(Settings.damage_from_entitys) {
-                    event.setCancelled(true);
+            if(Settings.levels.contains(player.getLevel().getName())) {
+                Entity damager = event.getDamager();
+                if(damager instanceof Player) {
+                    Player killer = (Player) damager;
+                    if(!Settings.damage_from_players) {
+                        event.setCancelled(true);
+                    }
+                } else {
+                    if(!Settings.damage_from_entitys) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

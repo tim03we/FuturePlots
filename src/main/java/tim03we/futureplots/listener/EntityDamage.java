@@ -14,9 +14,11 @@ public class EntityDamage implements Listener {
         Entity entity = event.getEntity();
         if(entity instanceof Player) {
             Player player = (Player) entity;
-            if(event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                if(Settings.damage_fall) {
-                    event.setCancelled(true);
+            if(Settings.levels.contains(player.getLevel().getName())) {
+                if(event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                    if(!Settings.damage_fall) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
